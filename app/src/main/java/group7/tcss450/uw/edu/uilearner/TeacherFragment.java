@@ -75,7 +75,7 @@ public class TeacherFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction();
+        public void onFragmentInteraction(String accountName, String email, String password);
     }
 
 }
