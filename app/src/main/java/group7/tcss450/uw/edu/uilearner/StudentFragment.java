@@ -1,12 +1,15 @@
 package group7.tcss450.uw.edu.uilearner;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -15,6 +18,8 @@ import android.widget.TextView;
  */
 public class StudentFragment extends Fragment {
 
+
+    private TeacherFragment.OnFragmentInteractionListener mListener;
 
     public StudentFragment() {
         // Required empty public constructor
@@ -31,8 +36,13 @@ public class StudentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(isValidPassword(v.findViewById(R.id.editTextPassword))
-                        && isValidUser(v.findViewById(R.id.editTextUserName))) {
-                    // Sign in Here
+                        && isValidUser(v.findViewById(R.id.editTextEmail))) {
+                    EditText emailText = (EditText) getActivity().findViewById(R.id.editTextEmail);
+                    String email = emailText.getText().toString();
+
+                    EditText passwordText = (EditText) getActivity().findViewById(R.id.editTextPassword);
+                    String password = passwordText.getText().toString();
+                    mListener.onFragmentInteraction(MainActivity.SIGN_IN, email, password);
                 }
             }
         });
@@ -41,8 +51,13 @@ public class StudentFragment extends Fragment {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Something that happens when Register button clicked
+                //For testing until a student register is made
+                EditText emailText = (EditText) getActivity().findViewById(R.id.editTextEmail);
+                String email = emailText.getText().toString();
 
+                EditText passwordText = (EditText) getActivity().findViewById(R.id.editTextPassword);
+                String password = passwordText.getText().toString();
+                mListener.onFragmentInteraction(MainActivity.REGISTER, email, password);
                 //TODO: new Register Fragment.
             }
         });
@@ -56,9 +71,31 @@ public class StudentFragment extends Fragment {
             }
         });
 
+        ImageButton ib = (ImageButton) v.findViewById(R.id.sign_out);
+        ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onFragmentInteraction(MainActivity.SIGN_OUT, null, null);
+            }
+        });
 
 
         return v;
+    }
+
+
+    /*
+        Assigns the MainActivity as the OnFragmentInteractionListener for this Fragment.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TeacherFragment.OnFragmentInteractionListener) {
+            mListener = (TeacherFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement TeacherFragment.OnFragmentInteractionListener");
+        }
     }
 
 

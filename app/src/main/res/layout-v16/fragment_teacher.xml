@@ -7,7 +7,7 @@
     android:background="@color/colorBackground">
 
     <EditText
-        android:id="@+id/editTextUserName"
+        android:id="@+id/editTextEmail"
         android:layout_width="279dp"
         android:layout_height="47dp"
         android:layout_marginLeft="53dp"
@@ -32,7 +32,7 @@
         android:inputType="textPassword"
         android:textColor="@android:color/background_light"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
     <TextView
         android:id="@+id/textView3"
@@ -44,7 +44,7 @@
         android:layout_marginStart="41dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextUserName"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         app:layout_constraintVertical_bias="0.947" />

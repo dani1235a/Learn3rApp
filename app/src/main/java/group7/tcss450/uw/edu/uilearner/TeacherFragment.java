@@ -3,7 +3,6 @@ package group7.tcss450.uw.edu.uilearner;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ public class TeacherFragment extends Fragment {
             public void onClick(View v) {
                 // Something that happens when when Sign in is Clicked.
                 if(isValidPassword(v.findViewById(R.id.editTextPassword))
-                        && isValidUser(v.findViewById(R.id.editTextUserName))) {
+                        && isValidUser(v.findViewById(R.id.editTextEmail))) {
                     // Sign in Here
                 }
             }

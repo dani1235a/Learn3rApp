@@ -6,66 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="group7.tcss450.uw.edu.uilearner.MainActivity"
-    android:background="@color/colorBackground"
     android:id = "@+id/main_container">
 
-    <TextView
-        android:layout_width="114dp"
-        android:layout_height="31dp"
-        android:text="@string/welcome_to"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.062"
-        android:id="@+id/textView2"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
-        android:fontFamily="casual"
-        android:text="@string/learner"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="85sp"
-        android:textStyle="bold"
-        app:layout_constraintHorizontal_bias="0.303"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <Button
-        android:id="@+id/buttonTeacher"
-        android:layout_width="88dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="77dp"
-        android:layout_marginStart="77dp"
-        android:layout_marginTop="155dp"
-        android:onClick="onButtonPress"
-        android:text="@string/teacher"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <Button
-        android:id="@+id/buttonStudent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="66dp"
-        android:layout_marginStart="66dp"
-        android:layout_marginTop="155dp"
-        android:onClick="onButtonPress"
-        android:text="@string/student"
-        app:layout_constraintLeft_toRightOf="@+id/buttonTeacher"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </android.support.constraint.ConstraintLayout>

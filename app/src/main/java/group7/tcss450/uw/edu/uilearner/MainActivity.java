@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
     public static final String TAG = "FIREBASE_TAG";
     public static final String SIGN_IN = "SIGN_IN";
     public static final String REGISTER = "REGISTER";
+    public static final String SIGN_OUT = "SIGN_OUT";
 
     private static final String AT_SYMBOL = "@";
     private static final String DOT_SYMBOL = ".";
@@ -48,6 +49,14 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                 }
             }
         };
+
+        if (savedInstanceState == null) {
+            if (findViewById(R.id.main_container) != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.main_container, new OpenFragment())
+                        .commit();
+            }
+        }
     }
 
     /**
@@ -139,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
      */
     public void createAccount (String email, String password) {
         if (isValidEmail(email) && isValidPassword(password)) {
-            Log.i(TAG, email);
+            Log.e(TAG, "In here");
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -213,6 +222,22 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
 
 
     /*
+        Does a simple sign out of the current user and switches the view back to the original
+        login screen.
+     */
+    public void signOut () {
+        mAuth.signOut();
+        if (mAuth.getCurrentUser() != null) {
+            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, R.string.auth_passed,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /*
         Because this can be coming from a Teacher sign-in/register or a
         Student sign-in/register, this needs an accountState to differentiate
         the type of operation to do with the account.
@@ -221,10 +246,13 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
     public void onFragmentInteraction(String accountState, String email, String password) {
         switch(accountState) {
             case SIGN_IN:
-                createAccount(email, password);
+                signIn(email, password);
                 break;
             case REGISTER:
-                signIn(email, password);
+                createAccount(email, password);
+                break;
+            case SIGN_OUT:
+                signOut();
                 break;
             default:
                 Log.e(TAG, "Invalid accountState: " + accountState);
