@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements TeacherFragment.OnFragmentInterationListener {
+public class MainActivity extends AppCompatActivity implements TeacherFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,4 +38,8 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
         transaction.commit();
     }
 
+    @Override
+    public void onFragmentInteraction() {
+
+    }
 }

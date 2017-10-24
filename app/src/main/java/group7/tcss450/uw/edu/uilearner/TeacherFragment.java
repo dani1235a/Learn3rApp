@@ -16,7 +16,7 @@ import android.widget.TextView;
  */
 public class TeacherFragment extends Fragment {
 
-
+    public OnFragmentInteractionListener mOnFragmentInteractionListener;
 
     public TeacherFragment() {
         // Required empty public constructor
@@ -71,6 +71,11 @@ public class TeacherFragment extends Fragment {
         // TODO: User name logic and back end reference.
         boolean valid = true;
         return valid;
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        public void onFragmentInteraction();
     }
 
 }
