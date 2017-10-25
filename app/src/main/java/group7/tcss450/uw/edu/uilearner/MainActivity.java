@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                                         Toast.LENGTH_SHORT).show();
                                 //If the user has been created and signed in, the Display Fragment
                                 //will be switched to.
+                                sendEmailVerification();
                                 DisplayFragment displayFragment = new DisplayFragment();
                                 Bundle args = new Bundle();
                                 loadFragment(displayFragment, args);
@@ -175,6 +176,32 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                         }
                     });
         }
+    }
+
+
+    /*
+        Sends a verification email to the one specified by the User on account creation.
+        If the email fails to send, then a Toast will appear, alerting the user of it.
+
+        Author: Connor Lundberg
+     */
+    private void sendEmailVerification() {
+        final FirebaseUser user = mAuth.getCurrentUser();
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this,
+                                    "Verification email failed to send",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this,
+                                    "Verification email sent to " + user.getEmail(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 
