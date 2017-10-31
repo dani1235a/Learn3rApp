@@ -169,9 +169,13 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                                 //If the user has been created and signed in, the Display Fragment
                                 //will be switched to.
                                 sendEmailVerification();
-                                DisplayFragment displayFragment = new DisplayFragment();
-                                Bundle args = new Bundle();
-                                loadFragment(displayFragment, args);
+                                if (mAuth.getCurrentUser().isEmailVerified()) {
+                                    DisplayFragment displayFragment = new DisplayFragment();
+                                    Bundle args = new Bundle();
+                                    loadFragment(displayFragment, args);
+                                } else {
+
+                                }
                             }
                         }
                     });
