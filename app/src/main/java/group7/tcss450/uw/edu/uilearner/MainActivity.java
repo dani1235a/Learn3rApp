@@ -1,5 +1,9 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -50,14 +54,16 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
             }
         };
 
+
         if (savedInstanceState == null) {
             if (findViewById(R.id.main_container) != null) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.main_container, new OpenFragment())
+                        .add(R.id.main_container, new StudentFragment())
                         .commit();
             }
         }
     }
+
 
     /**
      * Method for button press.
@@ -170,16 +176,30 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                                 //will be switched to.
                                 sendEmailVerification();
                                 if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    DisplayFragment displayFragment = new DisplayFragment();
+                                    /*DisplayFragment displayFragment = new DisplayFragment();
                                     Bundle args = new Bundle();
-                                    loadFragment(displayFragment, args);
+                                    loadFragment(displayFragment, args);*/
+                                    changeActivity();
                                 } else {
-
+                                    Toast.makeText(MainActivity.this, R.string.verify_first,
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
                     });
         }
+    }
+
+
+    /*
+        A helper method to switch to the AgendaActivity. If any arguments need to be passed
+        to AgendaActivity, it will be passed here using agendaIntent.putExtra(KEY, VALUE).
+
+        Author: Connor Lundberg
+     */
+    private void changeActivity () {
+        Intent agendaIntent = new Intent(this, AgendaActivity.class);
+        startActivity(agendaIntent);
     }
 
 
@@ -241,9 +261,15 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                                 Toast.makeText(MainActivity.this, R.string.auth_passed,
                                         Toast.LENGTH_SHORT).show();
 
-                                DisplayFragment displayFragment = new DisplayFragment();
-                                Bundle args = new Bundle();
-                                loadFragment(displayFragment, args);
+                                if (mAuth.getCurrentUser().isEmailVerified()) {
+                                    /*DisplayFragment displayFragment = new DisplayFragment();
+                                    Bundle args = new Bundle();
+                                    loadFragment(displayFragment, args);*/
+                                    changeActivity();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.verify_first,
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     });

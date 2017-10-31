@@ -11,11 +11,24 @@
     <string name="sign_in">Sign In</string>
     <string name="forgot_password">Forgot Password</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="re_enter_password">Re-Enter Password:</string>
     <string name="show_password">Show Password</string>
+    <string name="internet_not_connected">Not connected to the Internet!</string>
 
     <string name="auth_passed">Authorization passed!</string>
     <string name="auth_failed">Authorization failed!</string>
+    <string name="verify_first">Please verify email before continuing</string>
+
+    <string name="title_activity_agenda">AgendaActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="events">Events</string>
+
+    <string name="calendar">Calendar</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

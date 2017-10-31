@@ -2,6 +2,8 @@ package group7.tcss450.uw.edu.uilearner;
 
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -81,6 +86,44 @@ public class StudentFragment extends Fragment {
 
 
         return v;
+    }
+
+
+    /*
+        Looks to see if the device is connected to the Internet. If not, disable all buttons
+        and set the Internet access message to visible for the user to see. Otherwise, if the
+        buttons are already disabled, then reenable them and set the message to GONE.
+
+        Author: Connor Lundberg
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isNetworkAvailable()) {
+            ((Button) getActivity().findViewById(R.id.buttonRegister)).setEnabled(false);
+            ((Button) getActivity().findViewById(R.id.buttonSignIn)).setEnabled(false);
+            Toast.makeText(getActivity(), getString(R.string.internet_not_connected),
+                    Toast.LENGTH_SHORT);
+        } else {
+            ((Button) getActivity().findViewById(R.id.buttonRegister)).setEnabled(true);
+            ((Button) getActivity().findViewById(R.id.buttonSignIn)).setEnabled(true);
+
+        }
+    }
+
+    /*
+            Checks if the device is connected to the Internet.
+
+            Note: This requires the uses-permission, android.permission.ACCESS_NETWORK_STATE
+
+            Author: Connor Lundberg
+         */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 

@@ -113,4 +113,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/internet_access"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/internet_not_connected"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="518dp"
+        tools:layout_editor_absoluteY="144dp" />
+
 </android.support.constraint.ConstraintLayout>
