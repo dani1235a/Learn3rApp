@@ -1,7 +1,6 @@
 package group7.tcss450.uw.edu.uilearner;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
