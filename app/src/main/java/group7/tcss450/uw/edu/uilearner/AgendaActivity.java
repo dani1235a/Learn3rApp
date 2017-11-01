@@ -22,6 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.URLUtil;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -145,22 +148,25 @@ public class AgendaActivity extends AppCompatActivity
 
         findViewById(R.id.date_info).setVisibility(View.VISIBLE);
 
-        new AsyncTask<Integer, Integer, JSONObject>() {
+        new AsyncTask<Integer, Integer, String>() {
             @Override
-            protected JSONObject doInBackground(Integer... integers) {
+            protected String doInBackground(Integer... integers) {
+                String response = "";
                 try {
                     Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
                     GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
                     endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
                     Date dEnd = endDay.getTime();
-                    //TODO Get uuid and pass it to web request.
+                    //TODO Get uid and pass it to web request.
+
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
                     Uri uri = new Uri.Builder()
                             .scheme("http")
                             .authority("learner-backend.herokuapp.com")
-                            .appendEncodedPath("student")
+                            .appendEncodedPath("teacher")
                             .appendEncodedPath("events")
-                            .appendQueryParameter("uuid", "test")
+                            .appendQueryParameter("uuid", "charles")
                             .appendQueryParameter("start", dStart.toString())
                             .appendQueryParameter("end", dEnd.toString())
                             .build();
@@ -173,28 +179,17 @@ public class AgendaActivity extends AppCompatActivity
                     Scanner s = new Scanner(connection.getInputStream());
                     StringBuilder sb = new StringBuilder();
                     while(s.hasNext()) sb.append(s.next());
-                    String response = sb.toString();
-                    return new JSONObject(response);
+                    response = sb.toString();
+                    return response;
 
                 } catch (Exception e) {
-                    Log.e("ASYNC_TASK", "Failed...", e);
-                    throw new RuntimeException(e);
+                    return e.getMessage();
                 }
             }
 
             @Override
-            protected void onPostExecute(JSONObject result) {
-                try {
-                    JSONArray arr = result.getJSONArray("events");
-                    String str = "";
-                    for(int i = 0; i < arr.length(); i++) {
-                        str += arr.getJSONObject(i).getString("summary") + "\n";
-                        Log.d("event", arr.getJSONObject(i).toString());
-                    }
-                    tv.setText(str);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            protected void onPostExecute(String result) {
+                tv.setText(result);
             }
 
 
