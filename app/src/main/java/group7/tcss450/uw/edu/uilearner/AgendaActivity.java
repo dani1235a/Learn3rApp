@@ -1,7 +1,10 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,10 +20,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Scanner;
 import java.util.StringTokenizer;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class AgendaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -104,7 +122,7 @@ public class AgendaActivity extends AppCompatActivity
     }
 
 
-    /*
+    /**
          A reusable method that simply replaces the current fragment attached to
          the main_container layout in activity_main with the new one given.
       */
@@ -118,11 +136,73 @@ public class AgendaActivity extends AppCompatActivity
     }
 
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onCalendarInteraction(int year, int month, int dayOfMonth) {
-        ((TextView) findViewById(R.id.date_display))
-                .setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month)
-                            + "/" + year);
-        ((ConstraintLayout) findViewById(R.id.date_info)).setVisibility(View.VISIBLE);
+
+        final TextView tv = (TextView) findViewById(R.id.date_display);
+        tv.setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month) + "/" + year);
+
+        findViewById(R.id.date_info).setVisibility(View.VISIBLE);
+
+        new AsyncTask<Integer, Integer, JSONObject>() {
+            @Override
+            protected JSONObject doInBackground(Integer... integers) {
+                try {
+                    Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
+                    GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
+                    endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
+                    Date dEnd = endDay.getTime();
+                    //TODO Get uuid and pass it to web request.
+                    // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
+                    Uri uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("student")
+                            .appendEncodedPath("events")
+                            .appendQueryParameter("uuid", "test")
+                            .appendQueryParameter("start", dStart.toString())
+                            .appendQueryParameter("end", dEnd.toString())
+                            .build();
+
+
+
+                    HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+                    Scanner s = new Scanner(connection.getInputStream());
+                    StringBuilder sb = new StringBuilder();
+                    while(s.hasNext()) sb.append(s.next());
+                    String response = sb.toString();
+                    return new JSONObject(response);
+
+                } catch (Exception e) {
+                    Log.e("ASYNC_TASK", "Failed...", e);
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject result) {
+                try {
+                    JSONArray arr = result.getJSONArray("events");
+                    String str = "";
+                    for(int i = 0; i < arr.length(); i++) {
+                        str += arr.getJSONObject(i).getString("summary") + "\n";
+                        Log.d("event", arr.getJSONObject(i).toString());
+                    }
+                    tv.setText(str);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }.execute(year, month, dayOfMonth);
+
+
     }
+
+
+
 }

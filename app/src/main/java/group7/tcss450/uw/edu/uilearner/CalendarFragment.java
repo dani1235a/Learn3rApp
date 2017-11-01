@@ -38,6 +38,7 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 mListener.onCalendarInteraction(year, month, dayOfMonth);
+
             }
         });
 
