@@ -153,9 +153,9 @@ public class AgendaActivity extends AppCompatActivity
 
         findViewById(R.id.date_info).setVisibility(View.VISIBLE);
 
-        new AsyncTask<Integer, Integer, String []>() {
+        new AsyncTask<Integer, Integer, ArrayList<String>>() {
             @Override
-            protected String [] doInBackground(Integer... integers) {
+            protected ArrayList<String> doInBackground(Integer... integers) {
                 String response = "";
                 try {
                     Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
@@ -171,7 +171,7 @@ public class AgendaActivity extends AppCompatActivity
                             .authority("learner-backend.herokuapp.com")
                             .appendEncodedPath("teacher")
                             .appendEncodedPath("events")
-                            .appendQueryParameter("uuid", "charles") //pass uid here
+                            .appendQueryParameter("uuid", uid) //pass uid here
                             .appendQueryParameter("start", dStart.toString())
                             .appendQueryParameter("end", dEnd.toString())
                             .build();
@@ -198,17 +198,17 @@ public class AgendaActivity extends AppCompatActivity
                         dataset.add(events.getString(i));
                     }
 
-                    return (String []) dataset.toArray();
+                    return dataset;
 
                 } catch (Exception e) {
-                    String [] msg = new String[1];
-                    msg[0] = e.getMessage();
+                    ArrayList<String> msg = new ArrayList<String>();
+                    msg.add(e.getMessage());
                     return msg;
                 }
             }
 
             @Override
-            protected void onPostExecute(String [] result) {
+            protected void onPostExecute(ArrayList<String> result) {
                 RecyclerView rv = (RecyclerView) findViewById(R.id.event_display);
                 rv.setHasFixedSize(true); //change this to false if size doesn't look correct
 
