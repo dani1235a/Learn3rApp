@@ -50,7 +50,7 @@
             android:layout_marginTop="-1dp"
             android:layout_marginLeft="0dp" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/event_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:layout_constraintTop_toBottomOf="@id/date_display">
 
 
-        </ListView>
+        </android.support.v7.widget.RecyclerView>
 
     </android.support.constraint.ConstraintLayout>
 

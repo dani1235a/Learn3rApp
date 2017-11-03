@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.URLUtil;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +39,7 @@ import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -148,9 +153,9 @@ public class AgendaActivity extends AppCompatActivity
 
         findViewById(R.id.date_info).setVisibility(View.VISIBLE);
 
-        new AsyncTask<Integer, Integer, String>() {
+        new AsyncTask<Integer, Integer, String []>() {
             @Override
-            protected String doInBackground(Integer... integers) {
+            protected String [] doInBackground(Integer... integers) {
                 String response = "";
                 try {
                     Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
@@ -166,13 +171,13 @@ public class AgendaActivity extends AppCompatActivity
                             .authority("learner-backend.herokuapp.com")
                             .appendEncodedPath("teacher")
                             .appendEncodedPath("events")
-                            .appendQueryParameter("uuid", "charles")
+                            .appendQueryParameter("uuid", "charles") //pass uid here
                             .appendQueryParameter("start", dStart.toString())
                             .appendQueryParameter("end", dEnd.toString())
                             .build();
 
 
-
+                    Log.d(TAG, uri.toString());
                     HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                     connection.setRequestMethod("GET");
                     connection.connect();
@@ -180,16 +185,38 @@ public class AgendaActivity extends AppCompatActivity
                     StringBuilder sb = new StringBuilder();
                     while(s.hasNext()) sb.append(s.next());
                     response = sb.toString();
-                    return response;
+                    Log.d(TAG, "here");
+                    Log.d(TAG, response);
+                    JSONObject json = new JSONObject(response);
+                    Log.d(TAG, "here2");
+                    JSONArray events = (JSONArray) json.get("events");
+
+                    Log.d(TAG, events.toString());
+
+                    ArrayList<String> dataset = new ArrayList<String>();
+                    for (int i = 0; i < events.length(); i++) {
+                        dataset.add(events.getString(i));
+                    }
+
+                    return (String []) dataset.toArray();
 
                 } catch (Exception e) {
-                    return e.getMessage();
+                    String [] msg = new String[1];
+                    msg[0] = e.getMessage();
+                    return msg;
                 }
             }
 
             @Override
-            protected void onPostExecute(String result) {
-                tv.setText(result);
+            protected void onPostExecute(String [] result) {
+                RecyclerView rv = (RecyclerView) findViewById(R.id.event_display);
+                rv.setHasFixedSize(true); //change this to false if size doesn't look correct
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(returnActivity());
+                rv.setLayoutManager(layoutManager);
+
+                MyAdapter adapter = new MyAdapter(result);
+                rv.setAdapter(adapter);
             }
 
 
@@ -199,5 +226,7 @@ public class AgendaActivity extends AppCompatActivity
     }
 
 
-
+    public Activity returnActivity () {
+        return this;
+    }
 }
