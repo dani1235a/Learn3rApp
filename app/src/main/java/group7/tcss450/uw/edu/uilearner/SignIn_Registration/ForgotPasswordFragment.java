@@ -1,4 +1,4 @@
-package group7.tcss450.uw.edu.uilearner;
+package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import group7.tcss450.uw.edu.uilearner.MainActivity;
+import group7.tcss450.uw.edu.uilearner.R;
 
 
 /**
@@ -34,10 +37,12 @@ public class ForgotPasswordFragment extends Fragment {
         resetPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(RegisterFragment.isValidEmail(email.getText().toString())) {
-                    mListener.onForgotPasswordInteraction(email.getText().toString());
-                } else {
+                if (!RegisterFragment.isValidEmail(email.getText().toString())) {
                     email.setError("Please enter a valid email");
+                } else if (!MainActivity.isUserRegistered(email.getText().toString())) {
+                    email.setError("This email is not registered");
+                } else {
+                    mListener.onForgotPasswordInteraction(email.getText().toString());
                 }
             }
         });

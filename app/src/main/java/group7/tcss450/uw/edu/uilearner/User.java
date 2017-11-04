@@ -11,6 +11,7 @@ public class User implements Serializable {
     String email;
     String name;
     String password;
+    String role;
 
     public User(String email, String password) {
         this.email = email;
@@ -39,5 +40,12 @@ public class User implements Serializable {
 
     String getPassword() {
         return password;
+    }
+
+    String getRole(){
+        return role;
+    }
+    void setRole(String role) {
+        this.role = role;
     }
 }

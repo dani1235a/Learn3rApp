@@ -1,4 +1,4 @@
-package group7.tcss450.uw.edu.uilearner;
+package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
 import android.content.Context;
@@ -12,7 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import group7.tcss450.uw.edu.uilearner.MainActivity;
+import group7.tcss450.uw.edu.uilearner.R;
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.RegisterFragment;
+import group7.tcss450.uw.edu.uilearner.User;
 
 
 /**
@@ -39,14 +43,14 @@ public class SignInFragment extends Fragment {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidPassword(v.findViewById(R.id.editTextPassword))
-                        && isValidUser(v.findViewById(R.id.editTextEmail))) {
-                    EditText emailText = (EditText) getActivity().findViewById(R.id.editTextEmail);
-                    String email = emailText.getText().toString();
+                EditText pass = (EditText) v.findViewById(R.id.editTextPassword);
+                EditText email = (EditText) v.findViewById(R.id.editTextEmail);
 
-                    EditText passwordText = (EditText) getActivity().findViewById(R.id.editTextPassword);
-                    String password = passwordText.getText().toString();
-                    user = new User(email, password);
+                if (RegisterFragment.isValidEmail(email.getText().toString())
+                        && RegisterFragment.isValidPassword(pass.getText().toString())
+                        && MainActivity.isUserRegistered(email.getText().toString())) {
+
+                    user = new User(email.getText().toString(), pass.getText().toString());
                     mListener.SignInFragmentInteraction(user);
                 }
             }
@@ -66,7 +70,6 @@ public class SignInFragment extends Fragment {
             public void onClick(View v) {
                 // forgot Password is clicked.
                 mListener.SignInForgotPasswordInteraction();
-                //TODO: New forgot password Fragment.
             }
         });
 
@@ -132,25 +135,10 @@ public class SignInFragment extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-//        throw new RuntimeException(context.toString()
-//                + " must implement TeacherFragment.OnFragmentInteractionListener");
     }
 
 
 
-    private boolean isValidPassword(View viewById) {
-        boolean valid = true;
-        // TODO: Password logic and fetch from back end.
-        // TODO: limit number of password attempts
-
-        return valid;
-    }
-
-    private boolean isValidUser(View viewById) {
-        // TODO: User name logic and back end reference.
-        boolean valid = true;
-        return valid;
-    }
 
     public interface OnFragmentInteractionListener {
 

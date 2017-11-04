@@ -15,8 +15,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ForgotPasswordFragment;
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.RegisterFragment;
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.SignInFragment;
+
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
-           RegisterFragment.OnFragmentInteractionListener {
+           RegisterFragment.OnFragmentInteractionListener,
+            ChooseRoleFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
 
@@ -186,37 +192,36 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     public void signIn (String email, String password) {
         if (RegisterFragment.isValidEmail(email) && RegisterFragment.isValidPassword(password)) {
             mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("FIREBASE", "signInWithEmail:onComplete:" + task.isSuccessful());
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("FIREBASE", "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w("FIREBASE", "signInWithEmail:failed", task.getException());
-                                Toast.makeText(MainActivity.this, R.string.auth_failed,
-                                        Toast.LENGTH_SHORT).show();
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w("FIREBASE", "signInWithEmail:failed", task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                    Toast.LENGTH_SHORT).show();
+
+                            if (mAuth.getCurrentUser().isEmailVerified()) {
+                                /*DisplayFragment displayFragment = new DisplayFragment();
+                                Bundle args = new Bundle();
+                                loadFragment(displayFragment, args);*/
+                                Log.d(AgendaActivity.TAG, "changing activities");
+                                changeActivity();
                             } else {
-                                Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                Toast.makeText(MainActivity.this, R.string.verify_first,
                                         Toast.LENGTH_SHORT).show();
-
-                                if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    /*DisplayFragment displayFragment = new DisplayFragment();
-                                    Bundle args = new Bundle();
-                                    loadFragment(displayFragment, args);*/
-                                    Log.d(AgendaActivity.TAG, "changing activities");
-                                    changeActivity();
-                                } else {
-                                    Toast.makeText(MainActivity.this, R.string.verify_first,
-                                            Toast.LENGTH_SHORT).show();
-                                }
                             }
                         }
-                    });
+                    }
+                });
         }
-
     }
 
 
@@ -233,6 +238,12 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             Toast.makeText(MainActivity.this, R.string.auth_passed,
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static boolean isUserRegistered(String username) {
+        //TODO: create method to check if this user is already registered.
+        boolean reg = true;
+        return reg;
     }
 
 
@@ -260,6 +271,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void onRegisterFragmentInteraction(User user) {
         this.user = user;
+        loadFragment(new ChooseRoleFragment(), null);
+    }
 
+    @Override
+    public void onRoleFragmentInteraction(String role) {
+        user.setRole(role);
+        Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
+        //TODO: register this user in our system and open new activity.
     }
 }

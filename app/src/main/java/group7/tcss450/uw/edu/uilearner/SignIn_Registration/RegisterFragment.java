@@ -1,4 +1,4 @@
-package group7.tcss450.uw.edu.uilearner;
+package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
 import android.os.Bundle;
@@ -11,6 +11,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import group7.tcss450.uw.edu.uilearner.MainActivity;
+import group7.tcss450.uw.edu.uilearner.R;
+import group7.tcss450.uw.edu.uilearner.User;
 
 
 /**
@@ -88,6 +92,11 @@ public class RegisterFragment extends Fragment {
                     registerEmail.setError("Email must contain a \"@\" and \".\"");
                 }
 
+                cont = (!MainActivity.isUserRegistered(registerEmail.getText().toString()));
+                if(!cont) {
+                    registerEmail.setError("This email is already in use. Please enter a different email.");
+                }
+
                 if(!pass1.getText().toString().equals(pass2.getText().toString()) && cont) {
                     pass1.setError("Passwords must match!");
                     pass2.setError("Passwords must match!");
@@ -119,7 +128,7 @@ public class RegisterFragment extends Fragment {
      * @param s - the email
      * @return - true if valid email.
      */
-    protected static boolean isValidEmail(String s) {
+    public static boolean isValidEmail(String s) {
         return s.matches("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)" +
                 "|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
     }
@@ -129,7 +138,7 @@ public class RegisterFragment extends Fragment {
      * @param s - input string (password)
      * @return - true if password is valid.
      */
-    protected static boolean isValidPassword(String s) {
+    public static boolean isValidPassword(String s) {
         return ((s.length() >= 6)&&(!s.equals(s.toLowerCase()))&&(s.matches(".*\\d.*")));
     }
 
