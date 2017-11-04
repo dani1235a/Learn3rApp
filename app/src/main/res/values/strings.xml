@@ -32,4 +32,6 @@
     <string name="agenda">Daily Agenda</string>
 
     <string name="action_settings">Settings</string>
+    <string name="reset">Reset</string>
+    <string name="please_provide_the_email_linked_to_the_account">Please provide the email linked to the account:</string>
 </resources>
