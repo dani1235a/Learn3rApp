@@ -111,21 +111,25 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             Log.i(TAG, "User creation completed and was successful");
                             Toast.makeText(MainActivity.this, R.string.auth_passed,
                                     Toast.LENGTH_SHORT).show();
-                            //If the user has been created and signed in, the Display Fragment
-                            //will be switched to.
-                            sendEmailVerification();
-                            if (mAuth.getCurrentUser().isEmailVerified()) {
-                                /*DisplayFragment displayFragment = new DisplayFragment();
-                                Bundle args = new Bundle();
-                                loadFragment(displayFragment, args);*/
-                                changeActivity();
-                            } else {
-                                Toast.makeText(MainActivity.this, R.string.verify_first,
-                                        Toast.LENGTH_SHORT).show();
+
+
+                                //If the user has been created and signed in, the Display Fragment
+                                //will be switched to.
+                                sendEmailVerification();
+                                if (mAuth.getCurrentUser().isEmailVerified()) {
+                                    /*DisplayFragment displayFragment = new DisplayFragment();
+                                    Bundle args = new Bundle();
+                                    loadFragment(displayFragment, args);*/
+                                    Log.d(TAG, "changing activities");
+                                    changeActivity();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.verify_first,
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }
-                });
+                );
 }
 
 
@@ -137,6 +141,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      */
     private void changeActivity () {
         Intent agendaIntent = new Intent(this, AgendaActivity.class);
+        Log.d(AgendaActivity.TAG, "Breaks here");
+        Bundle args = new Bundle();
+        Log.d(AgendaActivity.TAG, "Breaks here2");
+        args.putSerializable(TAG, new Holder(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid()));
+        Log.d(AgendaActivity.TAG, "Breaks here3");
+        agendaIntent.putExtra(TAG, args);
+        Log.d(AgendaActivity.TAG, "Breaks here4");
         startActivity(agendaIntent);
     }
 
@@ -203,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     /*DisplayFragment displayFragment = new DisplayFragment();
                                     Bundle args = new Bundle();
                                     loadFragment(displayFragment, args);*/
+                                    Log.d(AgendaActivity.TAG, "changing activities");
                                     changeActivity();
                                 } else {
                                     Toast.makeText(MainActivity.this, R.string.verify_first,
