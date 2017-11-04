@@ -29,6 +29,7 @@
     <string name="events">Events</string>
 
     <string name="calendar">Calendar</string>
+    <string name="agenda">Daily Agenda</string>
 
     <string name="action_settings">Settings</string>
     <string name="reset">Reset</string>
