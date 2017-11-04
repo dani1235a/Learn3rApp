@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="group7.tcss450.uw.edu.uilearner.TeacherFragment"
+    tools:context="group7.tcss450.uw.edu.uilearner.SignInFragment"
     android:background="@color/colorBackground">
 
     <EditText
@@ -65,16 +65,15 @@
         android:id="@+id/buttonSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="71dp"
+        android:layout_marginLeft="70dp"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="88dp"
         android:onClick="onButtonClick"
         android:text="@string/sign_in"
-        app:layout_constraintLeft_toRightOf="@+id/buttonRegister"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+        app:layout_constraintLeft_toRightOf="@+id/buttonRegisterSignIn"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonRegisterSignIn" />
 
     <Button
-        android:id="@+id/buttonRegister"
+        android:id="@+id/buttonRegisterSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="66dp"
@@ -101,16 +100,44 @@
         android:id="@+id/textViewStudentBanner"
         android:layout_width="244dp"
         android:layout_height="53dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="25dp"
-        android:fontFamily="casual"
         android:layout_marginEnd="8dp"
-        android:text="@string/teacher"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="39dp"
+        android:fontFamily="casual"
+        android:text="@string/learner"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textSize="36sp"
+        app:layout_constraintHorizontal_bias="0.401"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/internet_access"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/internet_not_connected"
+        android:textColor="@color/red"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSignIn"
+        android:visibility="invisible"
+        android:layout_marginLeft="36dp"
+        tools:layout_editor_absoluteX="518dp"
+        tools:layout_editor_absoluteY="144dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/welcome_to"
+
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="36dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

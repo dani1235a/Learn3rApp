@@ -1,16 +1,12 @@
 package group7.tcss450.uw.edu.uilearner;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,7 +15,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements TeacherFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
+           RegisterFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
     public static final String SIGN_IN = "SIGN_IN";
@@ -33,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,29 +55,11 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
 
         if (savedInstanceState == null) {
             if (findViewById(R.id.main_container) != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.main_container, new StudentFragment())
-                        .commit();
+                loadFragment(new SignInFragment(), null);
             }
         }
     }
 
-
-    /**
-     * Method for button press.
-     * @param view
-     */
-    public void onButtonPress(View view) {
-
-        switch(view.getId()) {
-            case R.id.buttonStudent:
-                loadFragment(new StudentFragment(), null);
-                break;
-            case R.id.buttonTeacher:
-                loadFragment(new TeacherFragment(), null);
-                break;
-        }
-    }
 
 
     /*
@@ -95,46 +75,6 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
         transaction.commit();
     }
 
-
-    /*
-        Returns true if the String email given to it contains a
-        '@' followed by a '.', otherwise false.
-
-        Author: Connor Lundberg
-     */
-    private boolean isValidEmail(String email) {
-        boolean isValid = false;
-
-        if (email.contains(AT_SYMBOL)) {
-            int delimiter = email.indexOf(AT_SYMBOL);
-            String suffix = email.substring(delimiter);
-            if (suffix.contains(DOT_SYMBOL)) {
-                String prefix = email.substring(0, delimiter);
-                if (!prefix.equals("")) {
-                    isValid = true;
-                }
-            }
-        }
-
-        return isValid;
-    }
-
-
-    /*
-        Returns true if the String password given to it is
-        at least MIN_PASSWORD_LENGTH long, otherwise false.
-
-        Author: Connor Lundberg
-     */
-    private boolean isValidPassword(String password) {
-        boolean isValid = false;
-
-        if (password.length() >= MIN_PASSWORD_LENGTH) {
-            isValid = true;
-        }
-
-        return isValid;
-    }
 
 
     /*
@@ -153,42 +93,40 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
         Author: Connor Lundberg
      */
     public void createAccount (String email, String password) {
-        if (isValidEmail(email) && isValidPassword(password)) {
-            Log.e(TAG, "In here");
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
+        Log.e(TAG, "In here");
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
-                                Toast.makeText(MainActivity.this, R.string.auth_failed,
-                                        Toast.LENGTH_SHORT).show();
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i(TAG, "User creation completed and was successful");
+                            Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                    Toast.LENGTH_SHORT).show();
+                            //If the user has been created and signed in, the Display Fragment
+                            //will be switched to.
+                            sendEmailVerification();
+                            if (mAuth.getCurrentUser().isEmailVerified()) {
+                                /*DisplayFragment displayFragment = new DisplayFragment();
+                                Bundle args = new Bundle();
+                                loadFragment(displayFragment, args);*/
+                                changeActivity();
                             } else {
-                                Log.i(TAG, "User creation completed and was successful");
-                                Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                Toast.makeText(MainActivity.this, R.string.verify_first,
                                         Toast.LENGTH_SHORT).show();
-                                //If the user has been created and signed in, the Display Fragment
-                                //will be switched to.
-                                sendEmailVerification();
-                                if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    /*DisplayFragment displayFragment = new DisplayFragment();
-                                    Bundle args = new Bundle();
-                                    loadFragment(displayFragment, args);*/
-                                    changeActivity();
-                                } else {
-                                    Toast.makeText(MainActivity.this, R.string.verify_first,
-                                            Toast.LENGTH_SHORT).show();
-                                }
                             }
                         }
-                    });
-        }
-    }
+                    }
+                });
+}
 
 
     /*
@@ -243,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
         Author: Connor Lundberg
      */
     public void signIn (String email, String password) {
-        if (isValidEmail(email) && isValidPassword(password)) {
+        if (RegisterFragment.isValidEmail(email) && RegisterFragment.isValidPassword(password)) {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -300,20 +238,19 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
         the type of operation to do with the account.
      */
     @Override
-    public void onFragmentInteraction(String accountState, String email, String password) {
-        switch(accountState) {
-            case SIGN_IN:
-                signIn(email, password);
-                break;
-            case REGISTER:
-                createAccount(email, password);
-                break;
-            case SIGN_OUT:
-                signOut();
-                break;
-            default:
-                Log.e(TAG, "Invalid accountState: " + accountState);
-                break;
-        }
+    public void SignInFragmentInteraction(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public void SignInRegisterButtonInteraction() {
+        loadFragment(new RegisterFragment(), null);
+    }
+
+
+    @Override
+    public void onRegisterFragmentInteraction(User user) {
+        this.user = user;
+
     }
 }
