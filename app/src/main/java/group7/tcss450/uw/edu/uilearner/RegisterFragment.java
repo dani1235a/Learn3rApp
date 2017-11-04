@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -19,7 +20,7 @@ import android.widget.Toast;
  */
 public class RegisterFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private OnRegisterFragmentInteractionListener mListener;
     private User user;
 
     public RegisterFragment() {
@@ -114,6 +115,18 @@ public class RegisterFragment extends Fragment {
         return v;
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnRegisterFragmentInteractionListener) {
+            mListener = (OnRegisterFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
+    }
+
     /**
      * Checks the email to make sure its a valid email.
      * @param s - the email
@@ -135,7 +148,7 @@ public class RegisterFragment extends Fragment {
 
 
 
-    public interface OnFragmentInteractionListener {
+    public interface OnRegisterFragmentInteractionListener {
         void onRegisterFragmentInteraction(User user);
     }
 }

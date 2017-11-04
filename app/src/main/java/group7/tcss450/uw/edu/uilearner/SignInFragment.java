@@ -120,7 +120,7 @@ public class SignInFragment extends Fragment {
 
 
     /*
-        Assigns the MainActivity as the OnFragmentInteractionListener for this Fragment.
+        Assigns the MainActivity as the OnRegisterFragmentInteractionListener for this Fragment.
      */
     @Override
     public void onAttach(Context context) {
@@ -129,10 +129,10 @@ public class SignInFragment extends Fragment {
             mListener = (OnFragmentInteractionListener) context;
         } catch (Exception e) {
             throw new ClassCastException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnRegisterFragmentInteractionListener");
         }
 //        throw new RuntimeException(context.toString()
-//                + " must implement TeacherFragment.OnFragmentInteractionListener");
+//                + " must implement TeacherFragment.OnRegisterFragmentInteractionListener");
     }
 
 

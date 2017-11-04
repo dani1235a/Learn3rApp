@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
-           RegisterFragment.OnFragmentInteractionListener {
+        RegisterFragment.OnRegisterFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
     public static final String SIGN_IN = "SIGN_IN";
@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     Bundle args = new Bundle();
                                     loadFragment(displayFragment, args);*/
                                     Log.d(TAG, "changing activities");
+                                    user.setUid(mAuth.getCurrentUser().getUid());
                                     changeActivity();
                                 } else {
                                     Toast.makeText(MainActivity.this, R.string.verify_first,
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Log.d(AgendaActivity.TAG, "Breaks here");
         Bundle args = new Bundle();
         Log.d(AgendaActivity.TAG, "Breaks here2");
-        args.putSerializable(TAG, new Holder(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid()));
+        args.putSerializable(TAG, user);
         Log.d(AgendaActivity.TAG, "Breaks here3");
         agendaIntent.putExtra(TAG, args);
         Log.d(AgendaActivity.TAG, "Breaks here4");
@@ -215,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     Bundle args = new Bundle();
                                     loadFragment(displayFragment, args);*/
                                     Log.d(AgendaActivity.TAG, "changing activities");
+                                    user.setUid(mAuth.getCurrentUser().getUid());
                                     changeActivity();
                                 } else {
                                     Toast.makeText(MainActivity.this, R.string.verify_first,
@@ -263,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void onRegisterFragmentInteraction(User user) {
         this.user = user;
+        createAccount(user.getEmail(), user.getPassword());
 
     }
 }

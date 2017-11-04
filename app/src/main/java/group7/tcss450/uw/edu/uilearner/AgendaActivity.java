@@ -64,8 +64,8 @@ public class AgendaActivity extends AppCompatActivity
             Bundle args = i.getExtras();
             if (args != null) {
                 Bundle temp = (Bundle) args.get(MainActivity.TAG);
-                mEmail = ((Holder) temp.get(MainActivity.TAG)).getEmail();
-                mUid = ((Holder) temp.get(MainActivity.TAG)).getUid();
+                mEmail = ((User) temp.get(MainActivity.TAG)).getEmail();
+                mUid = ((User) temp.get(MainActivity.TAG)).getUid();
                 Log.d(TAG, "email is: " + mEmail);
                 Log.d(TAG, "uid is: " + mUid);
             } else {

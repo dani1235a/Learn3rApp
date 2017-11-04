@@ -11,6 +11,7 @@ public class User implements Serializable {
     String email;
     String name;
     String password;
+    String uid;
 
     public User(String email, String password) {
         this.email = email;
@@ -29,6 +30,8 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    void setUid(String uid) { this.uid = uid; }
+
     String getEmail() {
         return email;
     }
@@ -40,4 +43,6 @@ public class User implements Serializable {
     String getPassword() {
         return password;
     }
+
+    String getUid() { return uid; }
 }
