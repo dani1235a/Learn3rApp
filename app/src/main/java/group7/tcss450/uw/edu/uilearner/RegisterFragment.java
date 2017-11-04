@@ -20,6 +20,7 @@ import android.widget.Toast;
 public class RegisterFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private User user;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -99,7 +100,10 @@ public class RegisterFragment extends Fragment {
                 if(cont) {
                     String email = registerEmail.getText().toString();
                     String password = pass1.getText().toString();
-                    mListener.onRegisterFragmentInteraction(email, password);
+                    user = new User(email, password);
+                    mListener.onRegisterFragmentInteraction(user);
+
+                    //TODO: Check to see if the email already exists in database
                     Toast.makeText(v.getContext(), "Valid password + Email Combo!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(v.getContext(), "Wrong password + email Combo!", Toast.LENGTH_LONG).show();
@@ -115,7 +119,7 @@ public class RegisterFragment extends Fragment {
      * @param s - the email
      * @return - true if valid email.
      */
-    private boolean isValidEmail(String s) {
+    protected static boolean isValidEmail(String s) {
         return s.matches("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)" +
                 "|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
     }
@@ -125,22 +129,13 @@ public class RegisterFragment extends Fragment {
      * @param s - input string (password)
      * @return - true if password is valid.
      */
-    private boolean isValidPassword(String s) {
-        boolean valid = false;
-        //check length
-        if(s.length() >= 6) {
-            //check for uppercase
-            if (!s.equals(s.toLowerCase())) {
-                //check for number
-                if(s.matches(".*\\d.*"))
-                    valid = true;
-            }
-        }
-        return valid;
+    protected static boolean isValidPassword(String s) {
+        return ((s.length() >= 6)&&(!s.equals(s.toLowerCase()))&&(s.matches(".*\\d.*")));
     }
 
 
+
     public interface OnFragmentInteractionListener {
-        void onRegisterFragmentInteraction(String email, String password);
+        void onRegisterFragmentInteraction(User user);
     }
 }

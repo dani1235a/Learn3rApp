@@ -22,6 +22,7 @@ public class SignInFragment extends Fragment {
 
 
     private OnFragmentInteractionListener mListener;
+    private User user;
 
     public SignInFragment() {
         // Required empty public constructor
@@ -45,7 +46,8 @@ public class SignInFragment extends Fragment {
 
                     EditText passwordText = (EditText) getActivity().findViewById(R.id.editTextPassword);
                     String password = passwordText.getText().toString();
-                    mListener.SignInFragmentInteraction(MainActivity.SIGN_IN, email, password);
+                    user = new User(email, password);
+                    mListener.SignInFragmentInteraction(user);
                 }
             }
         });
@@ -151,7 +153,7 @@ public class SignInFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
 
-        void SignInFragmentInteraction(String signIn, String email, String password);
+        void SignInFragmentInteraction(User user);
 
         void SignInRegisterButtonInteraction();
     }

@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,46 +76,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
 
-    /*
-        Returns true if the String email given to it contains a
-        '@' followed by a '.', otherwise false.
-
-        Author: Connor Lundberg
-     */
-    private boolean isValidEmail(String email) {
-        boolean isValid = false;
-
-        if (email.contains(AT_SYMBOL)) {
-            int delimiter = email.indexOf(AT_SYMBOL);
-            String suffix = email.substring(delimiter);
-            if (suffix.contains(DOT_SYMBOL)) {
-                String prefix = email.substring(0, delimiter);
-                if (!prefix.equals("")) {
-                    isValid = true;
-                }
-            }
-        }
-
-        return isValid;
-    }
-
-
-    /*
-        Returns true if the String password given to it is
-        at least MIN_PASSWORD_LENGTH long, otherwise false.
-
-        Author: Connor Lundberg
-     */
-    private boolean isValidPassword(String password) {
-        boolean isValid = false;
-
-        if (password.length() >= MIN_PASSWORD_LENGTH) {
-            isValid = true;
-        }
-
-        return isValid;
-    }
-
 
     /*
         Creates a new user account with the given email and password
@@ -132,42 +93,40 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Author: Connor Lundberg
      */
     public void createAccount (String email, String password) {
-        if (isValidEmail(email) && isValidPassword(password)) {
-            Log.e(TAG, "In here");
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
+        Log.e(TAG, "In here");
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
-                                Toast.makeText(MainActivity.this, R.string.auth_failed,
-                                        Toast.LENGTH_SHORT).show();
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i(TAG, "User creation completed and was successful");
+                            Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                    Toast.LENGTH_SHORT).show();
+                            //If the user has been created and signed in, the Display Fragment
+                            //will be switched to.
+                            sendEmailVerification();
+                            if (mAuth.getCurrentUser().isEmailVerified()) {
+                                /*DisplayFragment displayFragment = new DisplayFragment();
+                                Bundle args = new Bundle();
+                                loadFragment(displayFragment, args);*/
+                                changeActivity();
                             } else {
-                                Log.i(TAG, "User creation completed and was successful");
-                                Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                Toast.makeText(MainActivity.this, R.string.verify_first,
                                         Toast.LENGTH_SHORT).show();
-                                //If the user has been created and signed in, the Display Fragment
-                                //will be switched to.
-                                sendEmailVerification();
-                                if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    /*DisplayFragment displayFragment = new DisplayFragment();
-                                    Bundle args = new Bundle();
-                                    loadFragment(displayFragment, args);*/
-                                    changeActivity();
-                                } else {
-                                    Toast.makeText(MainActivity.this, R.string.verify_first,
-                                            Toast.LENGTH_SHORT).show();
-                                }
                             }
                         }
-                    });
-        }
-    }
+                    }
+                });
+}
 
 
     /*
@@ -222,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Author: Connor Lundberg
      */
     public void signIn (String email, String password) {
-        if (isValidEmail(email) && isValidPassword(password)) {
+        if (RegisterFragment.isValidEmail(email) && RegisterFragment.isValidPassword(password)) {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -279,21 +238,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         the type of operation to do with the account.
      */
     @Override
-    public void SignInFragmentInteraction(String accountState, String email, String password) {
-        switch(accountState) {
-            case SIGN_IN:
-                signIn(email, password);
-                break;
-            case REGISTER:
-                createAccount(email, password);
-                break;
-            case SIGN_OUT:
-                signOut();
-                break;
-            default:
-                Log.e(TAG, "Invalid accountState: " + accountState);
-                break;
-        }
+    public void SignInFragmentInteraction(User user) {
+        this.user = user;
     }
 
     @Override
@@ -303,8 +249,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
 
     @Override
-    public void onRegisterFragmentInteraction(String email, String password) {
-
+    public void onRegisterFragmentInteraction(User user) {
+        this.user = user;
 
     }
 }
