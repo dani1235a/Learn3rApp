@@ -65,6 +65,7 @@ public class SignInFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // forgot Password is clicked.
+                mListener.SignInForgotPasswordInteraction();
                 //TODO: New forgot password Fragment.
             }
         });
@@ -156,5 +157,7 @@ public class SignInFragment extends Fragment {
         void SignInFragmentInteraction(User user);
 
         void SignInRegisterButtonInteraction();
+
+        void SignInForgotPasswordInteraction();
     }
 }

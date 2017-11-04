@@ -19,14 +19,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
            RegisterFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
-    public static final String SIGN_IN = "SIGN_IN";
-    public static final String REGISTER = "REGISTER";
-    public static final String SIGN_OUT = "SIGN_OUT";
-
-    private static final String AT_SYMBOL = "@";
-    private static final String DOT_SYMBOL = ".";
-
-    private static final int MIN_PASSWORD_LENGTH = 6;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -245,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void SignInRegisterButtonInteraction() {
         loadFragment(new RegisterFragment(), null);
+    }
+
+    @Override
+    public void SignInForgotPasswordInteraction() {
+        loadFragment(new ForgotPasswordFragment(), null);
     }
 
 
