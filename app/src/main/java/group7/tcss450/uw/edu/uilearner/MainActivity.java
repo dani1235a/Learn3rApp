@@ -1,16 +1,12 @@
 package group7.tcss450.uw.edu.uilearner;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,7 +15,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements TeacherFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
+           RegisterFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
     public static final String SIGN_IN = "SIGN_IN";
@@ -57,29 +54,11 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
 
         if (savedInstanceState == null) {
             if (findViewById(R.id.main_container) != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.main_container, new StudentFragment())
-                        .commit();
+                loadFragment(new SignInFragment(), null);
             }
         }
     }
 
-
-    /**
-     * Method for button press.
-     * @param view
-     */
-    public void onButtonPress(View view) {
-
-        switch(view.getId()) {
-            case R.id.buttonStudent:
-                loadFragment(new StudentFragment(), null);
-                break;
-            case R.id.buttonTeacher:
-                loadFragment(new TeacherFragment(), null);
-                break;
-        }
-    }
 
 
     /*
@@ -300,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
         the type of operation to do with the account.
      */
     @Override
-    public void onFragmentInteraction(String accountState, String email, String password) {
+    public void SignInFragmentInteraction(String accountState, String email, String password) {
         switch(accountState) {
             case SIGN_IN:
                 signIn(email, password);
@@ -315,5 +294,17 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                 Log.e(TAG, "Invalid accountState: " + accountState);
                 break;
         }
+    }
+
+    @Override
+    public void SignInRegisterButtonInteraction() {
+        loadFragment(new RegisterFragment(), null);
+    }
+
+
+    @Override
+    public void onRegisterFragmentInteraction(String email, String password) {
+
+
     }
 }

@@ -11,22 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StudentFragment extends Fragment {
+public class SignInFragment extends Fragment {
 
 
-    private TeacherFragment.OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
-    public StudentFragment() {
+    public SignInFragment() {
         // Required empty public constructor
     }
 
@@ -34,8 +31,9 @@ public class StudentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_student, container, false);
+        View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
         Button b = (Button) v.findViewById(R.id.buttonSignIn);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,23 +45,16 @@ public class StudentFragment extends Fragment {
 
                     EditText passwordText = (EditText) getActivity().findViewById(R.id.editTextPassword);
                     String password = passwordText.getText().toString();
-                    mListener.onFragmentInteraction(MainActivity.SIGN_IN, email, password);
+                    mListener.SignInFragmentInteraction(MainActivity.SIGN_IN, email, password);
                 }
             }
         });
 
-        b = (Button) v.findViewById(R.id.buttonRegister);
+        b = (Button) v.findViewById(R.id.buttonRegisterSignIn);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //For testing until a student register is made
-                EditText emailText = (EditText) getActivity().findViewById(R.id.editTextEmail);
-                String email = emailText.getText().toString();
-
-                EditText passwordText = (EditText) getActivity().findViewById(R.id.editTextPassword);
-                String password = passwordText.getText().toString();
-                mListener.onFragmentInteraction(MainActivity.REGISTER, email, password);
-                //TODO: new Register Fragment.
+                mListener.SignInRegisterButtonInteraction();
             }
         });
 
@@ -76,14 +67,13 @@ public class StudentFragment extends Fragment {
             }
         });
 
-        ImageButton ib = (ImageButton) v.findViewById(R.id.sign_out);
-        ib.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onFragmentInteraction(MainActivity.SIGN_OUT, null, null);
-            }
-        });
-
+//        ImageButton ib = (ImageButton) v.findViewById(R.id.sign_out);
+//        ib.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.SignInFragmentInteraction(MainActivity.SIGN_OUT, null, null);
+//            }
+//        });
 
         return v;
     }
@@ -101,13 +91,13 @@ public class StudentFragment extends Fragment {
         super.onResume();
 
         if (!isNetworkAvailable()) {
-            ((Button) getActivity().findViewById(R.id.buttonRegister)).setEnabled(false);
-            ((Button) getActivity().findViewById(R.id.buttonSignIn)).setEnabled(false);
-            Toast.makeText(getActivity(), getString(R.string.internet_not_connected),
-                    Toast.LENGTH_SHORT);
+//            ((Button) getActivity().findViewById(R.id.buttonRegister)).setEnabled(false);
+//            ((Button) getActivity().findViewById(R.id.buttonSignIn)).setEnabled(false);
+//            Toast.makeText(getActivity(), getString(R.string.internet_not_connected),
+//                    Toast.LENGTH_SHORT);
         } else {
-            ((Button) getActivity().findViewById(R.id.buttonRegister)).setEnabled(true);
-            ((Button) getActivity().findViewById(R.id.buttonSignIn)).setEnabled(true);
+//            ((Button) getActivity().findViewById(R.id.buttonRegister)).setEnabled(true);
+//            ((Button) getActivity().findViewById(R.id.buttonSignIn)).setEnabled(true);
 
         }
     }
@@ -133,12 +123,14 @@ public class StudentFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof TeacherFragment.OnFragmentInteractionListener) {
-            mListener = (TeacherFragment.OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement TeacherFragment.OnFragmentInteractionListener");
+        try{
+            mListener = (OnFragmentInteractionListener) context;
+        } catch (Exception e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
+//        throw new RuntimeException(context.toString()
+//                + " must implement TeacherFragment.OnFragmentInteractionListener");
     }
 
 
@@ -155,5 +147,12 @@ public class StudentFragment extends Fragment {
         // TODO: User name logic and back end reference.
         boolean valid = true;
         return valid;
+    }
+
+    public interface OnFragmentInteractionListener {
+
+        void SignInFragmentInteraction(String signIn, String email, String password);
+
+        void SignInRegisterButtonInteraction();
     }
 }
