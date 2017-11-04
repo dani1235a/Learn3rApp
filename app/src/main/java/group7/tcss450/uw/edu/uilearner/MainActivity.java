@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                                     /*DisplayFragment displayFragment = new DisplayFragment();
                                     Bundle args = new Bundle();
                                     loadFragment(displayFragment, args);*/
+                                    Log.d(TAG, "changing activities");
                                     changeActivity();
                                 } else {
                                     Toast.makeText(MainActivity.this, R.string.verify_first,
@@ -199,6 +200,13 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
      */
     private void changeActivity () {
         Intent agendaIntent = new Intent(this, AgendaActivity.class);
+        Log.d(AgendaActivity.TAG, "Breaks here");
+        Bundle args = new Bundle();
+        Log.d(AgendaActivity.TAG, "Breaks here2");
+        args.putSerializable(TAG, new Holder(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid()));
+        Log.d(AgendaActivity.TAG, "Breaks here3");
+        agendaIntent.putExtra(TAG, args);
+        Log.d(AgendaActivity.TAG, "Breaks here4");
         startActivity(agendaIntent);
     }
 
@@ -265,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements TeacherFragment.O
                                     /*DisplayFragment displayFragment = new DisplayFragment();
                                     Bundle args = new Bundle();
                                     loadFragment(displayFragment, args);*/
+                                    Log.d(AgendaActivity.TAG, "changing activities");
                                     changeActivity();
                                 } else {
                                     Toast.makeText(MainActivity.this, R.string.verify_first,

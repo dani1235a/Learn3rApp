@@ -16,12 +16,12 @@ import java.util.ArrayList;
  * with data from the given data set.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
 
     private ArrayList<String> mDataset;
 
 
-    public MyAdapter(ArrayList<String> myDataset) {
+    public CalendarAdapter(ArrayList<String> myDataset) {
         mDataset = myDataset;
     }
 
@@ -35,8 +35,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
      * @return Blank ViewHolder
      */
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public CalendarAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                         int viewType) {
         View v = (View) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.my_text_view, parent, false);
         // set the view's size, margins, paddings, and layout params
