@@ -8,44 +8,50 @@ import java.io.Serializable;
  */
 
 public class User implements Serializable {
-    String email;
-    String name;
-    String password;
-    String role;
+    private String email;
+    private String name;
+    private String password;
+    private String role;
+    private String uid;
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
+
     public void setName(String name) {
         this.name = name;
     }
 
-    void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    String getEmail() {
+    public void setUid(String uid) { this.uid = uid; }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getEmail() {
         return email;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    String getRole(){
-        return role;
-    }
-    void setRole(String role) {
-        this.role = role;
-    }
+    public String getUid() { return uid; }
+
+    public String getRole(){ return role; }
+
 }

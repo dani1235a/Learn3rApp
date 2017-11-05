@@ -43,12 +43,11 @@ public class SignInFragment extends Fragment {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText pass = (EditText) v.findViewById(R.id.editTextPassword);
-                EditText email = (EditText) v.findViewById(R.id.editTextEmail);
+                EditText pass = (EditText) getActivity().findViewById(R.id.editTextPassword);
+                EditText email = (EditText) getActivity().findViewById(R.id.editTextEmail);
 
                 if (RegisterFragment.isValidEmail(email.getText().toString())
-                        && RegisterFragment.isValidPassword(pass.getText().toString())
-                        && MainActivity.isUserRegistered(email.getText().toString())) {
+                        && RegisterFragment.isValidPassword(pass.getText().toString())) {
 
                     user = new User(email.getText().toString(), pass.getText().toString());
                     mListener.SignInFragmentInteraction(user);

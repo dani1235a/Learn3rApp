@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import group7.tcss450.uw.edu.uilearner.AgendaActivity;
 import group7.tcss450.uw.edu.uilearner.MainActivity;
 import group7.tcss450.uw.edu.uilearner.R;
 import group7.tcss450.uw.edu.uilearner.User;
@@ -142,6 +144,7 @@ public class RegisterFragment extends Fragment {
      * @return - true if valid email.
      */
     public static boolean isValidEmail(String s) {
+        Log.d(AgendaActivity.TAG, "s in isValidEmail is null: " + (s == null));
         return s.matches("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)" +
                 "|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
     }
@@ -152,6 +155,7 @@ public class RegisterFragment extends Fragment {
      * @return - true if password is valid.
      */
     public static boolean isValidPassword(String s) {
+        Log.d(AgendaActivity.TAG, "s in isValidPassword is null: " + (s == null));
         return ((s.length() >= 6)&&(!s.equals(s.toLowerCase()))&&(s.matches(".*\\d.*")));
     }
 

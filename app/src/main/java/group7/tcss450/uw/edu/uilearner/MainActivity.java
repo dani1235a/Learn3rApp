@@ -1,6 +1,8 @@
 package group7.tcss450.uw.edu.uilearner;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,13 +17,23 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Scanner;
+
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ForgotPasswordFragment;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.RegisterFragment;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.SignInFragment;
 
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
-           RegisterFragment.OnFragmentInteractionListener,
+           RegisterFragment.OnRegisterFragmentInteractionListener,
             ChooseRoleFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
@@ -114,16 +126,17 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                 //If the user has been created and signed in, the Display Fragment
                                 //will be switched to.
                                 sendEmailVerification();
-                                if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    /*DisplayFragment displayFragment = new DisplayFragment();
-                                    Bundle args = new Bundle();
-                                    loadFragment(displayFragment, args);*/
+                                user.setUid(mAuth.getCurrentUser().getUid());
+                                Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
+                                RegisterTask rTask = new RegisterTask();
+                                rTask.execute(user);
+                                /*if (mAuth.getCurrentUser().isEmailVerified()) {
                                     Log.d(TAG, "changing activities");
                                     changeActivity();
                                 } else {
                                     Toast.makeText(MainActivity.this, R.string.verify_first,
                                             Toast.LENGTH_SHORT).show();
-                                }
+                                }*/
                             }
                         }
                     }
@@ -142,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Log.d(AgendaActivity.TAG, "Breaks here");
         Bundle args = new Bundle();
         Log.d(AgendaActivity.TAG, "Breaks here2");
-        args.putSerializable(TAG, new Holder(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid()));
+        args.putSerializable(TAG, user);
         Log.d(AgendaActivity.TAG, "Breaks here3");
         agendaIntent.putExtra(TAG, args);
         Log.d(AgendaActivity.TAG, "Breaks here4");
@@ -242,8 +255,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
     public static boolean isUserRegistered(String username) {
         //TODO: create method to check if this user is already registered.
-        boolean reg = true;
-        return reg;
+        //boolean reg = true;
+        return false;
     }
 
 
@@ -255,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void SignInFragmentInteraction(User user) {
         this.user = user;
+        signIn(this.user.getEmail(), this.user.getPassword());
     }
 
     @Override
@@ -277,7 +291,58 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void onRoleFragmentInteraction(String role) {
         user.setRole(role);
-        Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
-        //TODO: register this user in our system and open new activity.
+        createAccount(user.getEmail(), user.getPassword());
+    }
+
+
+    /**
+     * This class allows a User to be registered in the Learn3r backend as the role designated rather
+     * than just in the Firebase system.
+     *
+     * @author Connor
+     */
+    public class RegisterTask extends AsyncTask<User, Void, String> {
+        @Override
+        protected String doInBackground(User... params) {
+            User currUser = params[0];
+            Uri uri;
+            String response = "";
+            try {
+                // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
+                if (currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
+                    uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("teacher")
+                            .appendQueryParameter("uuid", currUser.getUid()) //pass uid here
+                            .appendQueryParameter("name", currUser.getEmail())
+                            .build();
+                } else {
+                    uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("student")
+                            .appendQueryParameter("uuid", currUser.getUid()) //pass uid here
+                            .appendQueryParameter("name", currUser.getEmail())
+                            .build();
+                }
+
+                Log.d(TAG, uri.toString());
+                HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                connection.setRequestMethod("POST");
+                connection.connect();
+                Scanner s = new Scanner(connection.getInputStream());
+                StringBuilder sb = new StringBuilder();
+                while(s.hasNext()) sb.append(s.next());
+                response = sb.toString();
+                Log.d(TAG, "here");
+                Log.d(TAG, response);
+
+                return response;
+
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+        }
     }
 }

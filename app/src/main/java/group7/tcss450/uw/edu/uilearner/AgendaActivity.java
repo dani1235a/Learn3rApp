@@ -236,7 +236,7 @@ public class AgendaActivity extends AppCompatActivity
                 Date dEnd = endDay.getTime();
                 //TODO Get uid and pass it to web request.
 
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String uid = mUid;
                 // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
                 Uri uri = new Uri.Builder()
                         .scheme("http")

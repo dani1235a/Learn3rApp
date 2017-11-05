@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +15,9 @@ import group7.tcss450.uw.edu.uilearner.R;
  * A simple {@link Fragment} subclass.
  */
 public class ChooseRoleFragment extends Fragment {
+
+    public static String IS_TEACHER = "teacher";
+    public static String IS_STUDENT = "student";
 
     private OnFragmentInteractionListener mListener;
 
@@ -31,7 +35,7 @@ public class ChooseRoleFragment extends Fragment {
         teacher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onRoleFragmentInteraction("teacher");
+                mListener.onRoleFragmentInteraction(IS_TEACHER);
             }
         });
 
@@ -39,11 +43,24 @@ public class ChooseRoleFragment extends Fragment {
         student.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onRoleFragmentInteraction("student");
+                mListener.onRoleFragmentInteraction(IS_STUDENT);
             }
         });
         return v;
     }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
+    }
+
 
     public interface OnFragmentInteractionListener {
         void onRoleFragmentInteraction(String role);
