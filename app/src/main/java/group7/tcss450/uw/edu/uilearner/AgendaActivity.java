@@ -23,8 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,7 +35,6 @@ import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
-import group7.tcss450.uw.edu.uilearner.dummy.DummyContent;
 
 public class AgendaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -54,9 +51,7 @@ public class AgendaActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "made it in here");
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "made it in here1");
         setContentView(R.layout.activity_agenda);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,6 +74,8 @@ public class AgendaActivity extends AppCompatActivity
                 Log.d(TAG, "currUser == null: " + (currUser == null));
                 mEmail = currUser.getEmail();
                 mUid = currUser.getUid();
+                Log.d(TAG, "currUser role: " + currUser.getRole());
+                Log.d(TAG, "IS_TEACHER: " + ChooseRoleFragment.IS_TEACHER);
                 mIsTeacher = currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER);
                 Log.d(TAG, "email is: " + mEmail);
                 Log.d(TAG, "uid is: " + mUid);
@@ -93,7 +90,6 @@ public class AgendaActivity extends AppCompatActivity
             fab.setVisibility(View.INVISIBLE);
         }
 
-        Log.d(TAG, "made it in here2");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -105,12 +101,11 @@ public class AgendaActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Log.d(TAG, "made it in here3");
         if (savedInstanceState == null) {
-            if (findViewById(R.id.agendaContainer) != null) {
+            if (findViewById(R.id.abc) != null) {
                 mIsCalendarView = false;
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.agendaContainer, new DisplayFragment())
+                        .add(R.id.abc, new DisplayFragment())
                         .commit();
                 //mRecyclerView = (RecyclerView) findViewById(R.id.agenda_list);
 
@@ -127,7 +122,6 @@ public class AgendaActivity extends AppCompatActivity
                 agendaTask.execute(year, month, dayOfMonth);*/
             }
         }
-        Log.d(TAG, "made it in here4");
     }
 
     @Override
@@ -209,7 +203,7 @@ public class AgendaActivity extends AppCompatActivity
         fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.agendaContainer, fragment)
+                .replace(R.id.abc, fragment)
                 .addToBackStack(null);
         transaction.commit();
     }
