@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.dummy.DummyContent;
 
 public class AgendaActivity extends AppCompatActivity
@@ -68,13 +69,17 @@ public class AgendaActivity extends AppCompatActivity
             }
         });
 
+
         Intent i = getIntent();
         if (i != null) {
             Bundle args = i.getExtras();
             if (args != null) {
                 Bundle temp = (Bundle) args.get(MainActivity.TAG);
-                mEmail = ((User) temp.get(MainActivity.TAG)).getEmail();
-                mUid = ((User) temp.get(MainActivity.TAG)).getUid();
+                User currUser = (User) temp.get(MainActivity.TAG);
+                Log.d(TAG, "currUser == null: " + (currUser == null));
+                mEmail = currUser.getEmail();
+                mUid = currUser.getUid();
+                mIsTeacher = currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER);
                 Log.d(TAG, "email is: " + mEmail);
                 Log.d(TAG, "uid is: " + mUid);
             } else {
@@ -83,6 +88,11 @@ public class AgendaActivity extends AppCompatActivity
         } else {
             Log.d(TAG, "Intent was null");
         }
+
+        if (!mIsTeacher) {
+            fab.setVisibility(View.INVISIBLE);
+        }
+
         Log.d(TAG, "made it in here2");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -98,13 +108,13 @@ public class AgendaActivity extends AppCompatActivity
         Log.d(TAG, "made it in here3");
         if (savedInstanceState == null) {
             if (findViewById(R.id.agendaContainer) != null) {
-                /*mIsCalendarView = false;
+                mIsCalendarView = false;
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.agendaContainer, new AgendaFragment())
+                        .add(R.id.agendaContainer, new DisplayFragment())
                         .commit();
-                mRecyclerView = (RecyclerView) findViewById(R.id.agenda_list);
+                //mRecyclerView = (RecyclerView) findViewById(R.id.agenda_list);
 
-                AgendaTask agendaTask = new AgendaTask();
+                /*AgendaTask agendaTask = new AgendaTask();
 
                 // Gets today's date so the Agenda page Recycler View can populate with
                 // events for that day from Google Calendar.

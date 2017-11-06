@@ -222,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     Toast.LENGTH_SHORT).show();
 
                             if (mAuth.getCurrentUser().isEmailVerified()) {
-                                /*DisplayFragment displayFragment = new DisplayFragment();
-                                Bundle args = new Bundle();
-                                loadFragment(displayFragment, args);*/
-                                Log.d(AgendaActivity.TAG, "changing activities");
-                                changeActivity();
+                                //Before switching activities, the user field needs to have a role set for it.
+                                //This AsyncTask will get that role.
+                                user.setUid(mAuth.getCurrentUser().getUid());
+                                SignInTask sTask = new SignInTask();
+                                sTask.execute(user);
                             } else {
                                 Toast.makeText(MainActivity.this, R.string.verify_first,
                                         Toast.LENGTH_SHORT).show();
@@ -291,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void onRoleFragmentInteraction(String role) {
         user.setRole(role);
+
         createAccount(user.getEmail(), user.getPassword());
     }
 
@@ -308,7 +309,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             Uri uri;
             String response = "";
             try {
-                // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
+                // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
+                // or
+                // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
                 if (currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
                     uri = new Uri.Builder()
                             .scheme("http")
@@ -343,6 +346,56 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             } catch (Exception e) {
                 return e.getMessage();
             }
+        }
+    }
+
+
+    /**
+     * This class will get the role for the given User. The User is guaranteed to be in the
+     * database because this Task is executed on the successful sign in of the User on Firebase.
+     * Because of that we know the User is already registered, which is functional with our
+     * back end, meaning their is a Teacher or Student in our tables with the corresponding uuid.
+     *
+     * @author Connor
+     */
+    public class SignInTask extends AsyncTask<User, Void, String> {
+        @Override
+        protected String doInBackground(User... params) {
+            User currUser = params[0];
+            try {
+                String response;
+                // http://learner-backend.herokuapp.com/role?uuid=someUid
+                Uri uri = new Uri.Builder()
+                        .scheme("http")
+                        .authority("learner-backend.herokuapp.com")
+                        .appendEncodedPath("role")
+                        .appendQueryParameter("uuid", currUser.getUid()) //pass uid here
+                        .build();
+
+                Log.d(TAG, uri.toString());
+                HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                connection.setRequestMethod("POST");
+                connection.connect();
+                Scanner s = new Scanner(connection.getInputStream());
+                StringBuilder sb = new StringBuilder();
+                while(s.hasNext()) sb.append(s.next());
+                response = sb.toString();
+                Log.d(TAG, "here");
+                Log.d(TAG, response);
+
+                return response;
+
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            user.setRole(s);
+            Log.d(TAG, "User role is " + user.getRole());
+            Log.d(TAG, "Changing activities on sign in");
+            changeActivity();
         }
     }
 }
