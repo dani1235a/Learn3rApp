@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,6 +60,14 @@ public class AgendaActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadFragment(new EventFragment(), null);
+            }
+        });
+
         Intent i = getIntent();
         if (i != null) {
             Bundle args = i.getExtras();
@@ -89,7 +98,7 @@ public class AgendaActivity extends AppCompatActivity
         Log.d(TAG, "made it in here3");
         if (savedInstanceState == null) {
             if (findViewById(R.id.agendaContainer) != null) {
-                mIsCalendarView = false;
+                /*mIsCalendarView = false;
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.agendaContainer, new AgendaFragment())
                         .commit();
@@ -105,7 +114,7 @@ public class AgendaActivity extends AppCompatActivity
                 int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
                 Log.d(TAG, "today's date from Agenda: " + dayOfMonth + "/" + month + "/" + year);
 
-                agendaTask.execute(year, month, dayOfMonth);
+                agendaTask.execute(year, month, dayOfMonth);*/
             }
         }
         Log.d(TAG, "made it in here4");

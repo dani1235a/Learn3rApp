@@ -36,4 +36,12 @@
     <string name="please_provide_the_email_linked_to_the_account">Please provide the email linked to the account:</string>
     <string name="role">Role</string>
     <string name="what_role_will_you_be_having">What role will you be having?</string>
+
+    <string name="new_event">New Event Info</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_date">Date</string>
+    <string name="event_time">Time</string>
+    <string name="event_summary">Summary</string>
+    <string name="select_students">Who is this for?</string>
+    <string name="confirm_event">Confirm</string>
 </resources>
