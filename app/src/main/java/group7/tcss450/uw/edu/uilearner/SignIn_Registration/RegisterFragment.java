@@ -95,7 +95,7 @@ public class RegisterFragment extends Fragment {
                     registerEmail.setError("Email must contain a \"@\" and \".\"");
                 }
 
-                cont = (!MainActivity.isUserRegistered(registerEmail.getText().toString()));
+                cont = true;
                 if(!cont) {
                     registerEmail.setError("This email is already in use. Please enter a different email.");
                 }
@@ -156,7 +156,7 @@ public class RegisterFragment extends Fragment {
      */
     public static boolean isValidPassword(String s) {
         Log.d(AgendaActivity.TAG, "s in isValidPassword is null: " + (s == null));
-        return ((s.length() >= 6)&&(!s.equals(s.toLowerCase()))&&(s.matches(".*\\d.*")));
+        return ((s.length() >= 6) && (!s.equals(s.toLowerCase())) && (s.matches(".*\\d.*")));
     }
 
 

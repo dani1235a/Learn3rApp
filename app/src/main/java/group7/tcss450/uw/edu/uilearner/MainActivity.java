@@ -13,9 +13,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ForgotPasswordFragment;
@@ -251,12 +258,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             Toast.makeText(MainActivity.this, R.string.auth_passed,
                     Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public static boolean isUserRegistered(String username) {
-        //TODO: create method to check if this user is already registered.
-        //boolean reg = true;
-        return false;
     }
 
 
