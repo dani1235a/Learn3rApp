@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/agenda_list"
-        android:name="group7.tcss450.uw.edu.uilearner.AgendaFragment"
+    android:id="@+id/parent_agenda_flayout">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="group7.tcss450.uw.edu.uilearner.AgendaFragment"
-        tools:listitem="@layout/fragment_item" />
+        android:id="@+id/parent_agenda_layout"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/agenda_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/agenda_header"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/empty_agenda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_agenda"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/agenda_list"
+            android:name="group7.tcss450.uw.edu.uilearner.AgendaFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="group7.tcss450.uw.edu.uilearner.AgendaFragment"
+            tools:listitem="@layout/fragment_item" />
+
+    </LinearLayout>
+</FrameLayout>

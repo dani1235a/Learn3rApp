@@ -2,15 +2,29 @@ package group7.tcss450.uw.edu.uilearner;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Scanner;
 
 
 /**
@@ -21,10 +35,14 @@ import android.widget.CalendarView;
  */
 public class CalendarFragment extends Fragment {
 
+    private static final String TAG = "CALENDAR_FRAG";
+
+
     private OnCalendarInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private String mUid;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -42,14 +60,45 @@ public class CalendarFragment extends Fragment {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                mListener.onCalendarInteraction(year, month, dayOfMonth);
-
+                final TextView tv = (TextView) getActivity().findViewById(R.id.date_display);
+                tv.setText(java.lang.String.format("%02d", dayOfMonth) + "/" + java.lang.String.format("%02d", month) + "/" + year);
+                getActivity().findViewById(R.id.date_info).setVisibility(View.VISIBLE);
+                AgendaTask aTask = new AgendaTask();
+                aTask.execute(year, month, dayOfMonth);
             }
         });
 
-
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.event_display);
 
         return v;
+    }
+
+
+    @Override
+    public void onStart() {
+        Bundle args = getArguments();
+        if (args != null) {
+            mUid = (String) args.get("uuid");
+
+            AgendaTask agendaTask = new AgendaTask();
+
+            // Gets today's date so the Agenda page Recycler View can populate with
+            // events for that day from Google Calendar.
+            Calendar rightNow = Calendar.getInstance();
+            int year = rightNow.get(Calendar.YEAR);
+            int month = rightNow.get(Calendar.MONTH);
+            int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
+            Log.d(TAG, "today's date from Calendar: " + dayOfMonth + "/" + month + "/" + year);
+
+            final TextView tv = (TextView) getActivity().findViewById(R.id.date_display);
+            tv.setText(java.lang.String.format("%02d", dayOfMonth) + "/" + java.lang.String.format("%02d", month) + "/" + year);
+            getActivity().findViewById(R.id.date_info).setVisibility(View.VISIBLE);
+
+            agendaTask.execute(year, month, dayOfMonth);
+        } else {
+            Log.e(TAG, "Arguments were null");
+        }
+        super.onStart();
     }
 
 
@@ -83,5 +132,70 @@ public class CalendarFragment extends Fragment {
     public interface OnCalendarInteractionListener {
         // TODO: Update argument type and name
         void onCalendarInteraction(int year, int month, int dayOfMonth);
+    }
+
+
+    public class AgendaTask extends AsyncTask<Integer, Integer, ArrayList<String>> {
+        @Override
+        protected ArrayList<String> doInBackground(Integer... integers) {
+            String response = "";
+            try {
+                Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
+                GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
+                endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
+                Date dEnd = endDay.getTime();
+                //TODO Get uid and pass it to web request.
+
+                String uid = mUid;
+                // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
+                Uri uri = new Uri.Builder()
+                        .scheme("http")
+                        .authority("learner-backend.herokuapp.com")
+                        .appendEncodedPath("teacher")
+                        .appendEncodedPath("events")
+                        .appendQueryParameter("uuid", uid) //pass uid here
+                        .appendQueryParameter("start", dStart.toString())
+                        .appendQueryParameter("end", dEnd.toString())
+                        .build();
+
+
+                Log.d(TAG, uri.toString());
+                HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+                Scanner s = new Scanner(connection.getInputStream());
+                StringBuilder sb = new StringBuilder();
+                while(s.hasNext()) sb.append(s.next());
+                response = sb.toString();
+                Log.d(TAG, response);
+                JSONObject json = new JSONObject(response);
+                JSONArray events = (JSONArray) json.get("events");
+
+                Log.d(TAG, events.toString());
+
+                ArrayList<String> dataset = new ArrayList<String>();
+                for (int i = 0; i < events.length(); i++) {
+                    dataset.add(events.getString(i));
+                }
+
+                return dataset;
+
+            } catch (Exception e) {
+                ArrayList<String> msg = new ArrayList<String>();
+                msg.add(e.getMessage());
+                return msg;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> result) {
+            mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(layoutManager);
+            RecyclerView.Adapter adapter;
+            adapter = new CalendarAdapter(result);
+            mRecyclerView.setAdapter(adapter);
+        }
     }
 }

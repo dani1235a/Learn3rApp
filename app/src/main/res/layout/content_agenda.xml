@@ -6,9 +6,5 @@
     tools:context="group7.tcss450.uw.edu.uilearner.AgendaActivity"
     tools:showIn="@layout/app_bar_agenda">
 
-    <FrameLayout
-        android:id="@+id/abc"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
+
 </FrameLayout>

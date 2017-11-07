@@ -55,7 +55,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset.get(position));
+        if (!mDataset.isEmpty()) {
+            holder.mTextView.setText(mDataset.get(position));
+        } else {
+            holder.mTextView.setText(R.string.empty_agenda);
+        }
     }
 
 

@@ -20,7 +20,7 @@
     <string name="auth_failed">Authorization failed!</string>
     <string name="verify_first">Please verify email before continuing</string>
 
-    <string name="title_activity_agenda">AgendaActivity</string>
+    <string name="title_activity_agenda">Learn3r</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -44,4 +44,10 @@
     <string name="event_summary">Summary</string>
     <string name="select_students">Who is this for?</string>
     <string name="confirm_event">Confirm</string>
+
+    <string name="agenda_header">Today\'s Tasks</string>
+    <string name="empty_agenda">No Tasks Today!</string>
+
+    <string name="default_email">etest8163@gmail.com</string>
+    <string name="default_password">Etest816</string>
 </resources>

@@ -23,6 +23,13 @@
     <include layout="@layout/content_agenda"
         android:id="@+id/include2" />
 
+    <FrameLayout
+        android:id="@+id/abc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

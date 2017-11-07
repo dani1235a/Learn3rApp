@@ -103,23 +103,14 @@ public class AgendaActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             if (findViewById(R.id.abc) != null) {
-                mIsCalendarView = false;
+                mIsCalendarView = false;;
+                Bundle args = new Bundle();
+                AgendaFragment af = new AgendaFragment();
+                args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
+                af.setArguments(args);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.abc, new DisplayFragment())
+                        .add(R.id.abc, af)
                         .commit();
-                //mRecyclerView = (RecyclerView) findViewById(R.id.agenda_list);
-
-                /*AgendaTask agendaTask = new AgendaTask();
-
-                // Gets today's date so the Agenda page Recycler View can populate with
-                // events for that day from Google Calendar.
-                Calendar rightNow = Calendar.getInstance();
-                int year = rightNow.get(Calendar.YEAR) - 1900;
-                int month = rightNow.get(Calendar.MONTH);
-                int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-                Log.d(TAG, "today's date from Agenda: " + dayOfMonth + "/" + month + "/" + year);
-
-                agendaTask.execute(year, month, dayOfMonth);*/
             }
         }
     }
@@ -168,25 +159,17 @@ public class AgendaActivity extends AppCompatActivity
         if (id == R.id.nav_calendar) {
             Log.d(TAG, "opening Calendar");
             mIsCalendarView = true;
-            loadFragment(new CalendarFragment(), null);
-            mRecyclerView = (RecyclerView) findViewById(R.id.event_display);
+            Bundle args = new Bundle();
+            CalendarFragment cf = new CalendarFragment();
+            args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
+            loadFragment(cf, args);
         } else if (id == R.id.nav_agenda) {
             Log.d(TAG, "opening Agenda");
             mIsCalendarView = false;
-            loadFragment(new AgendaFragment(), null);
-            mRecyclerView = (RecyclerView) findViewById(R.id.agenda_list);
-            AgendaTask agendaTask = new AgendaTask();
-
-            // Gets today's date so the Agenda page Recycler View can populate with
-            // events for that day from Google Calendar.
-            Calendar rightNow = Calendar.getInstance();
-            int year = rightNow.get(Calendar.YEAR) - 1900;
-            int month = rightNow.get(Calendar.MONTH);
-            int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-            Log.d(TAG, "today's date from Agenda: " + dayOfMonth + "/" + month + "/" + year);
-
-            agendaTask.execute(year, month, dayOfMonth);
-
+            Bundle args = new Bundle();
+            AgendaFragment af = new AgendaFragment();
+            args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
+            loadFragment(af, args);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
