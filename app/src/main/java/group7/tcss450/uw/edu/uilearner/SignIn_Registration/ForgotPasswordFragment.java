@@ -46,6 +46,7 @@ public class ForgotPasswordFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_forgot_password, container, false);
         final EditText email = (EditText) v.findViewById(R.id.editTextForgotPass);
         Button resetPass = (Button) v.findViewById(R.id.buttonResetPass);
+        mListener = (OnFragmentInteractionListener) getActivity();
 
 
         resetPass.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +101,8 @@ public class ForgotPasswordFragment extends Fragment {
                         protected void onPostExecute(Void v) {
                             Log.d("RESET", "onPostExecute()");
                             dialog.dismiss();
+                            Toast.makeText(getContext(), "Sent Email", Toast.LENGTH_SHORT).show();
+                            mListener.onForgotPasswordInteraction(email.getText().toString());
                         }
                     }
                     .execute(email.getText().toString());

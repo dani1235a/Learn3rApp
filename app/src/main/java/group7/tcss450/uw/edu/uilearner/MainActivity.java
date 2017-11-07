@@ -41,7 +41,8 @@ import group7.tcss450.uw.edu.uilearner.SignIn_Registration.SignInFragment;
 
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
            RegisterFragment.OnRegisterFragmentInteractionListener,
-            ChooseRoleFragment.OnFragmentInteractionListener {
+            ChooseRoleFragment.OnFragmentInteractionListener,
+            ForgotPasswordFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "FIREBASE_TAG";
 
@@ -294,6 +295,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         user.setRole(role);
 
         createAccount(user.getEmail(), user.getPassword());
+    }
+
+    @Override
+    public void onForgotPasswordInteraction(String username) {
+        loadFragment(new SignInFragment(), null);
     }
 
 
