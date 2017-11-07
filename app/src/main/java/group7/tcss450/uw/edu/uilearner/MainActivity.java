@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
                 Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-                connection.setRequestMethod("POST");
+                connection.setRequestMethod("GET");
                 connection.connect();
                 Scanner s = new Scanner(connection.getInputStream());
                 StringBuilder sb = new StringBuilder();
