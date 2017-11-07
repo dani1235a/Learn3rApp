@@ -46,9 +46,7 @@ public class ForgotPasswordFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_forgot_password, container, false);
         final EditText email = (EditText) v.findViewById(R.id.editTextForgotPass);
         Button resetPass = (Button) v.findViewById(R.id.buttonResetPass);
-        final ProgressDialog dialog = new ProgressDialog(getContext());
-        //This latch allows us to figure out when a job is done. 1 in constructor means 1 job to await.
-        final CountDownLatch latch = new CountDownLatch(1);
+
 
         resetPass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,21 +56,27 @@ public class ForgotPasswordFragment extends Fragment {
                     email.setError("Please enter a valid email");
                 } else {
                     Log.d("RESET", email.getText().toString());
-                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    dialog.setMessage("Sending email... Please wait");
-                    dialog.setIndeterminate(true);
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
+
                     new AsyncTask<String, Void, Void>() {
+
+                        private ProgressDialog dialog;
 
                         @Override
                         protected void onPreExecute() {
                             Log.d("RESET", "onPreExecute()");
-
+                            dialog = new ProgressDialog(getContext());
+                            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            dialog.setMessage("Sending email... Please wait");
+                            dialog.setIndeterminate(true);
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.show();
                         }
 
                         @Override
                         protected Void doInBackground(String... email) {
+                            //This latch allows us to figure out when a job is done.
+                            // 1 in constructor means 1 job to await.
+                            final CountDownLatch latch = new CountDownLatch(1);
                             FirebaseAuth.getInstance().sendPasswordResetEmail(email[0])
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -81,24 +85,21 @@ public class ForgotPasswordFragment extends Fragment {
                                             latch.countDown();
                                         }
                                     });
+                            try {
+                                //Wait five seconds for job to finish.
+                                Log.d("RESET", "Awaiting latch");
+                                latch.await(5000, TimeUnit.MILLISECONDS);
+                                Log.d("RESET", "Done with latch");
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             return null;
                         }
 
                         @Override
                         protected void onPostExecute(Void v) {
-                            try {
-                                //Wait five seconds for job to finish.
-                                Log.d("RESET", "Awaiting onComplete()");
-                                latch.await(5000, TimeUnit.MILLISECONDS);
-                                Log.d("RESET", "Done waiting, dismissing progressbar");
-                                dialog.dismiss();
-                                Toast.makeText(getContext(),
-                                        "Email sent, please check your email",
-                                        Toast.LENGTH_SHORT)
-                                .show();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                            Log.d("RESET", "onPostExecute()");
+                            dialog.dismiss();
                         }
                     }
                     .execute(email.getText().toString());
