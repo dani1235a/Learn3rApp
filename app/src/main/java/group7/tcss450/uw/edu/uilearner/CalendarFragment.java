@@ -82,7 +82,7 @@ public class CalendarFragment extends Fragment {
 
             AgendaTask agendaTask = new AgendaTask();
 
-            // Gets today's date so the Agenda page Recycler View can populate with
+            // Gets today's date so the Calendar page Recycler View can populate with
             // events for that day from Google Calendar.
             Calendar rightNow = Calendar.getInstance();
             int year = rightNow.get(Calendar.YEAR);
@@ -102,23 +102,6 @@ public class CalendarFragment extends Fragment {
     }
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnCalendarInteractionListener) {
-            mListener = (OnCalendarInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnRegisterFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -135,6 +118,12 @@ public class CalendarFragment extends Fragment {
     }
 
 
+    /**
+     * This inner class will get the user's events for the current day and display them
+     * on the CalendarFragment's RecyclerView.
+     *
+     * @author Connor
+     */
     public class AgendaTask extends AsyncTask<Integer, Integer, ArrayList<String>> {
         @Override
         protected ArrayList<String> doInBackground(Integer... integers) {
@@ -151,7 +140,7 @@ public class CalendarFragment extends Fragment {
                 Uri uri = new Uri.Builder()
                         .scheme("http")
                         .authority("learner-backend.herokuapp.com")
-                        .appendEncodedPath("teacher")
+                        .appendEncodedPath("teacher") //this will need to have a check for user role.
                         .appendEncodedPath("events")
                         .appendQueryParameter("uuid", uid) //pass uid here
                         .appendQueryParameter("start", dStart.toString())
@@ -163,17 +152,17 @@ public class CalendarFragment extends Fragment {
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
-                Scanner s = new Scanner(connection.getInputStream());
+                Scanner s = new Scanner(connection.getInputStream());  //get the result from the query
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
                 Log.d(TAG, response);
-                JSONObject json = new JSONObject(response);
+                JSONObject json = new JSONObject(response);  //turn result into parseable json object
                 JSONArray events = (JSONArray) json.get("events");
 
                 Log.d(TAG, events.toString());
 
-                ArrayList<String> dataset = new ArrayList<String>();
+                ArrayList<String> dataset = new ArrayList<String>();  //add json events array into the dataset
                 for (int i = 0; i < events.length(); i++) {
                     dataset.add(events.getString(i));
                 }
@@ -191,6 +180,7 @@ public class CalendarFragment extends Fragment {
         protected void onPostExecute(ArrayList<String> result) {
             mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
 
+            //this will need to have a check if the result is empty. If so, then display an empty message
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(layoutManager);
             RecyclerView.Adapter adapter;

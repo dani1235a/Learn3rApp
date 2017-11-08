@@ -37,14 +37,10 @@ import java.util.Scanner;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 
 public class AgendaActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        CalendarFragment.OnCalendarInteractionListener,
-        AgendaFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = "CALENDAR";
 
-    private RecyclerView mRecyclerView;
-    private boolean mIsCalendarView; // differentiates which adapter will be set to the recycler view.
     private boolean mIsTeacher; // differentiates the user type.
     private String mEmail;
     private String mUid;
@@ -71,14 +67,9 @@ public class AgendaActivity extends AppCompatActivity
             if (args != null) {
                 Bundle temp = (Bundle) args.get(MainActivity.TAG);
                 User currUser = (User) temp.get(MainActivity.TAG);
-                Log.d(TAG, "currUser == null: " + (currUser == null));
                 mEmail = currUser.getEmail();
                 mUid = currUser.getUid();
-                Log.d(TAG, "currUser role: " + currUser.getRole());
-                Log.d(TAG, "IS_TEACHER: " + ChooseRoleFragment.IS_TEACHER);
                 mIsTeacher = currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER);
-                Log.d(TAG, "email is: " + mEmail);
-                Log.d(TAG, "uid is: " + mUid);
             } else {
                 Log.d(TAG, "Bundle was null");
             }
@@ -103,7 +94,6 @@ public class AgendaActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             if (findViewById(R.id.abc) != null) {
-                mIsCalendarView = false;;
                 Bundle args = new Bundle();
                 AgendaFragment af = new AgendaFragment();
                 args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
@@ -154,18 +144,13 @@ public class AgendaActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Log.d(TAG, "an item was selected");
 
         if (id == R.id.nav_calendar) {
-            Log.d(TAG, "opening Calendar");
-            mIsCalendarView = true;
             Bundle args = new Bundle();
             CalendarFragment cf = new CalendarFragment();
             args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
             loadFragment(cf, args);
         } else if (id == R.id.nav_agenda) {
-            Log.d(TAG, "opening Agenda");
-            mIsCalendarView = false;
             Bundle args = new Bundle();
             AgendaFragment af = new AgendaFragment();
             args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
@@ -189,108 +174,5 @@ public class AgendaActivity extends AppCompatActivity
                 .replace(R.id.abc, fragment)
                 .addToBackStack(null);
         transaction.commit();
-    }
-
-
-    @SuppressLint("DefaultLocale")
-    @Override
-    public void onCalendarInteraction(int year, int month, int dayOfMonth) {
-
-        final TextView tv = (TextView) findViewById(R.id.date_display);
-        tv.setText(java.lang.String.format("%02d", dayOfMonth) + "/" + java.lang.String.format("%02d", month) + "/" + year);
-
-        findViewById(R.id.date_info).setVisibility(View.VISIBLE);
-
-        Log.d(TAG, "today's date from Calendar: " + dayOfMonth + "/" + month + "/" + year);
-        AgendaTask aTask = new AgendaTask();
-        aTask.execute(year, month, dayOfMonth);
-    }
-
-
-    @Override
-    public void onListFragmentInteraction(String item) {
-
-    }
-
-
-
-    public Activity returnActivity () {
-        return this;
-    }
-
-
-
-
-    public class AgendaTask extends AsyncTask<Integer, Integer, ArrayList<String>> {
-        @Override
-        protected ArrayList<String> doInBackground(Integer... integers) {
-            String response = "";
-            try {
-                Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
-                GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
-                endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
-                Date dEnd = endDay.getTime();
-                //TODO Get uid and pass it to web request.
-
-                String uid = mUid;
-                // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
-                Uri uri = new Uri.Builder()
-                        .scheme("http")
-                        .authority("learner-backend.herokuapp.com")
-                        .appendEncodedPath("teacher")
-                        .appendEncodedPath("events")
-                        .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dStart.toString())
-                        .appendQueryParameter("end", dEnd.toString())
-                        .build();
-
-
-                Log.d(TAG, uri.toString());
-                HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
-                Scanner s = new Scanner(connection.getInputStream());
-                StringBuilder sb = new StringBuilder();
-                while(s.hasNext()) sb.append(s.next());
-                response = sb.toString();
-                Log.d(TAG, "here");
-                Log.d(TAG, response);
-                JSONObject json = new JSONObject(response);
-                Log.d(TAG, "here2");
-                JSONArray events = (JSONArray) json.get("events");
-
-                Log.d(TAG, events.toString());
-
-                ArrayList<String> dataset = new ArrayList<String>();
-                for (int i = 0; i < events.length(); i++) {
-                    dataset.add(events.getString(i));
-                }
-
-                return dataset;
-
-            } catch (Exception e) {
-                ArrayList<String> msg = new ArrayList<String>();
-                msg.add(e.getMessage());
-                return msg;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<String> result) {
-            mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
-
-            LinearLayoutManager layoutManager = new LinearLayoutManager(returnActivity());
-            mRecyclerView.setLayoutManager(layoutManager);
-            RecyclerView.Adapter adapter;
-            if (mIsCalendarView) {
-                adapter = new CalendarAdapter(result); // will probably need to update CalendarAdapter constructor to take the InteractionListener like below.
-            } else {
-                adapter = new AgendaAdapter(result,
-                        (AgendaFragment.OnListFragmentInteractionListener) returnActivity());
-            }
-            mRecyclerView.setAdapter(adapter);
-        }
-
-
     }
 }
