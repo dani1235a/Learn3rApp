@@ -1,5 +1,7 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     public static final String TAG = "FIREBASE_TAG";
 
     private FirebaseAuth mAuth;
+    private Activity act;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private User user;
 
@@ -76,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                 loadFragment(new SignInFragment(), null);
             }
         }
+        act = this;
     }
 
 
@@ -210,39 +216,78 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
         Author: Connor Lundberg
      */
-    public void signIn (String email, String password) {
-        if (RegisterFragment.isValidEmail(email) && RegisterFragment.isValidPassword(password)) {
-            mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("FIREBASE", "signInWithEmail:onComplete:" + task.isSuccessful());
+    public void signIn (final String email, final String password) {
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w("FIREBASE", "signInWithEmail:failed", task.getException());
-                            Toast.makeText(MainActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, R.string.auth_passed,
-                                    Toast.LENGTH_SHORT).show();
+        new AsyncTask<Void, Void, Void>() {
 
-                            if (mAuth.getCurrentUser().isEmailVerified()) {
-                                //Before switching activities, the user field needs to have a role set for it.
-                                //This AsyncTask will get that role.
-                                user.setUid(mAuth.getCurrentUser().getUid());
-                                SignInTask sTask = new SignInTask();
-                                sTask.execute(user);
-                            } else {
-                                Toast.makeText(MainActivity.this, R.string.verify_first,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
-        }
+            private ProgressDialog dialog;
+
+            private CountDownLatch latch;
+
+            private static final String ASYNC_TAG = "ASYNC_TAG";
+
+            @Override
+            protected void onPreExecute() {
+                Log.d(ASYNC_TAG, "onPreExecute()");
+                latch = new CountDownLatch(1);
+                dialog = new ProgressDialog(act);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setMessage("Signing In... Please wait");
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (RegisterFragment.isValidEmail(email) && RegisterFragment.isValidPassword(password)) {
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(act, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    Log.d("FIREBASE", "signInWithEmail:onComplete:" + task.isSuccessful());
+                                    latch.countDown();
+                                    // If sign in fails, display a message to the user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in user can be handled in the listener.
+                                    if (!task.isSuccessful()) {
+                                        Log.w("FIREBASE", "signInWithEmail:failed", task.getException());
+                                        Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                                Toast.LENGTH_SHORT).show();
+
+                                        if (mAuth.getCurrentUser().isEmailVerified()) {
+                                            //Before switching activities, the user field needs to have a role set for it.
+                                            //This AsyncTask will get that role.
+                                            user.setUid(mAuth.getCurrentUser().getUid());
+                                            SignInTask sTask = new SignInTask();
+                                            sTask.execute(user);
+                                        } else {
+                                            Toast.makeText(MainActivity.this, R.string.verify_first,
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            });
+                }
+                try {
+                    latch.await(10, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Log.e(ASYNC_TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void voids) {
+                dialog.dismiss();
+            }
+
+        }.execute();
+
     }
 
 
