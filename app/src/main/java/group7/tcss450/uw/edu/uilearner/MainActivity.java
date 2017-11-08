@@ -15,28 +15,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ForgotPasswordFragment;
@@ -51,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     public static final String TAG = "FIREBASE_TAG";
 
     private FirebaseAuth mAuth;
-    private Activity act;
+    private Activity thisActivity;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private User user;
 
@@ -81,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                 loadFragment(new SignInFragment(), null);
             }
         }
-        act = this;
+        thisActivity = this;
     }
 
 
@@ -116,34 +103,56 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
         Author: Connor Lundberg
      */
-    public void createAccount (String email, String password) {
-        Log.e(TAG, "In here");
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
+    public void createAccount (final String email, final String password) {
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
-                            Toast.makeText(MainActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.i(TAG, "User creation completed and was successful");
-                            Toast.makeText(MainActivity.this, R.string.auth_passed,
-                                    Toast.LENGTH_SHORT).show();
+        new AsyncTask<Void, Void, Void>() {
+
+            private ProgressDialog dialog;
+
+            private CountDownLatch latch;
+
+            @Override
+            protected void onPreExecute() {
+                latch = new CountDownLatch(1);
+                dialog = new ProgressDialog(thisActivity);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setMessage("Registering... Please wait");
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                Log.e(TAG, "In here");
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(thisActivity, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
+                                        latch.countDown();
+                                        // If sign in fails, display a message to the user. If sign in succeeds
+                                        // the auth state listener will be notified and logic to handle the
+                                        // signed in user can be handled in the listener.
+                                        if (!task.isSuccessful()) {
+                                            Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
+                                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                                    Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Log.i(TAG, "User creation completed and was successful");
+                                            Toast.makeText(MainActivity.this, R.string.auth_passed,
+                                                    Toast.LENGTH_SHORT).show();
 
 
-                                //If the user has been created and signed in, the Display Fragment
-                                //will be switched to.
-                                sendEmailVerification();
-                                user.setUid(mAuth.getCurrentUser().getUid());
-                                Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
-                                RegisterTask rTask = new RegisterTask();
-                                rTask.execute(user);
+                                            //If the user has been created and signed in, the Display Fragment
+                                            //will be switched to.
+                                            sendEmailVerification();
+                                            user.setUid(mAuth.getCurrentUser().getUid());
+                                            Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
+                                            RegisterTask rTask = new RegisterTask();
+                                            rTask.execute(user);
                                 /*if (mAuth.getCurrentUser().isEmailVerified()) {
                                     Log.d(TAG, "changing activities");
                                     changeActivity();
@@ -151,10 +160,25 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     Toast.makeText(MainActivity.this, R.string.verify_first,
                                             Toast.LENGTH_SHORT).show();
                                 }*/
-                            }
-                        }
-                    }
-                );
+                                        }
+                                    }
+                                }
+                        );
+                try {
+                    latch.await(10, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void v) {
+                dialog.dismiss();
+            }
+
+        }.execute();
+
 }
 
 
@@ -230,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             protected void onPreExecute() {
                 Log.d(ASYNC_TAG, "onPreExecute()");
                 latch = new CountDownLatch(1);
-                dialog = new ProgressDialog(act);
+                dialog = new ProgressDialog(thisActivity);
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setMessage("Signing In... Please wait");
                 dialog.setIndeterminate(true);
@@ -243,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             protected Void doInBackground(Void... voids) {
                 if (RegisterFragment.isValidEmail(email) && RegisterFragment.isValidPassword(password)) {
                     mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(act, new OnCompleteListener<AuthResult>() {
+                            .addOnCompleteListener(thisActivity, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     Log.d("FIREBASE", "signInWithEmail:onComplete:" + task.isSuccessful());
