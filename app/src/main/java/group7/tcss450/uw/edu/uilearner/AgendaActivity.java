@@ -79,9 +79,10 @@ public class AgendaActivity extends AppCompatActivity
             Log.d(TAG, "Intent was null");
         }
 
-        if (!mIsTeacher) {
+        /*if (!mIsTeacher) {
+            Log.d(TAG, "in here");
             fab.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 

@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     private void changeActivity () {
         Intent agendaIntent = new Intent(this, AgendaActivity.class);
         Bundle args = new Bundle();
+        Log.d(AgendaActivity.TAG, "user role: " + user.getRole());
         args.putSerializable(TAG, user);
         agendaIntent.putExtra(TAG, args);
         startActivity(agendaIntent);
