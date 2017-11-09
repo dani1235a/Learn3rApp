@@ -1,5 +1,6 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,12 +10,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 
@@ -33,6 +38,21 @@ public class AgendaActivity extends AppCompatActivity
         setContentView(R.layout.activity_agenda);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(fireUser != null && !fireUser.isEmailVerified()) {
+            Log.d(TAG, "Email not verified");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("You will have to verify your email before you login again");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Don't really need to do anything here...
+                }
+            });
+            builder.show();
+        } else if(fireUser != null) Log.d(TAG, "Email " + fireUser.getEmail() + "is verified");
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
