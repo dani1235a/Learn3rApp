@@ -55,15 +55,6 @@ public class AgendaActivity extends AppCompatActivity
         } else if(fireUser != null) Log.d(TAG, "Email " + fireUser.getEmail() + "is verified");
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new EventFragment(), null);
-            }
-        });
-
-
         Intent i = getIntent();
         if (i != null) {
             Bundle args = i.getExtras();
@@ -80,9 +71,21 @@ public class AgendaActivity extends AppCompatActivity
             Log.d(TAG, "Intent was null");
         }
 
-        if (!mIsTeacher) {
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putSerializable("uuid", mUid);
+                loadFragment(new EventFragment(), args);
+            }
+        });
+
+        /*if (!mIsTeacher) {
+            Log.d(TAG, "in here");
             fab.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 

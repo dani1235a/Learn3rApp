@@ -197,8 +197,7 @@ public class AgendaFragment extends Fragment {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new AgendaAdapter(result,
-                        (AgendaFragment.OnListFragmentInteractionListener) getActivity());
+                adapter = new AgendaAdapter(result, null); //null will need to be an OnListInteractionListener
                 mRecyclerView.setAdapter(adapter);
             } else {
                 empty.setVisibility(View.VISIBLE);

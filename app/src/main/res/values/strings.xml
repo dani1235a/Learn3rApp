@@ -53,4 +53,8 @@
     <string name="default_password">Etest816</string>
     <string name="teachers">Teacher</string>
     <string name="enter_teachers_add_code">Enter Teachers Add Code</string>
+
+    <string name="date_hint">mm/dd/yyyy</string>
+    <string name="time_hint">hh:mm AM/PM</string>
+
 </resources>

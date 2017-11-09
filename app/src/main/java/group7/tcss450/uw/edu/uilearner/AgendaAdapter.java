@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import java.util.List;
  */
 public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder> {
 
+    public static final String TAG = "AGENDA";
+
     private final ArrayList<String> mValues;
     private final OnListFragmentInteractionListener mListener;
 
@@ -30,11 +33,14 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_item, parent, false);
+
+        Log.d(TAG, "Creating View Holder");
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+        Log.d(TAG, "Binding View Holder");
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position));
         holder.mContentView.setText(mValues.get(position));
@@ -53,6 +59,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "Values size: " + mValues.size());
         return mValues.size();
     }
 
