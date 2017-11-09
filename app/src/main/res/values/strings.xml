@@ -50,4 +50,7 @@
 
     <string name="default_email">etest8163@gmail.com</string>
     <string name="default_password">Etest816</string>
+
+    <string name="date_hint">mm/dd/yyyy</string>
+    <string name="time_hint">hh:mm AM/PM</string>
 </resources>

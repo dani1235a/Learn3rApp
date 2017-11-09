@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,8 +37,14 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
     private String mCurrentChosenStudentUid;
     private String mTeacherUid;
+
     private RadioButton mCurrentChosenRadioButton;
     private EventFragment mInstance;
+
+    private EditText mEventName;
+    private EditText mEventDate;
+    private EditText mEventTime;
+    private EditText mEventSummary;
 
     public EventFragment() {
         // Required empty public constructor
@@ -51,22 +58,69 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         View v = inflater.inflate(R.layout.fragment_event, container, false);
         mInstance = this;
 
+        mEventName = (EditText) v.findViewById(R.id.event_name);
+        mEventDate = (EditText) v.findViewById(R.id.event_date);
+        mEventTime = (EditText) v.findViewById(R.id.event_time);
+        mEventSummary = (EditText) v.findViewById(R.id.event_summary);
+
         Button confirm = (Button) v.findViewById(R.id.confirm_event);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar rightNow = Calendar.getInstance();
-                int year = rightNow.get(Calendar.YEAR);
-                int month = rightNow.get(Calendar.MONTH);
-                int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
+                if (isValidForm()) {
+                    String name = mEventName.getText().toString();
+                    String date = mEventDate.getText().toString();
+                    String time = mEventTime.getText().toString();
+                    String summary = mEventSummary.getText().toString();
 
-                EventTask eTask = new EventTask();
-                eTask.execute(year, month, dayOfMonth);
+                    EventTask eTask = new EventTask();
+                    eTask.execute(name, date, time, summary);
+                }
             }
         });
 
 
         return v;
+    }
+
+
+    /**
+     * Looks to see if any of the fields are empty, if so, then return false and set
+     * the error for that field.
+     *
+     * @return True for valid form, false otherwise.
+     *
+     * @author Connor
+     */
+    private boolean isValidForm () {
+        boolean result = true;
+
+        if (mEventName.getText().toString().equals("")) {
+            mEventName.setError("Event Name can't be empty!");
+            result = false;
+        }
+
+        if (mEventDate.getText().toString().equals("")) {
+            mEventDate.setError("Event Date can't be empty!");
+            result = false;
+        }
+
+        if (mEventTime.getText().toString().equals("")) {
+            mEventTime.setError("Event Time can't be empty!");
+            result = false;
+        }
+
+        if (mEventSummary.getText().toString().equals("")) {
+            mEventSummary.setError("Event Summary can't be empty!");
+            result = false;
+        }
+
+        if (mCurrentChosenRadioButton == null) {
+            Toast.makeText(getActivity(), "Must choose a student!", Toast.LENGTH_SHORT);
+            result = false;
+        }
+
+        return result;
     }
 
 
@@ -80,6 +134,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         super.onStart();
     }
 
+
     @Override
     public void onStudentNameInteraction(String uuid, RadioButton chosenRadioButton) {
         mCurrentChosenStudentUid = uuid;
@@ -89,6 +144,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             mCurrentChosenRadioButton.setChecked(false);
         }
         mCurrentChosenRadioButton = chosenRadioButton;
+        Log.d(TAG, "new student chosen: " + mCurrentChosenStudentUid);
     }
 
 
@@ -131,7 +187,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     allStudentsForTeacher.put(key, (String) obj.get(key));
                 }
 
-                Log.d(TAG, students.toString());
                 Log.d(TAG, "Final HashMap: " + allStudentsForTeacher.toString());
                 return allStudentsForTeacher;
             } catch (Exception e) {
@@ -142,16 +197,15 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
         @Override
         protected void onPostExecute(HashMap<String, String> allStudentsForTeacher) {
-            Log.d(TAG, "Starting onPostExecute");
             RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.selected_student_list);
             rv.setHasFixedSize(true);
             rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             StudentAdapter sAdapter = new StudentAdapter(allStudentsForTeacher, mInstance);
             rv.setAdapter(sAdapter);
-            Log.d(TAG, "Setting adapter");
         }
     }
+
 
     /**
      * This class is used to make the new Event on clicking the Confirm button. It takes the given
@@ -160,26 +214,29 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      *
      * @author Connor
      */
-    public class EventTask extends AsyncTask<Integer, Void, Void> {
-        private String summary;
+    public class EventTask extends AsyncTask<String, Void, Void> {
 
         @Override
-        protected void onPreExecute() {
-            EditText summ = (EditText) getActivity().findViewById(R.id.event_summary);
-            summary = summ.getText().toString();
-        }
-
-        @Override
-        protected Void doInBackground(Integer... integers) {
+        protected Void doInBackground(String... params) {
             String response = "";
             try {
-                Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
-                GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
+                Date dStart = new Date(params[1]);
+                //dStart.setTime(Long.valueOf(params[2]));  //add the time to the date
+
+                Calendar rightNow = Calendar.getInstance();
+                int year = rightNow.get(Calendar.YEAR);
+                int month = rightNow.get(Calendar.MONTH);
+                int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
+
+                GregorianCalendar endDay = new GregorianCalendar(year, month, dayOfMonth);
                 endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
                 Date dEnd = endDay.getTime();
                 //TODO Get uid and pass it to web request.
 
                 String uid = mCurrentChosenStudentUid;
+
+                Log.d(TAG, "dStart: " + dStart.toString());
+                Log.d(TAG, "dEnd: " + dEnd.toString());
 
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary
                 Uri uri = new Uri.Builder()
@@ -190,7 +247,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendQueryParameter("uuid", uid) //pass uid here
                         .appendQueryParameter("start", dStart.toString())
                         .appendQueryParameter("end", dEnd.toString())
-                        .appendQueryParameter("summary", summary)
+                        .appendQueryParameter("summary", params[3])
                         //.appendQueryParameter("event_name", eventName) //pass event name here once the back end code is changed to match
                         .build();
 
@@ -203,11 +260,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                Log.d(TAG, response);
-                JSONObject json = new JSONObject(response);
-                JSONArray events = (JSONArray) json.get("events");
-
-                Log.d(TAG, events.toString());
+                Log.d(TAG, "Was the Event creation successfule? " + response);
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
