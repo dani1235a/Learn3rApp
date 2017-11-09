@@ -140,7 +140,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.176" />
 
-    <ListView
+    <RecyclerView
         android:id="@+id/selected_student_list"
         android:layout_width="317dp"
         android:layout_height="174dp"

@@ -144,7 +144,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <ListView
+    <RecyclerView
         android:id="@+id/selected_student_list"
         android:layout_width="208dp"
         android:layout_height="75dp"

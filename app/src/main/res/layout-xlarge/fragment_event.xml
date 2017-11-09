@@ -131,7 +131,7 @@
         app:layout_constraintTop_toBottomOf="@+id/selected_student_list"
         app:layout_constraintVertical_bias="0.014" />
 
-    <ListView
+    <RecyclerView
         android:id="@+id/selected_student_list"
         android:layout_width="317dp"
         android:layout_height="295dp"
