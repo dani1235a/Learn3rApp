@@ -2,12 +2,14 @@ package group7.tcss450.uw.edu.uilearner;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -41,12 +46,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     private Activity thisActivity;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private User user;
+    private Activity act;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        this.act = this;
         //Gets the current instance of FirebaseAuth.
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -81,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_container, fragment)
-                .addToBackStack(null);
+                .addToBackStack(null)
+                .replace(R.id.main_container, fragment);
         transaction.commit();
     }
 
@@ -126,18 +132,29 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             @Override
             protected Void doInBackground(Void... voids) {
 
-                Log.e(TAG, "In here");
+                Log.d(TAG, "In here");
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(thisActivity, new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Log.d("FIREBASE", "createUserWithEmail:onComplete:" + task.isSuccessful());
-                                        latch.countDown();
+                                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                                         // If sign in fails, display a message to the user. If sign in succeeds
                                         // the auth state listener will be notified and logic to handle the
                                         // signed in user can be handled in the listener.
                                         if (!task.isSuccessful()) {
                                             Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
+                                            AlertDialog.Builder alert = new AlertDialog.Builder(act);
+                                            alert.setTitle("Failed to register");
+                                            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    loadFragment(new RegisterFragment(), null);
+                                                }
+                                            });
+                                            latch.countDown();
+                                            alert.show();
+
                                             Toast.makeText(MainActivity.this, R.string.auth_failed,
                                                     Toast.LENGTH_SHORT).show();
                                         } else {
@@ -151,8 +168,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                             sendEmailVerification();
                                             user.setUid(mAuth.getCurrentUser().getUid());
                                             Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
-                                            RegisterTask rTask = new RegisterTask();
-                                            rTask.execute(user);
+
                                 /*if (mAuth.getCurrentUser().isEmailVerified()) {
                                     Log.d(TAG, "changing activities");
                                     changeActivity();
@@ -166,6 +182,52 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         );
                 try {
                     latch.await(10, TimeUnit.SECONDS);
+                    try {
+                        // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
+                        // or
+                        // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
+                        Uri uri;
+                        String response;
+                        if (user.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
+                            uri = new Uri.Builder()
+                                    .scheme("http")
+                                    .authority("learner-backend.herokuapp.com")
+                                    .appendEncodedPath("teacher")
+                                    .appendQueryParameter("uuid", user.getUid()) //pass uid here
+                                    .appendQueryParameter("name", user.getEmail())
+                                    .build();
+                        } else {
+                            uri = new Uri.Builder()
+                                    .scheme("http")
+                                    .authority("learner-backend.herokuapp.com")
+                                    .appendEncodedPath("student")
+                                    .appendQueryParameter("uuid", user.getUid()) //pass uid here
+                                    .appendQueryParameter("name", user.getEmail())
+                                    .build();
+                        }
+
+                        Log.d(TAG, uri.toString());
+                        HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                        connection.setRequestMethod("POST");
+                        connection.connect();
+                        Scanner s = new Scanner(connection.getInputStream());
+                        StringBuilder sb = new StringBuilder();
+                        while(s.hasNext()) sb.append(s.next());
+                        response = sb.toString();
+                        Log.d(TAG, "here");
+                        Log.d(TAG, response);
+                        latch.countDown();
+                        changeActivity();
+
+                    } catch (Exception e) {
+                        Log.e(TAG, "error creating", e);
+                        JSONObject obj = new JSONObject();
+                        try {
+                            obj.accumulate("error", e.getMessage());
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                 } catch (InterruptedException e) {
                     Log.e(TAG, e.getMessage());
                 }
@@ -369,60 +431,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void onForgotPasswordInteraction(String username) {
         loadFragment(new SignInFragment(), null);
-    }
-
-
-    /**
-     * This class allows a User to be registered in the Learn3r backend as the role designated rather
-     * than just in the Firebase system.
-     *
-     * @author Connor
-     */
-    public class RegisterTask extends AsyncTask<User, Void, String> {
-        @Override
-        protected String doInBackground(User... params) {
-            User currUser = params[0];
-            Uri uri;
-            String response = "";
-            try {
-                // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
-                // or
-                // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
-                if (currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
-                    uri = new Uri.Builder()
-                            .scheme("http")
-                            .authority("learner-backend.herokuapp.com")
-                            .appendEncodedPath("teacher")
-                            .appendQueryParameter("uuid", currUser.getUid()) //pass uid here
-                            .appendQueryParameter("name", currUser.getEmail())
-                            .build();
-                } else {
-                    uri = new Uri.Builder()
-                            .scheme("http")
-                            .authority("learner-backend.herokuapp.com")
-                            .appendEncodedPath("student")
-                            .appendQueryParameter("uuid", currUser.getUid()) //pass uid here
-                            .appendQueryParameter("name", currUser.getEmail())
-                            .build();
-                }
-
-                Log.d(TAG, uri.toString());
-                HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-                connection.setRequestMethod("POST");
-                connection.connect();
-                Scanner s = new Scanner(connection.getInputStream());
-                StringBuilder sb = new StringBuilder();
-                while(s.hasNext()) sb.append(s.next());
-                response = sb.toString();
-                Log.d(TAG, "here");
-                Log.d(TAG, response);
-
-                return response;
-
-            } catch (Exception e) {
-                return e.getMessage();
-            }
-        }
     }
 
 
