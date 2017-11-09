@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      */
     public void createAccount (final String email, final String password) {
 
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Boolean>() {
 
             private ProgressDialog dialog;
 
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             }
 
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
 
                 Log.d(TAG, "In here");
 
@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
                                             //If the user has been created and signed in, the Display Fragment
                                             //will be switched to.
-                                            sendEmailVerification();
                                             user.setUid(mAuth.getCurrentUser().getUid());
                                             Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
 
@@ -218,8 +217,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         response = sb.toString();
                         Log.d(TAG, "here");
                         Log.d(TAG, response);
-                        latch.countDown();
-                        changeActivity();
+                        return Boolean.getBoolean(response);
 
                     } catch (Exception e) {
                         Log.e(TAG, "error creating", e);
@@ -237,8 +235,15 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             }
 
             @Override
-            protected void onPostExecute(Void v) {
+            protected void onPostExecute(Boolean wasSuccessful) {
                 dialog.dismiss();
+                if(wasSuccessful) {
+                    sendEmailVerification();
+                    changeActivity();
+                } else {
+                    showOkDialog(activityReference, "Failed to create user in database");
+                    mAuth.getCurrentUser().delete();
+                }
             }
 
         }.execute();
