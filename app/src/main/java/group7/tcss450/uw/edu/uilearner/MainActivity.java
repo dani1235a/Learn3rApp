@@ -221,17 +221,12 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
                     } catch (Exception e) {
                         Log.e(TAG, "error creating", e);
-                        JSONObject obj = new JSONObject();
-                        try {
-                            obj.accumulate("error", e.getMessage());
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
+                        return false;
                     }
                 } catch (InterruptedException e) {
                     Log.e(TAG, e.getMessage());
+                    return false;
                 }
-                return null;
             }
 
             @Override
