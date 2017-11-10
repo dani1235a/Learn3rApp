@@ -238,10 +238,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 String uid = mCurrentChosenStudentUid;
 
                 String[] dates = params[1].split("/");
-                int year = Integer.valueOf(dates[0]);
-                int month = Integer.valueOf(dates[1]);
-                int dayOfMonth = Integer.valueOf(dates[2]);
+                int month = Integer.valueOf(dates[0]);
+                int dayOfMonth = Integer.valueOf(dates[1]);
+                int year = Integer.valueOf(dates[2]);
 
+                Log.d(TAG, "" + month + "/" + dayOfMonth + "/" + year);
                 dates = DateUtil.getWholeDayStartEnd(year, month, dayOfMonth);
 
                 String dStart = dates[0];
