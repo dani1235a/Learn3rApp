@@ -31,6 +31,12 @@ public class DateUtil {
         return strings;
     }
 
+    public static String getRfcString(int year, int month, int day, int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day, hour, minute);
+        return FORMAT.format(cal.getTime());
+    }
+
     public static Date getDateFromRfcString(String rfcString) {
         try {
             return FORMAT.parse(rfcString);
