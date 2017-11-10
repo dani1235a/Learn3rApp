@@ -262,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         //This clears the back stack.
         agendaIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(agendaIntent);
+        finish();
     }
 
 
