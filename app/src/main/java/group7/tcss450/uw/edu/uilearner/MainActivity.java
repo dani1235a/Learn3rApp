@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
         Author: Connor Lundberg
      */
-    public void createAccount (final String email, final String password) {
+    public void createAccount(final String email, final String password, final String addCode) {
 
         new AsyncTask<Void, Void, Boolean>() {
 
@@ -157,18 +157,18 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                             latch.countDown();
                                             alert.show();
 
-                                            Toast.makeText(MainActivity.this, R.string.auth_failed,
-                                                    Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+//                                                    Toast.LENGTH_SHORT).show();
                                         } else {
                                             Log.i(TAG, "User creation completed and was successful");
-                                            Toast.makeText(MainActivity.this, R.string.auth_passed,
-                                                    Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(MainActivity.this, R.string.auth_passed,
+//                                                    Toast.LENGTH_SHORT).show();
 
 
                                             //If the user has been created and signed in, the Display Fragment
                                             //will be switched to.
                                             user.setUid(mAuth.getCurrentUser().getUid());
-                                            Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
+//                                            Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
 
                                 /*if (mAuth.getCurrentUser().isEmailVerified()) {
                                     Log.d(TAG, "changing activities");
@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     .scheme("http")
                                     .authority("learner-backend.herokuapp.com")
                                     .appendEncodedPath("student")
+                                    .appendQueryParameter("add_code", addCode)
                                     .appendQueryParameter("uuid", user.getUid()) //pass uid here
                                     .appendQueryParameter("name", user.getEmail())
                                     .build();
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         response = sb.toString();
                         Log.d(TAG, "here");
                         Log.d(TAG, response);
-                        return Boolean.getBoolean(response);
+                        return true;
 
                     } catch (Exception e) {
                         Log.e(TAG, "error creating", e);
@@ -258,7 +259,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Log.d(AgendaActivity.TAG, "user role: " + user.getRole());
         args.putSerializable(TAG, user);
         agendaIntent.putExtra(TAG, args);
+        //This clears the back stack.
+        agendaIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(agendaIntent);
+        finish();
     }
 
 
@@ -275,13 +279,18 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this,
-                                    "Verification email failed to send",
-                                    Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this,
+//                                    "Verification email failed to send",
+//                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this,
-                                    "Verification email sent to " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this,
+//                                    "Verification email sent to " + user.getEmail(),
+//                                    Toast.LENGTH_SHORT).show();
+                            new android.app.AlertDialog.Builder(getApplicationContext())
+                                    .setMessage("A verification email has been sent to " + user.getEmail()
+                                            + "! \n Please verify your email before proceeding.")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                         }
                     }
                 });
@@ -406,11 +415,15 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     public void signOut () {
         mAuth.signOut();
         if (mAuth.getCurrentUser() != null) {
-            Toast.makeText(MainActivity.this, R.string.auth_failed,
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, R.string.auth_failed,
+//                    Toast.LENGTH_SHORT).show();
+            new android.app.AlertDialog.Builder(getApplicationContext())
+                    .setMessage("Failed to sign out!")
+                    .setPositiveButton("OK", null)
+                    .show();
         } else {
-            Toast.makeText(MainActivity.this, R.string.auth_passed,
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, R.string.auth_passed,
+//                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -457,10 +470,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     @Override
-    public void onRoleFragmentInteraction(String role) {
+    public void onRoleFragmentInteraction(String role, String addCode) {
         user.setRole(role);
 
-        createAccount(user.getEmail(), user.getPassword());
+        createAccount(user.getEmail(), user.getPassword(), addCode);
     }
 
     @Override

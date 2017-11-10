@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,10 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import group7.tcss450.uw.edu.uilearner.AgendaActivity;
-import group7.tcss450.uw.edu.uilearner.MainActivity;
 import group7.tcss450.uw.edu.uilearner.R;
 import group7.tcss450.uw.edu.uilearner.User;
 
@@ -116,9 +115,11 @@ public class RegisterFragment extends Fragment {
                     mListener.onRegisterFragmentInteraction(user);
 
                     //TODO: Check to see if the email already exists in database
-                    Toast.makeText(v.getContext(), "Valid password + Email Combo!", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(v.getContext(), "Wrong password + email Combo!", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(RegisterFragment.this.getContext())
+                            .setMessage("Invalid Email + Password combo!")
+                            .setPositiveButton("OK", null)
+                            .show();
                 }
             }
         });

@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,8 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import group7.tcss450.uw.edu.uilearner.AgendaActivity;
-import group7.tcss450.uw.edu.uilearner.MainActivity;
 import group7.tcss450.uw.edu.uilearner.R;
 
 
@@ -101,7 +98,12 @@ public class ForgotPasswordFragment extends Fragment {
                         protected void onPostExecute(Void v) {
                             Log.d("RESET", "onPostExecute()");
                             dialog.dismiss();
-                            Toast.makeText(getContext(), "Sent Email", Toast.LENGTH_SHORT).show();
+
+                            //Toast.makeText(getContext(), "Sent Email", Toast.LENGTH_SHORT).show();
+                            new AlertDialog.Builder(ForgotPasswordFragment.this.getContext())
+                                    .setMessage("Please check your email for a password reset link.")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                             mListener.onForgotPasswordInteraction(email.getText().toString());
                         }
                     }

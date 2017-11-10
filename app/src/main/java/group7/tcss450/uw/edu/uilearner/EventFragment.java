@@ -1,5 +1,6 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -118,7 +118,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         }
 
         if (mCurrentChosenRadioButton == null) {
-            Toast.makeText(getActivity(), "Must choose a student!", Toast.LENGTH_SHORT);
+//            Toast.makeText(getActivity(), "Must choose a student!", Toast.LENGTH_SHORT);
+            new AlertDialog.Builder(this.getContext())
+                    .setMessage("Must choose a student!")
+                    .setPositiveButton("OK", null)
+                    .show();
             result = false;
         }
 
