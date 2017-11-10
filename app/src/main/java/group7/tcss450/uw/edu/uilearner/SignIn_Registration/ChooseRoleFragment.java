@@ -117,6 +117,7 @@ public class ChooseRoleFragment extends Fragment {
                             } else {
                                 register.setEnabled(true);
                                 addCode.setError(null);
+
                             }
                         }
 
