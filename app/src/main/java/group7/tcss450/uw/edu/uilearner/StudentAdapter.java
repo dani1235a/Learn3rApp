@@ -1,21 +1,16 @@
 package group7.tcss450.uw.edu.uilearner;
 
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
-import group7.tcss450.uw.edu.uilearner.dummy.DummyContent;
 
 /**
  * Created by Connor on 11/9/2017.

@@ -133,6 +133,7 @@ public class ChooseRoleFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if(checkedId == R.id.teacher) {
                     Log.d(TAG, "teacher selected");
+                    addCode.setVisibility(View.INVISIBLE);
                     register.setEnabled(true);
                 } else if(checkedId == R.id.student) {
                     Log.d(TAG, "student selected");

@@ -38,6 +38,7 @@
     <string name="please_provide_the_email_linked_to_the_account">Please provide the email linked to the account:</string>
     <string name="role">Role</string>
     <string name="what_role_will_you_be_having">Are you a student or a teacher?</string>
+    <string name="next">Next</string>
 
 
     <string name="new_event">New Event Info</string>
