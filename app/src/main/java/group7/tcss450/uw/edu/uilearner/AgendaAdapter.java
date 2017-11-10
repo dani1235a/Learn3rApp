@@ -1,5 +1,6 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,15 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import group7.tcss450.uw.edu.uilearner.AgendaFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link String} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder> {
 
@@ -38,23 +41,26 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Log.d(TAG, "Binding View Holder");
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position));
-        holder.mContentView.setText(mValues.get(position));
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(mValues.get(position));
-                }
+        try {
+            JSONObject events = new JSONObject(mValues.get(position));
+            holder.mIdView.setText(events.getString("studentId") + " events");
+            JSONArray arr = events.getJSONArray("events");
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < arr.length(); i++) {
+                sb.append(arr.getJSONObject(i).getString("summary"))
+                        .append("\n");
             }
-        });
+            holder.mContentView.setText(sb.toString());
+
+
+        } catch (JSONException e) {
+            holder.mIdView.setText("Something went wrong with network request");
+        }
     }
 
     @Override
@@ -71,9 +77,10 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
         public ViewHolder(View view) {
             super(view);
+            Log.d(TAG, "ViewHolder");
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.summary);
+            mContentView = (TextView) view.findViewById(R.id.student);
         }
 
         @Override
