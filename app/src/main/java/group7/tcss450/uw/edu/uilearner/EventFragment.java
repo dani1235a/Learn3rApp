@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -150,7 +152,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             mCurrentChosenRadioButton.setChecked(false);
         }
         mCurrentChosenRadioButton = chosenRadioButton;
-        Log.d(TAG, "new student chosen: " + mCurrentChosenStudentUid);
     }
 
 
@@ -159,8 +160,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         protected HashMap<String, String> doInBackground(Void... params) {
             String response = "";
             try {
-                //TODO Get uid and pass it to web request.
-
                 String uid = mTeacherUid;
 
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary
@@ -173,7 +172,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .build();
 
 
-                Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
@@ -181,7 +179,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 StringBuilder sb = new StringBuilder();
                 while (s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                Log.d(TAG, response);
+
                 JSONObject json = new JSONObject(response);
                 JSONArray students = (JSONArray) json.get("students");
                 HashMap<String, String> allStudentsForTeacher = new HashMap<String, String>();
@@ -193,7 +191,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     allStudentsForTeacher.put(key, (String) obj.get(key));
                 }
 
-                Log.d(TAG, "Final HashMap: " + allStudentsForTeacher.toString());
                 return allStudentsForTeacher;
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -220,25 +217,13 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      *
      * @author Connor
      */
-    public class EventTask extends AsyncTask<String, Void, Void> {
+    public class EventTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             String response = "";
+            boolean wasSuccessful;
             try {
-                //Date dStart = new Date(params[1]);
-                //dStart.setTime(Long.valueOf(params[2]));  //add the time to the date
-
-                /*Calendar rightNow = Calendar.getInstance();
-                int year = rightNow.get(Calendar.YEAR);
-                int month = rightNow.get(Calendar.MONTH);
-                int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-
-                GregorianCalendar endDay = new GregorianCalendar(year, month, dayOfMonth);
-                endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
-                Date dEnd = endDay.getTime();*/
-                //TODO Get uid and pass it to web request.
-
                 String uid = mCurrentChosenStudentUid;
 
                 String[] dates = params[1].split("/");
@@ -246,14 +231,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 int dayOfMonth = Integer.valueOf(dates[1]);
                 int year = Integer.valueOf(dates[2]);
 
-                Log.d(TAG, "" + month + "/" + dayOfMonth + "/" + year);
                 dates = DateUtil.getWholeDayStartEnd(year, month, dayOfMonth);
 
                 String dStart = dates[0];
                 String dEnd = dates[1];
-
-                Log.d(TAG, "dStart: " + dStart);
-                Log.d(TAG, "dEnd: " + dEnd);
 
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary&event_name=someName
                 Uri uri = new Uri.Builder()
@@ -269,7 +250,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .build();
 
 
-                Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("POST");
                 connection.connect();
@@ -277,13 +257,24 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                Log.d(TAG, "Was the Event creation successful? " + response);
+                wasSuccessful = true;
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
+                wasSuccessful = false;
             }
 
-            return null;
+            return wasSuccessful;
         }
 
+
+        @Override
+        protected void onPostExecute(Boolean wasSuccessful) {
+            if (wasSuccessful) {
+                Toast.makeText(getActivity(), "Created a new event successfully", Toast.LENGTH_SHORT);
+                getActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                Toast.makeText(getActivity(), "Event creation failed!", Toast.LENGTH_SHORT);
+            }
+        }
     }
 }

@@ -99,16 +99,16 @@
         android:id="@+id/event_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="150dp"
         android:layout_marginTop="32dp"
         android:ems="10"
-        android:inputType="textMultiLine"
+        android:inputType="textLongMessage"
         android:textSize="10sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_time"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toRightOf="@+id/textView14"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintHorizontal_bias="1.0" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_time" />
 
     <TextView
         android:id="@+id/textView14"
@@ -135,14 +135,17 @@
 
     <Button
         android:id="@+id/confirm_event"
-        android:layout_width="58dp"
-        android:layout_height="29dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="286dp"
+        android:layout_width="72dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="220dp"
+        android:layout_marginRight="30dp"
         android:text="@string/confirm_event"
-        android:textSize="10sp"
+        android:textSize="9sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintVertical_bias="0.927" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/selected_student_list"
