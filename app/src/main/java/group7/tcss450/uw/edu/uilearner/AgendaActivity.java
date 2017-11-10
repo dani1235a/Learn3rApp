@@ -24,7 +24,8 @@ import com.google.firebase.auth.FirebaseUser;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 
 public class AgendaActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        AgendaFragment.OnListFragmentInteractionListener{
 
     public static final String TAG = "CALENDAR";
 
@@ -179,5 +180,10 @@ public class AgendaActivity extends AppCompatActivity
                 .replace(R.id.abc, fragment)
                 .addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(String item) {
+        //TODO: figure out if this is necessary, and delete if its not.
     }
 }

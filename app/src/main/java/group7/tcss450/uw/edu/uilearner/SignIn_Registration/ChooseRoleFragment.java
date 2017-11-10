@@ -31,21 +31,21 @@ public class ChooseRoleFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose_role, container, false);
-        Button teacher = (Button) v.findViewById(R.id.buttonRoleTeacher);
-        teacher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onRoleFragmentInteraction(IS_TEACHER);
-            }
-        });
-
-        Button student = (Button) v.findViewById(R.id.buttonRoleStudent);
-        student.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onRoleFragmentInteraction(IS_STUDENT);
-            }
-        });
+//        Button teacher = (Button) v.findViewById(R.id.buttonRoleTeacher);
+//        teacher.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.onRoleFragmentInteraction(IS_TEACHER);
+//            }
+//        });
+//
+//        Button student = (Button) v.findViewById(R.id.buttonRoleStudent);
+//        student.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.onRoleFragmentInteraction(IS_STUDENT);
+//            }
+//        });
         return v;
     }
 

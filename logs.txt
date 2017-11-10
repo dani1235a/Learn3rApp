@@ -1,0 +1,42 @@
+2017-11-09T23:23:31.381920+00:00 app[web.1]: [qtp1282766100-170] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-09T23:23:45.959203+00:00 app[web.1]: [qtp1282766100-148] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-09T23:27:02.477897+00:00 app[web.1]: [qtp1282766100-23] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-09T23:29:34.950714+00:00 app[web.1]: [qtp1282766100-176] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-10T00:18:37.625012+00:00 app[web.1]: [qtp1282766100-193] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-10T00:31:48.727467+00:00 app[web.1]: Setting JAVA_TOOL_OPTIONS defaults based on dyno size. Custom settings will override them.
+2017-11-10T00:31:48.730205+00:00 app[web.1]: Picked up JAVA_TOOL_OPTIONS: -Xmx300m -Xss512k -Dfile.encoding=UTF-8 
+2017-11-10T00:31:49.485205+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @750ms to org.eclipse.jetty.util.log.Slf4jLog
+2017-11-10T00:31:49.554395+00:00 app[web.1]: [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - == Spark has ignited ...
+2017-11-10T00:31:49.554537+00:00 app[web.1]: [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - >> Listening on 0.0.0.0:26209
+2017-11-10T00:31:49.559285+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.Server - jetty-9.4.z-SNAPSHOT
+2017-11-10T00:31:49.602537+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - DefaultSessionIdManager workerName=node0
+2017-11-10T00:31:49.602648+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - No SessionScavenger set, using defaults
+2017-11-10T00:31:49.606319+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - Scavenging every 600000ms
+2017-11-10T00:31:49.632136+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@55c73b4e{HTTP/1.1,[http/1.1]}{0.0.0.0:26209}
+2017-11-10T00:31:49.632392+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.Server - Started @902ms
+2017-11-10T00:31:55.153135+00:00 app[web.1]: [qtp765547571-14] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-10T00:33:44.556670+00:00 app[web.1]: Setting JAVA_TOOL_OPTIONS defaults based on dyno size. Custom settings will override them.
+2017-11-10T00:33:44.559391+00:00 app[web.1]: Picked up JAVA_TOOL_OPTIONS: -Xmx300m -Xss512k -Dfile.encoding=UTF-8 
+2017-11-10T00:33:44.783803+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @221ms to org.eclipse.jetty.util.log.Slf4jLog
+2017-11-10T00:33:44.832530+00:00 app[web.1]: [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - == Spark has ignited ...
+2017-11-10T00:33:44.832652+00:00 app[web.1]: [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - >> Listening on 0.0.0.0:15465
+2017-11-10T00:33:44.835543+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.Server - jetty-9.4.z-SNAPSHOT
+2017-11-10T00:33:44.868930+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - DefaultSessionIdManager workerName=node0
+2017-11-10T00:33:44.868937+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - No SessionScavenger set, using defaults
+2017-11-10T00:33:44.871133+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - Scavenging every 600000ms
+2017-11-10T00:33:44.894187+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@31c589d{HTTP/1.1,[http/1.1]}{0.0.0.0:15465}
+2017-11-10T00:33:44.894547+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.Server - Started @335ms
+2017-11-10T00:33:53.051266+00:00 app[web.1]: [qtp335403367-14] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-10T00:38:10.613143+00:00 app[web.1]: [qtp335403367-17] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
+2017-11-10T00:39:51.146149+00:00 app[web.1]: Setting JAVA_TOOL_OPTIONS defaults based on dyno size. Custom settings will override them.
+2017-11-10T00:39:51.149669+00:00 app[web.1]: Picked up JAVA_TOOL_OPTIONS: -Xmx300m -Xss512k -Dfile.encoding=UTF-8 
+2017-11-10T00:39:51.678438+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @525ms to org.eclipse.jetty.util.log.Slf4jLog
+2017-11-10T00:39:51.729193+00:00 app[web.1]: [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - == Spark has ignited ...
+2017-11-10T00:39:51.729269+00:00 app[web.1]: [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - >> Listening on 0.0.0.0:16397
+2017-11-10T00:39:51.732265+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.Server - jetty-9.4.z-SNAPSHOT
+2017-11-10T00:39:51.767303+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - DefaultSessionIdManager workerName=node0
+2017-11-10T00:39:51.767430+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - No SessionScavenger set, using defaults
+2017-11-10T00:39:51.771066+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.session - Scavenging every 660000ms
+2017-11-10T00:39:51.791721+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@55c73b4e{HTTP/1.1,[http/1.1]}{0.0.0.0:16397}
+2017-11-10T00:39:51.793057+00:00 app[web.1]: [Thread-0] INFO org.eclipse.jetty.server.Server - Started @642ms
+2017-11-10T00:39:57.992343+00:00 app[web.1]: [qtp765547571-14] ERROR edu.uw.tcss450.group7.Handler - couldn't create event
