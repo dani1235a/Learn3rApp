@@ -1,21 +1,29 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -82,9 +90,58 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 }
             }
         });
+        setUpDateAndTimeListeners();
 
 
         return v;
+    }
+
+    private void setUpDateAndTimeListeners() {
+        mEventDate.setOnTouchListener(new View.OnTouchListener() {
+            @TargetApi(Build.VERSION_CODES.N)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(MotionEvent.ACTION_DOWN == event.getAction()) {
+                    final DatePickerDialog dialog = new DatePickerDialog(getContext());
+                    dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            mEventDate.setText(year + "/" + month + "/" + dayOfMonth);
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
+                return false;
+            }
+        });
+
+        mEventDate.setFocusable(false);
+        mEventTime.setFocusable(false);
+        mEventTime.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(MotionEvent.ACTION_DOWN == event.getAction()) {
+                    TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            mEventTime.setText(hourOfDay + ":" + minute);
+                        }
+                    };
+                    int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
+                    int nowHour = Calendar.getInstance().get(Calendar.HOUR);
+                    TimePickerDialog dialog = new TimePickerDialog(getContext(), listener, nowHour, nowMinute, false);
+                    dialog.show();
+                }
+                return false;
+            }
+        });
+
+
+
+
+
     }
 
 
