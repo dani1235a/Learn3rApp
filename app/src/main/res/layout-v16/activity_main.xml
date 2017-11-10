@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="group7.tcss450.uw.edu.uilearner.MainActivity"
-    android:id = "@+id/main_container">
+    android:id = "@+id/main_container"
+    android:windowSoftInputMode="adjustPan">
 
 
 
