@@ -89,7 +89,6 @@ public class AgendaFragment extends Fragment {
             int year = rightNow.get(Calendar.YEAR);
             int month = rightNow.get(Calendar.MONTH);
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-            Log.d(TAG, "today's date from Agenda: " + dayOfMonth + "/" + month + "/" + year);
 
             agendaTask.execute(year, month, dayOfMonth);
         } else {
@@ -133,7 +132,7 @@ public class AgendaFragment extends Fragment {
                 //TODO Get uid and pass it to web request.
 
                 String uid = mUid;
-                // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
+                // http://learner-backend.herokuapp.com/teacher/events?start=someTime&end=someTime&uuid=UUID
                 Uri uri = new Uri.Builder()
                         .scheme("http")
                         .authority("learner-backend.herokuapp.com")
@@ -153,13 +152,8 @@ public class AgendaFragment extends Fragment {
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                Log.d(TAG, "here");
-                Log.d(TAG, response);
                 JSONObject json = new JSONObject(response);
-                Log.d(TAG, "here2");
                 JSONArray events = (JSONArray) json.get("events");
-
-                Log.d(TAG, events.toString());
 
                 ArrayList<String> dataset = new ArrayList<String>();
                 for (int i = 0; i < events.length(); i++) {

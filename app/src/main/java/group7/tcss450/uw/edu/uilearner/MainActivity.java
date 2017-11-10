@@ -57,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         this.activityReference = this;
         //Gets the current instance of FirebaseAuth.
         mAuth = FirebaseAuth.getInstance();
+
+        //If the Intent is not null, that means we got here from the sign out button
+        //in AgendaActivity, so sign out of the current FirebaseUser account before
+        //doing anything else.
+        if (getIntent() != null) {
+            signOut();
+        }
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -157,26 +165,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                             latch.countDown();
                                             alert.show();
 
-//                                            Toast.makeText(MainActivity.this, R.string.auth_failed,
-//                                                    Toast.LENGTH_SHORT).show();
                                         } else {
                                             Log.i(TAG, "User creation completed and was successful");
-//                                            Toast.makeText(MainActivity.this, R.string.auth_passed,
-//                                                    Toast.LENGTH_SHORT).show();
-
-
                                             //If the user has been created and signed in, the Display Fragment
                                             //will be switched to.
                                             user.setUid(mAuth.getCurrentUser().getUid());
-//                                            Toast.makeText(getApplicationContext(), "Role has been set for this User!", Toast.LENGTH_LONG).show();
-
-                                /*if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    Log.d(TAG, "changing activities");
-                                    changeActivity();
-                                } else {
-                                    Toast.makeText(MainActivity.this, R.string.verify_first,
-                                            Toast.LENGTH_SHORT).show();
-                                }*/
                                         }
                                     }
                                 }
@@ -216,8 +209,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         StringBuilder sb = new StringBuilder();
                         while(s.hasNext()) sb.append(s.next());
                         response = sb.toString();
-                        Log.d(TAG, "here");
-                        Log.d(TAG, response);
                         return true;
 
                     } catch (Exception e) {
@@ -256,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     private void changeActivity () {
         Intent agendaIntent = new Intent(this, AgendaActivity.class);
         Bundle args = new Bundle();
-        Log.d(AgendaActivity.TAG, "user role: " + user.getRole());
         args.putSerializable(TAG, user);
         agendaIntent.putExtra(TAG, args);
         //This clears the back stack.
@@ -279,14 +269,12 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (!task.isSuccessful()) {
-//                            Toast.makeText(MainActivity.this,
-//                                    "Verification email failed to send",
-//                                    Toast.LENGTH_SHORT).show();
+                            new android.app.AlertDialog.Builder(returnActivity())
+                                    .setMessage("Verification email to " + user.getEmail() + " failed to send.")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                         } else {
-//                            Toast.makeText(MainActivity.this,
-//                                    "Verification email sent to " + user.getEmail(),
-//                                    Toast.LENGTH_SHORT).show();
-                            new android.app.AlertDialog.Builder(getApplicationContext())
+                            new android.app.AlertDialog.Builder(returnActivity())
                                     .setMessage("A verification email has been sent to " + user.getEmail()
                                             + "! \n Please verify your email before proceeding.")
                                     .setPositiveButton("OK", null)
@@ -322,7 +310,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
             @Override
             protected void onPreExecute() {
-                Log.d(ASYNC_TAG, "onPreExecute()");
                 latch = new CountDownLatch(1);
                 dialog = new ProgressDialog(thisActivity);
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -369,12 +356,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             //The response is the role
                             response = sb.toString();
                             user.setRole(response);
-                            Log.d(TAG, "here");
-                            Log.d(TAG, response);
                             user.setUid(mAuth.getCurrentUser().getUid());
                         } catch (Exception e) {
                             Log.e(ASYNC_TAG, "Failed to sign in", e);
-
                         }
                     }
                 } catch (InterruptedException e) {
@@ -415,15 +399,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     public void signOut () {
         mAuth.signOut();
         if (mAuth.getCurrentUser() != null) {
-//            Toast.makeText(MainActivity.this, R.string.auth_failed,
-//                    Toast.LENGTH_SHORT).show();
             new android.app.AlertDialog.Builder(getApplicationContext())
                     .setMessage("Failed to sign out!")
                     .setPositiveButton("OK", null)
                     .show();
-        } else {
-//            Toast.makeText(MainActivity.this, R.string.auth_passed,
-//                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -479,6 +458,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     @Override
     public void onForgotPasswordInteraction(String username) {
         loadFragment(new SignInFragment(), null);
+    }
+
+
+    private Activity returnActivity() {
+        return this;
     }
 
 }

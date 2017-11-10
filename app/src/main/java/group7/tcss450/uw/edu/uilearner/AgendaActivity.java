@@ -42,7 +42,6 @@ public class AgendaActivity extends AppCompatActivity
 
         FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
         if(fireUser != null && !fireUser.isEmailVerified()) {
-            Log.d(TAG, "Email not verified");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("You will have to verify your email before you login again");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -52,7 +51,7 @@ public class AgendaActivity extends AppCompatActivity
                 }
             });
             builder.show();
-        } else if(fireUser != null) Log.d(TAG, "Email " + fireUser.getEmail() + "is verified");
+        }
 
 
         Intent i = getIntent();
@@ -136,8 +135,10 @@ public class AgendaActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_sign_out) {
+            //there will need to be a check using a popup here
+            Intent toMain = new Intent(this, MainActivity.class);
+            startActivity(toMain);
         }
 
         return super.onOptionsItemSelected(item);
