@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
         Author: Connor Lundberg
      */
-    public void createAccount (final String email, final String password) {
+    public void createAccount(final String email, final String password, final String addCode) {
 
         new AsyncTask<Void, Void, Boolean>() {
 
@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                     .scheme("http")
                                     .authority("learner-backend.herokuapp.com")
                                     .appendEncodedPath("student")
+                                    .appendQueryParameter("add_code", addCode)
                                     .appendQueryParameter("uuid", user.getUid()) //pass uid here
                                     .appendQueryParameter("name", user.getEmail())
                                     .build();
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         response = sb.toString();
                         Log.d(TAG, "here");
                         Log.d(TAG, response);
-                        return Boolean.getBoolean(response);
+                        return true;
 
                     } catch (Exception e) {
                         Log.e(TAG, "error creating", e);
@@ -457,10 +458,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     @Override
-    public void onRoleFragmentInteraction(String role) {
+    public void onRoleFragmentInteraction(String role, String addCode) {
         user.setRole(role);
 
-        createAccount(user.getEmail(), user.getPassword());
+        createAccount(user.getEmail(), user.getPassword(), addCode);
     }
 
     @Override
