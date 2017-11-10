@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import group7.tcss450.uw.edu.uilearner.util.DateUtil;
+
 
 public class EventFragment extends Fragment implements StudentAdapter.OnStudentNameInteractionListener {
 
@@ -220,35 +222,45 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         protected Void doInBackground(String... params) {
             String response = "";
             try {
-                Date dStart = new Date(params[1]);
+                //Date dStart = new Date(params[1]);
                 //dStart.setTime(Long.valueOf(params[2]));  //add the time to the date
 
-                Calendar rightNow = Calendar.getInstance();
+                /*Calendar rightNow = Calendar.getInstance();
                 int year = rightNow.get(Calendar.YEAR);
                 int month = rightNow.get(Calendar.MONTH);
                 int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
 
                 GregorianCalendar endDay = new GregorianCalendar(year, month, dayOfMonth);
                 endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
-                Date dEnd = endDay.getTime();
+                Date dEnd = endDay.getTime();*/
                 //TODO Get uid and pass it to web request.
 
                 String uid = mCurrentChosenStudentUid;
 
-                Log.d(TAG, "dStart: " + dStart.toString());
-                Log.d(TAG, "dEnd: " + dEnd.toString());
+                String[] dates = params[1].split("/");
+                int year = Integer.valueOf(dates[0]);
+                int month = Integer.valueOf(dates[1]);
+                int dayOfMonth = Integer.valueOf(dates[2]);
 
-                // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary
+                dates = DateUtil.getWholeDayStartEnd(year, month, dayOfMonth);
+
+                String dStart = dates[0];
+                String dEnd = dates[1];
+
+                Log.d(TAG, "dStart: " + dStart);
+                Log.d(TAG, "dEnd: " + dEnd);
+
+                // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary&event_name=someName
                 Uri uri = new Uri.Builder()
                         .scheme("http")
                         .authority("learner-backend.herokuapp.com")
                         .appendEncodedPath("teacher")
                         .appendEncodedPath("events")
                         .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dStart.toString())
-                        .appendQueryParameter("end", dEnd.toString())
+                        .appendQueryParameter("start", dStart)
+                        .appendQueryParameter("end", dEnd)
                         .appendQueryParameter("summary", params[3])
-                        //.appendQueryParameter("event_name", eventName) //pass event name here once the back end code is changed to match
+                        .appendQueryParameter("event_name", params[0]) //pass event name here once the back end code is changed to match
                         .build();
 
 
@@ -260,7 +272,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                Log.d(TAG, "Was the Event creation successfule? " + response);
+                Log.d(TAG, "Was the Event creation successful? " + response);
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
