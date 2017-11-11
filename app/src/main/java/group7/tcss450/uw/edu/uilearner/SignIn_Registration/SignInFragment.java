@@ -13,9 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import group7.tcss450.uw.edu.uilearner.MainActivity;
 import group7.tcss450.uw.edu.uilearner.R;
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.RegisterFragment;
 import group7.tcss450.uw.edu.uilearner.User;
 
 
