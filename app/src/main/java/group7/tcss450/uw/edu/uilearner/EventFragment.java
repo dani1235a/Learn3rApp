@@ -337,7 +337,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         protected void onPreExecute() {
             dialog = new ProgressDialog(getContext());
             dialog.setIndeterminate(true);
-            dialog.setMessage("Adding message");
+            dialog.setMessage("Adding event...");
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);

@@ -1,15 +1,9 @@
 package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
@@ -20,22 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.ProviderQueryResult;
-
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import group7.tcss450.uw.edu.uilearner.AgendaActivity;
-import group7.tcss450.uw.edu.uilearner.MainActivity;
 import group7.tcss450.uw.edu.uilearner.R;
 import group7.tcss450.uw.edu.uilearner.User;
 
@@ -115,11 +94,6 @@ public class RegisterFragment extends Fragment {
                     registerEmail.setError("Email must contain a \"@\" and \".\"");
                 }
 
-                cont = true;
-                if(!cont) {
-                    registerEmail.setError("This email is already in use. Please enter a different email.");
-                }
-
                 if(!pass1.getText().toString().equals(pass2.getText().toString()) && cont) {
                     pass1.setError("Passwords must match!");
                     pass2.setError("Passwords must match!");
@@ -187,6 +161,7 @@ public class RegisterFragment extends Fragment {
      */
     public static boolean isValidEmail(String s) {
         Log.d(AgendaActivity.TAG, "s in isValidEmail is null: " + (s == null));
+        //Complicated Regex statement
         return s.matches("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)" +
                 "|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
     }
@@ -202,7 +177,9 @@ public class RegisterFragment extends Fragment {
     }
 
 
-
+    /**
+     * interface that gets called when "Next" button is pressed.
+     */
     public interface OnRegisterFragmentInteractionListener {
         void onRegisterFragmentInteraction(User user);
     }
