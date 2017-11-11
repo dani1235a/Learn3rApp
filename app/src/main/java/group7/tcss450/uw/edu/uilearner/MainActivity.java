@@ -14,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,9 +21,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -38,6 +34,9 @@ import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ForgotPasswordFragmen
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.RegisterFragment;
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.SignInFragment;
 
+/**
+ * This class is the main activity. It first opens when the app runs. The sign in page
+ */
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
            RegisterFragment.OnRegisterFragmentInteractionListener,
             ChooseRoleFragment.OnFragmentInteractionListener,
@@ -51,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     private User user;
     private Activity activityReference;
 
+    /**
+     * On create method. Pretty self explanatory.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
 
 
-    /*
+    /**
         A reusable method that simply replaces the current fragment attached to
         the main_container layout in activity_main with the new one given.
      */
@@ -113,15 +116,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
     }
 
-    /*
+    /**
     Attempts to check an email using the given email String.
     If the email is not attached to a user in the user database, it will
     return true.
 
     If the email does not match a user in the user database however,
     it will return false.
-
-    #attempt 1
  */
     public boolean checkEmail(final String email) {
         final boolean[] matchFound = {false};
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         return matchFound[0];
     }
 
-    /*
+    /**
         Creates a new user account with the given email and password
         Strings. If they are both valid (meaning the email contains a
         '@' and corresponding '.' after to specify the domain, and the
@@ -160,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
             private CountDownLatch latch;
 
+            /**
+             * Sets the the progress bar during the calls to the back end to create the account.
+             */
             @Override
             protected void onPreExecute() {
                 latch = new CountDownLatch(1);
@@ -172,6 +176,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                 dialog.show();
             }
 
+            /**
+             * Creates the account in our system.
+             * @param voids
+             * @return
+             */
             @Override
             protected Boolean doInBackground(Void... voids) {
 
@@ -263,6 +272,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                 }
             }
 
+            /**
+             * Removes the Progress bar and changes the activity to the next activity.
+             * @param wasSuccessful
+             */
             @Override
             protected void onPostExecute(Boolean wasSuccessful) {
                 dialog.dismiss();
@@ -281,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
 
-    /*
+    /**
         A helper method to switch to the AgendaActivity. If any arguments need to be passed
         to AgendaActivity, it will be passed here using agendaIntent.putExtra(KEY, VALUE).
 
@@ -299,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
 
-    /*
+    /**
         Sends a verification email to the one specified by the User on account creation.
         If the email fails to send, then a Toast will appear, alerting the user of it.
 
@@ -328,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
 
-    /*
+    /**
         Attempts to sign in a user using the given email and password Strings.
         It first attempts to check if the email and password are valid (using
         isValidEmail and isValidPassword. If they then it will try to sign in.
@@ -351,6 +364,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
             private static final String ASYNC_TAG = "ASYNC_TAG";
 
+            /**
+             * Creates the progress bar and shows it.
+             */
             @Override
             protected void onPreExecute() {
                 latch = new CountDownLatch(1);
@@ -363,6 +379,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                 dialog.show();
             }
 
+            /**
+             * Make the backend calls to see if the password and usename were entered correctly.
+             * @param voids
+             * @return
+             */
             @Override
             protected Boolean doInBackground(Void... voids) {
                 final AtomicBoolean signedIn = new AtomicBoolean();
@@ -410,6 +431,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                 return signedIn.get();
             }
 
+            /**
+             * Remove the progressbar and sign the user in.
+             * @param correctCredentials
+             */
             @Override
             protected void onPostExecute(Boolean correctCredentials) {
                 FirebaseUser user = mAuth.getCurrentUser();
@@ -435,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
 
-    /*
+    /**
         Does a simple sign out of the current user and switches the view back to the original
         login screen.
      */
@@ -449,6 +474,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         }
     }
 
+    /**
+     * Shows a simple AlertDialog.
+     * @param context - the context for the AlertDialog
+     * @param message - the message to be displayed.
+     */
     public void showOkDialog(Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(message);
@@ -468,29 +498,55 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Student sign-in/register, this needs an accountState to differentiate
         the type of operation to do with the account.
      */
+
+    /**
+     * Fragment to display to sign the user in.
+     * Once the user presses "sign in" this creates the user and
+     * attempts to sign them in.
+     * @param user
+     */
     @Override
     public void SignInFragmentInteraction(User user) {
         this.user = user;
         signIn(this.user.getEmail(), this.user.getPassword());
     }
 
+    /**
+     * This is the fragment that is loaded when the user presses the "Register" button
+     * on the first screen.
+     */
     @Override
     public void SignInRegisterButtonInteraction() {
         loadFragment(new RegisterFragment(), null);
     }
 
+    /**
+     * This is for the "Forgot password" fragment to load when the user selects
+     * the "Forgot password" text on the first screen.
+     */
     @Override
     public void SignInForgotPasswordInteraction() {
         loadFragment(new ForgotPasswordFragment(), null);
     }
 
 
+    /**
+     * Fragment that takes the information in from the registration screen,
+     * creates the user, and then opens the ChooseRoleFragment.
+     * @param user
+     */
     @Override
     public void onRegisterFragmentInteraction(User user) {
         this.user = user;
         loadFragment(new ChooseRoleFragment(), null);
     }
 
+    /**
+     * This is the fragment WHere the user selects their role, and it then
+     * creates the account after a successful registration.
+     * @param role
+     * @param addCode
+     */
     @Override
     public void onRoleFragmentInteraction(String role, String addCode) {
         user.setRole(role);
@@ -498,12 +554,20 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         createAccount(user.getEmail(), user.getPassword(), addCode);
     }
 
+    /**
+     * After the user enters their email, it goes back to the sign in page.
+     * @param username
+     */
     @Override
     public void onForgotPasswordInteraction(String username) {
         loadFragment(new SignInFragment(), null);
     }
 
 
+    /**
+     * Simple method that returns this activity.
+     * @return
+     */
     private Activity returnActivity() {
         return this;
     }
