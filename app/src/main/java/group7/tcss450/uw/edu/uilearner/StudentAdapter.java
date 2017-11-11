@@ -135,7 +135,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnStudentNameInteractionListener {
-        // TODO: Update argument type and name
         void onStudentNameInteraction(String uuid, RadioButton chosenRadioButton);
     }
 }

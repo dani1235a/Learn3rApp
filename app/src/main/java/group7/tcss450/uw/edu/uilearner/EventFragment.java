@@ -3,6 +3,8 @@ package group7.tcss450.uw.edu.uilearner;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -104,13 +106,15 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
                 if(MotionEvent.ACTION_DOWN == event.getAction()) {
                     final DatePickerDialog dialog = new DatePickerDialog(getContext());
+
                     dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                            mEventDate.setText(year + "/" + month + "/" + dayOfMonth);
+                            mEventDate.setText(month+ 1 + "/" + dayOfMonth + "/" + year);
                             dialog.dismiss();
                         }
                     });
+
                     dialog.show();
                 }
                 return false;
@@ -130,7 +134,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         }
                     };
                     int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
-                    int nowHour = Calendar.getInstance().get(Calendar.HOUR);
+                    int nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                     TimePickerDialog dialog = new TimePickerDialog(getContext(), listener, nowHour, nowMinute, false);
                     dialog.show();
                 }
@@ -242,7 +246,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 HashMap<String, String> allStudentsForTeacher = new HashMap<String, String>();
 
                 for (int i = 0; i < students.length(); i++) {
-                    JSONObject obj = (JSONObject) students.get(i);
+                    JSONObject obj = students.getJSONObject(i);
                     Iterator<String> keyItr = obj.keys();
                     String key = keyItr.next();
                     allStudentsForTeacher.put(key, (String) obj.get(key));
@@ -276,6 +280,21 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      */
     public class EventTask extends AsyncTask<String, Void, Boolean> {
 
+        ProgressDialog dialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getContext());
+            dialog.setIndeterminate(true);
+            dialog.setMessage("Adding message");
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+
+        }
+
         @Override
         protected Boolean doInBackground(String... params) {
             String response = "";
@@ -289,6 +308,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 int year = Integer.valueOf(dates[2]);
 
                 dates = DateUtil.getWholeDayStartEnd(year, month, dayOfMonth);
+                Log.d(TAG, dates[0]);
+                Log.d(TAG, dates[1]);
 
                 String dStart = dates[0];
                 String dEnd = dates[1];
@@ -327,10 +348,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         @Override
         protected void onPostExecute(Boolean wasSuccessful) {
             if (wasSuccessful) {
-                Toast.makeText(getActivity(), "Created a new event successfully", Toast.LENGTH_SHORT);
+                Toast.makeText(getActivity(), "Created a new event successfully", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
                 getActivity().getSupportFragmentManager().popBackStack();
             } else {
-                Toast.makeText(getActivity(), "Event creation failed!", Toast.LENGTH_SHORT);
+                Toast.makeText(getActivity(), "Event creation failed!", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         }
     }

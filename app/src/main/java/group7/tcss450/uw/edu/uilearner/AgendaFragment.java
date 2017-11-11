@@ -1,11 +1,9 @@
 package group7.tcss450.uw.edu.uilearner;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,15 +14,14 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
+
+import group7.tcss450.uw.edu.uilearner.util.DateUtil;
 
 
 /**
@@ -125,10 +122,10 @@ public class AgendaFragment extends Fragment {
         protected ArrayList<String> doInBackground(Integer... integers) {
             String response = "";
             try {
-                Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
-                GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
-                endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
-                Date dEnd = endDay.getTime();
+
+                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                Log.d(TAG, dates[0]);
+                Log.d(TAG, dates[1]);
                 //TODO Get uid and pass it to web request.
 
                 String uid = mUid;
@@ -139,8 +136,8 @@ public class AgendaFragment extends Fragment {
                         .appendEncodedPath("teacher") //this will need to have a role check for teacher or student
                         .appendEncodedPath("events")
                         .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dStart.toString())
-                        .appendQueryParameter("end", dEnd.toString())
+                        .appendQueryParameter("start", dates[0])
+                        .appendQueryParameter("end", dates[1])
                         .build();
 
 
