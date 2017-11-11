@@ -1,9 +1,15 @@
 package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
@@ -14,7 +20,22 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.ProviderQueryResult;
+
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import group7.tcss450.uw.edu.uilearner.AgendaActivity;
+import group7.tcss450.uw.edu.uilearner.MainActivity;
 import group7.tcss450.uw.edu.uilearner.R;
 import group7.tcss450.uw.edu.uilearner.User;
 
@@ -83,7 +104,7 @@ public class RegisterFragment extends Fragment {
         });
 
 
-        Button registerButton = (Button) v.findViewById(R.id.buttonRegister);
+        final Button registerButton = (Button) v.findViewById(R.id.buttonRegister);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,12 +130,19 @@ public class RegisterFragment extends Fragment {
                 }
 
                 if(cont) {
-                    String email = registerEmail.getText().toString();
-                    String password = pass1.getText().toString();
-                    user = new User(email, password);
-                    mListener.onRegisterFragmentInteraction(user);
+                    if (emailAlreadyInUse(registerEmail.getText().toString())) {
+                        new android.app.AlertDialog.Builder(RegisterFragment.this.getContext())
+                                .setMessage("The email: " + registerEmail.getText().toString()
+                                        + "\nis already in use. Please enter a different email.")
+                                .setPositiveButton("OK", null)
+                                .show();
+                    } else {
+                        String email = registerEmail.getText().toString();
+                        String password = pass1.getText().toString();
+                        user = new User(email, password);
+                        mListener.onRegisterFragmentInteraction(user);
+                    }
 
-                    //TODO: Check to see if the email already exists in database
                 } else {
                     new AlertDialog.Builder(RegisterFragment.this.getContext())
                             .setMessage("Invalid Email + Password combo!")
@@ -126,6 +154,19 @@ public class RegisterFragment extends Fragment {
 
         return v;
     }
+
+    /**
+     * Checks if the email is already in the system.
+     * @param email - email getting checked
+     * @return - true if the email is in use.
+     */
+    private boolean emailAlreadyInUse(String email) {
+        boolean userFound = false;
+
+        return userFound;
+        //return !checkEmail(email);
+    }
+
 
 
     @Override
