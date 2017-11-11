@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.ProviderQueryResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,7 +103,29 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         transaction.commit();
     }
 
+    /*
+    Attempts to check an email using the given email String.
+    If the email is not attached to a user in the user database, it will
+    return true.
 
+    If the email does not match a user in the user database however,
+    it will return false.
+
+    #attempt 1
+ */
+    public boolean checkEmail(final String email) {
+        final boolean[] matchFound = {false};
+        mAuth.fetchProvidersForEmail(email).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                if(task.isSuccessful()){
+                    // getProviders().size() will return size 1. if email ID is available.
+                    matchFound[0] = (task.getResult().getProviders().size() == 1)? true:false;
+                }
+            }
+        });
+        return matchFound[0];
+    }
 
     /*
         Creates a new user account with the given email and password
@@ -235,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
         }.execute();
 
-}
+    }
 
 
     /*
