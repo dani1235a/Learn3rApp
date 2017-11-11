@@ -33,7 +33,10 @@ import group7.tcss450.uw.edu.uilearner.util.DateUtil;
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link CalendarFragment.OnCalendarInteractionListener} interface
- * to handle interaction events.
+ * to handle interaction events. It will display the date and any events
+ * listed for the selected below Calendar.
+ *
+ * @author Connor
  */
 public class CalendarFragment extends Fragment {
 
@@ -51,6 +54,16 @@ public class CalendarFragment extends Fragment {
     }
 
 
+    /**
+     * Gets the Calendar set up in the layout and specifies what to happen on the date changed.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     *
+     * @author Connor
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,6 +89,12 @@ public class CalendarFragment extends Fragment {
     }
 
 
+    /**
+     * This is used to get the uuid of the user and tell the Calendar to start with the current day
+     * (which is also the first day chosen on the Calendar automatically).
+     *
+     * @author Connor
+     */
     @Override
     public void onStart() {
         Bundle args = getArguments();

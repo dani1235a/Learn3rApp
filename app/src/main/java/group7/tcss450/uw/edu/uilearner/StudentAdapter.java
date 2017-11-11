@@ -14,6 +14,8 @@ import java.util.Set;
 
 /**
  * Created by Connor on 11/9/2017.
+ *
+ * This holds the information of each student radio button.
  */
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
@@ -79,6 +81,16 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     }
 
 
+    /**
+     * Sets the text of each radio button to the email position given and sets the
+     * on click listener for the radio button to be a call to listener's
+     * onStudentNameInteraction.
+     *
+     * @param holder
+     * @param position
+     *
+     * @author Connor
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Log.d(TAG, "Binding View Holder");

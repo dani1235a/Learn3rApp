@@ -18,7 +18,10 @@ import java.util.ArrayList;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link String} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link OnListFragmentInteractionListener}. This one specifically makes the cards
+ * that will be displayed on the AgendaFragment.
+ *
+ * @author Connor
  */
 public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder> {
 
@@ -27,11 +30,31 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     private final ArrayList<String> mValues;
     private final OnListFragmentInteractionListener mListener;
 
+
+    /**
+     * Main constructor for AgendaAdapter.
+     *
+     * @param items The list of String values to put on the text views.
+     * @param listener The listener to interact with.
+     *
+     * @author Connor
+     */
     public AgendaAdapter(ArrayList<String> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
+
+    /**
+     * This is called for the number of elements in the String List. It makes each ViewHolder
+     * and inflates them.
+     *
+     * @param parent
+     * @param viewType
+     * @return The ViewHolder to display
+     *
+     * @author Connor
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -41,6 +64,15 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
+
+    /**
+     * This binds the values to their respective holder.
+     *
+     * @param holder
+     * @param position
+     *
+     * @author Connor
+     */
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
@@ -69,6 +101,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         return mValues.size();
     }
 
+
+    /**
+     * Our implementation of the RecyclerView.ViewHolder. It holds the values and View objects
+     * that are going to be displayed in the RecyclerView.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;

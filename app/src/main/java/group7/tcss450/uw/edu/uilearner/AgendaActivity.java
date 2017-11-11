@@ -23,6 +23,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 
+/**
+ * This is the controller for the majority of the app. It gets everything ready for
+ * the different fragments and swaps between the AgendaFragment, CalendarFragment, and
+ * EventFragment (Teachers only).
+ *
+ * @author Connor
+ */
 public class AgendaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         AgendaFragment.OnListFragmentInteractionListener{
@@ -33,6 +40,19 @@ public class AgendaActivity extends AppCompatActivity
     private String mEmail;
     private String mUid;
 
+
+    /**
+     * This is where the Activity kicks off. The first thing is does after getting the layout
+     * ready is check to make sure the user is signed in and that they are verified. After,
+     * it will get an Intent and check if it exists or not. This is to get information from the
+     * MainActivity about user details. Things like role type, add code (for Teachers), and email.
+     * From there we get the Floating Action Button set up, do some more work on the layout, and start
+     * the first Fragment (AgendaFragment).
+     *
+     * @param savedInstanceState
+     *
+     * @author Connor
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +130,11 @@ public class AgendaActivity extends AppCompatActivity
         }
     }
 
+
+    /**
+     * Closes the drawer on back press if it is open.
+     *
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -120,6 +145,13 @@ public class AgendaActivity extends AppCompatActivity
         }
     }
 
+
+    /**
+     * Inflates the options menu.
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -127,6 +159,15 @@ public class AgendaActivity extends AppCompatActivity
         return true;
     }
 
+
+    /**
+     * This is for any of the options menu items when they are clicked.
+     *
+     * @param item
+     * @return That a menu item was clicked.
+     *
+     * @author Connor
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -145,7 +186,14 @@ public class AgendaActivity extends AppCompatActivity
     }
 
 
-
+    /**
+     * This is for any of the navigation menu items when they are clicked.
+     *
+     * @param item
+     * @return That a menu item was clicked
+     *
+     * @author Connor
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

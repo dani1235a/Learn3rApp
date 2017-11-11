@@ -44,6 +44,12 @@ import java.util.Scanner;
 import group7.tcss450.uw.edu.uilearner.util.DateUtil;
 
 
+/**
+ * This is where the Teacher creates a new event for a student. It has fields for event name, date,
+ * time, summary, and the student it's for.
+ *
+ * @author Connor, Myles
+ */
 public class EventFragment extends Fragment implements StudentAdapter.OnStudentNameInteractionListener {
 
 
@@ -65,6 +71,16 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     }
 
 
+    /**
+     * This gets the Elements to use in the AsyncTasks.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     *
+     * @author Connor
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +121,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Gets the date and time listeners ready for the popups once the Teacher clicks
+     * on one of the fields.
+     *
+     * @author Myles
+     */
     private void setUpDateAndTimeListeners() {
         mEventDate.setOnTouchListener(new View.OnTouchListener() {
             @TargetApi(Build.VERSION_CODES.N)
@@ -200,6 +222,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     }
 
 
+    /**
+     * Gets the Teacher's uuid from the Activity and starts the Student AsyncTask in order to make
+     * the list of students attached to the Teacher.
+     *
+     * @author Connor
+     */
     @Override
     public void onStart() {
         if (getArguments() != null) {
@@ -211,6 +239,15 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     }
 
 
+    /**
+     * Once a student name is chosen, the current chosen student uuid is set and any
+     * already selected radio button is deselected.
+     *
+     * @param uuid
+     * @param chosenRadioButton
+     *
+     * @author Connor
+     */
     @Override
     public void onStudentNameInteraction(String uuid, RadioButton chosenRadioButton) {
         mCurrentChosenStudentUid = uuid;
@@ -223,6 +260,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     }
 
 
+    /**
+     * This AsyncTask will get the list of Student emails and uuids and put them onto the
+     * RecyclerView that will hold them.
+     *
+     * @author Connor, Myles
+     */
     public class StudentTask extends AsyncTask<Void, Void, HashMap<String, String>> {
         @Override
         protected HashMap<String, String> doInBackground(Void... params) {
@@ -283,7 +326,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      * date, summary, chosen student uuid, and event name and sends it to the back end to be
      * added into the GoogleCalendar.
      *
-     * @author Connor
+     * @author Connor, Myles
      */
     public class EventTask extends AsyncTask<String, Void, Boolean> {
 

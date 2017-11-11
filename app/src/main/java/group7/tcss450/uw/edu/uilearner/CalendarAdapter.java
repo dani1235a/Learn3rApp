@@ -33,6 +33,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
      * @param parent
      * @param viewType
      * @return Blank ViewHolder
+     *
+     * @author Connor
      */
     @Override
     public CalendarAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
@@ -52,6 +54,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
      *
      * @param holder
      * @param position
+     *
+     * @author Connor
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -72,6 +76,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     /**
      *  A helper class that will hold each CardView for our events
      *  list.
+     *
+     *  @author Connor
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
