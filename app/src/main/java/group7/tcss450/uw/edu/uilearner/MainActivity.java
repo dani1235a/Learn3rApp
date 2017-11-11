@@ -95,12 +95,22 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         the main_container layout in activity_main with the new one given.
      */
     private void loadFragment(Fragment fragment, Bundle args) {
-        fragment.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.main_container, fragment);
-        transaction.commit();
+        // dont want to add the first fragment to the backstack.
+        if (fragment instanceof SignInFragment) {
+            fragment.setArguments(args);
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, fragment);
+            transaction.commit();
+        } else {
+            fragment.setArguments(args);
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.main_container, fragment);
+            transaction.commit();
+        }
+
     }
 
     /*
