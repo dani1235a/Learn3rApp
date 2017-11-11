@@ -72,6 +72,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         View v = inflater.inflate(R.layout.fragment_event, container, false);
         mInstance = this;
 
+        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
         mEventName = (EditText) v.findViewById(R.id.event_name);
         mEventDate = (EditText) v.findViewById(R.id.event_date);
         mEventTime = (EditText) v.findViewById(R.id.event_time);
@@ -96,6 +97,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
 
         return v;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
     }
 
     private void setUpDateAndTimeListeners() {
