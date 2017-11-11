@@ -94,11 +94,6 @@ public class RegisterFragment extends Fragment {
                     registerEmail.setError("Email must contain a \"@\" and \".\"");
                 }
 
-                cont = true;
-                if(!cont) {
-                    registerEmail.setError("This email is already in use. Please enter a different email.");
-                }
-
                 if(!pass1.getText().toString().equals(pass2.getText().toString()) && cont) {
                     pass1.setError("Passwords must match!");
                     pass2.setError("Passwords must match!");
