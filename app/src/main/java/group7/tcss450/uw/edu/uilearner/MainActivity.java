@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             protected Boolean doInBackground(Void... voids) {
 
                 Log.d(TAG, "In here");
-
+                final AtomicBoolean wasSuccessful = new AtomicBoolean(true);
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(thisActivity, new OnCompleteListener<AuthResult>() {
                                     @Override
@@ -178,13 +178,18 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                         if (!task.isSuccessful()) {
                                             Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
                                             AlertDialog.Builder alert = new AlertDialog.Builder(activityReference);
-                                            alert.setTitle("Failed to register");
+                                            String message = "Failed to register";
+                                            if(task.getException() != null) {
+                                                alert.setMessage(task.getException().getMessage());
+                                            }
+                                            alert.setTitle(message);
                                             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     loadFragment(new RegisterFragment(), null);
                                                 }
                                             });
+                                            wasSuccessful.set(false);
                                             latch.countDown();
                                             alert.show();
 
@@ -199,43 +204,47 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         );
                 try {
                     latch.await(10, TimeUnit.SECONDS);
-                    try {
-                        // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
-                        // or
-                        // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
-                        Uri uri;
-                        String response;
-                        if (user.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
-                            uri = new Uri.Builder()
-                                    .scheme("http")
-                                    .authority("learner-backend.herokuapp.com")
-                                    .appendEncodedPath("teacher")
-                                    .appendQueryParameter("uuid", user.getUid()) //pass uid here
-                                    .appendQueryParameter("name", user.getEmail())
-                                    .build();
-                        } else {
-                            uri = new Uri.Builder()
-                                    .scheme("http")
-                                    .authority("learner-backend.herokuapp.com")
-                                    .appendEncodedPath("student")
-                                    .appendQueryParameter("add_code", addCode)
-                                    .appendQueryParameter("uuid", user.getUid()) //pass uid here
-                                    .appendQueryParameter("name", user.getEmail())
-                                    .build();
+                    if(wasSuccessful.get()) {
+                        try {
+                            // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
+                            // or
+                            // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
+                            Uri uri;
+                            String response;
+                            if (user.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
+                                uri = new Uri.Builder()
+                                        .scheme("http")
+                                        .authority("learner-backend.herokuapp.com")
+                                        .appendEncodedPath("teacher")
+                                        .appendQueryParameter("uuid", user.getUid()) //pass uid here
+                                        .appendQueryParameter("name", user.getEmail())
+                                        .build();
+                            } else {
+                                uri = new Uri.Builder()
+                                        .scheme("http")
+                                        .authority("learner-backend.herokuapp.com")
+                                        .appendEncodedPath("student")
+                                        .appendQueryParameter("add_code", addCode)
+                                        .appendQueryParameter("uuid", user.getUid()) //pass uid here
+                                        .appendQueryParameter("name", user.getEmail())
+                                        .build();
+                            }
+
+                            Log.d(TAG, uri.toString());
+                            HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                            connection.setRequestMethod("POST");
+                            connection.connect();
+                            Scanner s = new Scanner(connection.getInputStream());
+                            StringBuilder sb = new StringBuilder();
+                            while(s.hasNext()) sb.append(s.next());
+                            response = sb.toString();
+                            return true;
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "error creating", e);
+                            return false;
                         }
-
-                        Log.d(TAG, uri.toString());
-                        HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-                        connection.setRequestMethod("POST");
-                        connection.connect();
-                        Scanner s = new Scanner(connection.getInputStream());
-                        StringBuilder sb = new StringBuilder();
-                        while(s.hasNext()) sb.append(s.next());
-                        response = sb.toString();
-                        return true;
-
-                    } catch (Exception e) {
-                        Log.e(TAG, "error creating", e);
+                    } else {
                         return false;
                     }
                 } catch (InterruptedException e) {
@@ -251,8 +260,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     sendEmailVerification();
                     changeActivity();
                 } else {
-                    showOkDialog(activityReference, "Failed to create user in database");
-                    mAuth.getCurrentUser().delete();
+                    if(mAuth.getCurrentUser() != null) {
+                        mAuth.getCurrentUser().delete();
+                    }
                 }
             }
 

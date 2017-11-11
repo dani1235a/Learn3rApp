@@ -37,6 +37,8 @@ public class ChooseRoleFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private String selectedRole;
+
     public ChooseRoleFragment() {
         // Required empty public constructor
     }
@@ -60,7 +62,7 @@ public class ChooseRoleFragment extends Fragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onRoleFragmentInteraction(IS_STUDENT, addCode.getText().toString());
+                mListener.onRoleFragmentInteraction(selectedRole, addCode.getText().toString());
             }
         });
 
@@ -134,9 +136,11 @@ public class ChooseRoleFragment extends Fragment {
                 if(checkedId == R.id.teacher) {
                     Log.d(TAG, "teacher selected");
                     addCode.setVisibility(View.INVISIBLE);
+                    selectedRole = IS_TEACHER;
                     register.setEnabled(true);
                 } else if(checkedId == R.id.student) {
                     Log.d(TAG, "student selected");
+                    selectedRole = IS_STUDENT;
                     addCode.setVisibility(View.VISIBLE);
                 }
             }
