@@ -37,7 +37,6 @@ import group7.tcss450.uw.edu.uilearner.util.DateUtil;
  */
 public class AgendaFragment extends Fragment {
 
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private static final String TAG = "AGENDA";
 
@@ -111,7 +110,6 @@ public class AgendaFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(String item);
     }
 
@@ -131,7 +129,6 @@ public class AgendaFragment extends Fragment {
                 String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
                 Log.d(TAG, dates[0]);
                 Log.d(TAG, dates[1]);
-                //TODO Get uid and pass it to web request.
 
                 String uid = mUid;
                 // http://learner-backend.herokuapp.com/teacher/events?start=someTime&end=someTime&uuid=UUID

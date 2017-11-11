@@ -233,6 +233,5 @@ public class AgendaActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(String item) {
-        //TODO: figure out if this is necessary, and delete if its not.
     }
 }

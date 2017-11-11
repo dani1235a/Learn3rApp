@@ -134,7 +134,6 @@ public class CalendarFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnCalendarInteractionListener {
-        // TODO: Update argument type and name
         void onCalendarInteraction(int year, int month, int dayOfMonth);
     }
 
