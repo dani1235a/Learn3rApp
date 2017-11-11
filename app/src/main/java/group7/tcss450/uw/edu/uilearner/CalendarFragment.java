@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+import group7.tcss450.uw.edu.uilearner.util.DateUtil;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -129,11 +131,8 @@ public class CalendarFragment extends Fragment {
         protected ArrayList<String> doInBackground(Integer... integers) {
             String response = "";
             try {
-                Date dStart = new GregorianCalendar(integers[0], integers[1], integers[2]).getTime();
-                GregorianCalendar endDay = new GregorianCalendar(integers[0], integers[1], integers[2]);
-                endDay.add(GregorianCalendar.DAY_OF_MONTH, 1);
-                Date dEnd = endDay.getTime();
-                //TODO Get uid and pass it to web request.
+
+                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1], integers[2]);
 
                 String uid = mUid;
                 // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
@@ -143,8 +142,8 @@ public class CalendarFragment extends Fragment {
                         .appendEncodedPath("teacher") //this will need to have a check for user role.
                         .appendEncodedPath("events")
                         .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dStart.toString())
-                        .appendQueryParameter("end", dEnd.toString())
+                        .appendQueryParameter("start", dates[0])
+                        .appendQueryParameter("end", dates[1])
                         .build();
 
 
