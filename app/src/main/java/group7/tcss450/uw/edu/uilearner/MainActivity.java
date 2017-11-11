@@ -139,19 +139,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     /**
-        Creates a new user account with the given email and password
-        Strings. If they are both valid (meaning the email contains a
-        '@' and corresponding '.' after to specify the domain, and the
-        password is at least 6 chars long) then it will create the account.
-
-        If the email is in an invalid format (a separate check within
-        createUserWithEmailAndPassword) or the email is already in use by
-        another User, the creation will fail and a Toast will be made stating
-        so. Otherwise, the user is created in the Firebase console and the
-        FirebaseAuth instance's current user is set to the one just created
-        (automatic sign in).
-
-        Author: Connor Lundberg
+     * At a high level, this method creates a new user in FireBase, then once that user is successfully
+     * created and signed in, is then 'posted' to the backend database of students and teacher
+     * if the user is a student, the @param addCode is used to link the teacher to the new student via
+     * a database bridge.
+     * If the user is a teacher, then the user is added to the teacher table on the backend, and an
+     * addCode is generated for them in the server side code.
+     * authors: Myles Haynes, Connor Lundberg
      */
     public void createAccount(final String email, final String password, final String addCode) {
 
@@ -159,6 +153,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
             private ProgressDialog dialog;
 
+            /**
+             * This latch is used synchronize the 'doInBackground' thread with the 'onCompleteListener'
+             * Normally, the doInBackground thread would not wait for the onCompleteListener to finish,
+             * but in this case we really want it to. By calling {@code latch.countDown()} in the
+             * onCompleteListener code, we can use {@code latch.await()} in the doInBackground thread
+             * so it awaits the task to finish.
+             */
             private CountDownLatch latch;
 
             /**
@@ -201,6 +202,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                             if(task.getException() != null) {
                                                 alert.setMessage(task.getException().getMessage());
                                             }
+                                            //If we weren't successful in creating the user, let the
+                                            //user know.
                                             alert.setTitle(message);
                                             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -222,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                 }
                         );
                 try {
+                    //Wait for the onCompleteListener to fire before we continue.
                     latch.await(10, TimeUnit.SECONDS);
                     if(wasSuccessful.get()) {
                         try {
@@ -274,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
             /**
              * Removes the Progress bar and changes the activity to the next activity.
-             * @param wasSuccessful
              */
             @Override
             protected void onPostExecute(Boolean wasSuccessful) {
