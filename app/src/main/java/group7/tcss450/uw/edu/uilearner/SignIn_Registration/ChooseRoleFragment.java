@@ -66,6 +66,11 @@ public class ChooseRoleFragment extends Fragment {
             }
         });
 
+        /*
+        We want to verify that the add code that is being typed in is valid before we try to register the person
+        therefore, we need to check the '/teacher/code' path on the server to see if what they're typing is valid.
+        Don't let them register until they have a valid code.
+         */
         addCode.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -111,6 +116,9 @@ public class ChooseRoleFragment extends Fragment {
                             }
                         }
 
+                        /**
+                         * @param isValid whether add code being typed is valid or not. Let the user know if its not.
+                         */
                         @Override
                         protected void onPostExecute(Boolean isValid) {
                             if(!isValid) {
@@ -129,6 +137,9 @@ public class ChooseRoleFragment extends Fragment {
         });
 
 
+        /*
+        As the group selection changes, change whether register is enabled or not. also update role
+         */
         RadioGroup group = (RadioGroup) v.findViewById(R.id.radioGroup);
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
