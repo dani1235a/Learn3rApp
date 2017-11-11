@@ -24,7 +24,7 @@ import group7.tcss450.uw.edu.uilearner.R;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Fragment for "Forgot Password"
  */
 public class ForgotPasswordFragment extends Fragment {
 
@@ -36,6 +36,13 @@ public class ForgotPasswordFragment extends Fragment {
     }
 
 
+    /**
+     * Creates the view and sets up the Buttons/TextView fields.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +53,9 @@ public class ForgotPasswordFragment extends Fragment {
         mListener = (OnFragmentInteractionListener) getActivity();
 
 
+        /**
+         * AsyncTask that calls on Firebase to send an email for a password reset to a particular user.
+         */
         resetPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +69,9 @@ public class ForgotPasswordFragment extends Fragment {
 
                         private ProgressDialog dialog;
 
+                        /**
+                         * Create the progress bar.
+                         */
                         @Override
                         protected void onPreExecute() {
                             Log.d("RESET", "onPreExecute()");
@@ -70,6 +83,11 @@ public class ForgotPasswordFragment extends Fragment {
                             dialog.show();
                         }
 
+                        /**
+                         * Method to actually send the email for a password reset.
+                         * @param email
+                         * @return
+                         */
                         @Override
                         protected Void doInBackground(String... email) {
                             //This latch allows us to figure out when a job is done.
@@ -94,6 +112,10 @@ public class ForgotPasswordFragment extends Fragment {
                             return null;
                         }
 
+                        /**
+                         * Remove the progressbar and proceed.
+                         * @param v
+                         */
                         @Override
                         protected void onPostExecute(Void v) {
                             Log.d("RESET", "onPostExecute()");
@@ -116,6 +138,9 @@ public class ForgotPasswordFragment extends Fragment {
         return v;
     }
 
+    /**
+     * Interface that gets called when the "Reset" button gets pressed.
+     */
     public interface OnFragmentInteractionListener {
         void onForgotPasswordInteraction(String username);
     }

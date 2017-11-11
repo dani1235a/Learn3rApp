@@ -19,15 +19,13 @@ import android.widget.RadioGroup;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Scanner;
 
 import group7.tcss450.uw.edu.uilearner.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Fragment for the ChooseRole part of Registration.
  */
 public class ChooseRoleFragment extends Fragment {
 
@@ -44,6 +42,13 @@ public class ChooseRoleFragment extends Fragment {
     }
 
 
+    /**
+     * Sets up view. Links to buttons and textView objects.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,6 +88,11 @@ public class ChooseRoleFragment extends Fragment {
                 register.setEnabled(true);
             }
 
+            /**
+             * AsyncTask function that will look at what the user is typing and wait to see until they have a
+             * valid teacher add code to let them proceed and register.
+             * @param s
+             */
             @Override
             public void afterTextChanged(Editable s) {
                 if(addCode.getText().length() > 0) {
@@ -164,6 +174,10 @@ public class ChooseRoleFragment extends Fragment {
     }
 
 
+    /**
+     * Set up the mListener to run on this context.
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -176,6 +190,9 @@ public class ChooseRoleFragment extends Fragment {
     }
 
 
+    /**
+     * Interface that gets called when the "Register" button is pressed.
+     */
     public interface OnFragmentInteractionListener {
         void onRoleFragmentInteraction(String role, String addCode);
     }

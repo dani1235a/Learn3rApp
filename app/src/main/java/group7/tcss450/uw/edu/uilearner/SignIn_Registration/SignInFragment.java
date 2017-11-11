@@ -33,6 +33,13 @@ public class SignInFragment extends Fragment {
     }
 
 
+    /**
+     * Sets up the fragment, and links to all the buttons/TextViews.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return - view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,20 +78,11 @@ public class SignInFragment extends Fragment {
                 mListener.SignInForgotPasswordInteraction();
             }
         });
-
-//        ImageButton ib = (ImageButton) v.findViewById(R.id.sign_out);
-//        ib.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.SignInFragmentInteraction(MainActivity.SIGN_OUT, null, null);
-//            }
-//        });
-
         return v;
     }
 
 
-    /*
+    /**
         Looks to see if the device is connected to the Internet. If not, disable all buttons
         and set the Internet access message to visible for the user to see. Otherwise, if the
         buttons are already disabled, then reenable them and set the message to GONE.
@@ -107,7 +105,7 @@ public class SignInFragment extends Fragment {
         }
     }
 
-    /*
+    /**
             Checks if the device is connected to the Internet.
 
             Note: This requires the uses-permission, android.permission.ACCESS_NETWORK_STATE
@@ -122,7 +120,7 @@ public class SignInFragment extends Fragment {
     }
 
 
-    /*
+    /**
         Assigns the MainActivity as the OnFragmentInteractionListener for this Fragment.
      */
     @Override
@@ -137,8 +135,9 @@ public class SignInFragment extends Fragment {
     }
 
 
-
-
+    /**
+     * Listeners for when a button it pressed on this fragment.
+     */
     public interface OnFragmentInteractionListener {
 
         void SignInFragmentInteraction(User user);
