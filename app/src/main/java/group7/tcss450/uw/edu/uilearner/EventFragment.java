@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.support.design.widget.TextInputLayout;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -128,13 +129,15 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      * @author Myles
      */
     private void setUpDateAndTimeListeners() {
+        Log.d(TAG, "mEventDate == null? " + (mEventDate == null));
         mEventDate.setOnTouchListener(new View.OnTouchListener() {
             @TargetApi(Build.VERSION_CODES.N)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(MotionEvent.ACTION_DOWN == event.getAction()) {
-                    final DatePickerDialog dialog = new DatePickerDialog(getContext());
+                    Context ctx = getContext();
+                    final DatePickerDialog dialog = new DatePickerDialog(ctx);
 
                     dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
                         @Override

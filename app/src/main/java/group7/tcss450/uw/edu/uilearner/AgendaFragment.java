@@ -156,7 +156,9 @@ public class AgendaFragment extends Fragment {
 
                 ArrayList<String> dataset = new ArrayList<String>();
                 for (int i = 0; i < events.length(); i++) {
-                    dataset.add(events.getString(i));
+                    String event = events.getString(i);
+                    Log.d(TAG, event);
+                    dataset.add(event);
                 }
 
                 return dataset;
@@ -182,7 +184,7 @@ public class AgendaFragment extends Fragment {
         protected void onPostExecute(ArrayList<String> result) {
             TextView empty = (TextView) getActivity().findViewById(R.id.empty_agenda);
             if (!result.isEmpty()) {
-                if (empty.getVisibility() != View.GONE) { //in case "empty_agenda" is already visible, make it gone.
+                if (empty != null && empty.getVisibility() != View.GONE) { //in case "empty_agenda" is already visible, make it gone.
                     empty.setVisibility(View.GONE);
                 }
                 mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
