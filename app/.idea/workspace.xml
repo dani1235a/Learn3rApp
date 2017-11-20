@@ -20,6 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03a4f839-b7d8-4f67-9065-341e88420fa2" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/res/layout-large/fragment_event.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/res/layout-xlarge/fragment_event.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_event.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_event.xml" />
     </list>
@@ -2388,28 +2390,6 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragment_event.xml" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Learn3rApp" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -3228,12 +3208,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="499">
           <caret line="120" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="276" selection-end-column="0" />
-          <folding>
-            <marker date="1511130856943" expanded="false" signature="4496:4515" ph="&quot;mm/dd/yyyy&quot;" />
-            <marker date="1511130856943" expanded="false" signature="6835:6854" ph="&quot;hh:mm AM/PM&quot;" />
-            <marker date="1511130856943" expanded="false" signature="7331:7351" ph="&quot;Time&quot;" />
-            <marker date="1511130856943" expanded="false" signature="9267:9290" ph="&quot;Summary&quot;" />
-          </folding>
+          <folding />
         </state>
       </provider>
       <provider editor-type-id="android-designer2">
