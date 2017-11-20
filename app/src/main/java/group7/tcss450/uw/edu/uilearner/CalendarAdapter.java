@@ -2,10 +2,15 @@ package group7.tcss450.uw.edu.uilearner;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -60,7 +65,31 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (!mDataset.isEmpty()) {
-            holder.mTextView.setText(mDataset.get(position));
+            String currJson = mDataset.get(position);
+            String name = "";
+            JSONArray summary = null;
+            try {
+                JSONObject json = new JSONObject(currJson);
+                name = json.getString("studentName");
+                summary = json.getJSONArray("events");
+
+            } catch (JSONException e) {
+                Log.e("Error", "e.printStackTrace()");
+            }
+
+
+            String s = "";
+            for (int i = 0; i < summary.length(); i++) {
+                try {
+                    JSONObject curr = summary.getJSONObject(i);
+                    s += ("\n" + curr.getString("summary"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            holder.mCalendarSum.setText(s);
+            holder.mTextView.setText(name);
         } else {
             holder.mTextView.setText(R.string.empty_agenda);
         }
@@ -83,11 +112,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
 
         public CardView mCardView;
         public TextView mTextView;
+        public TextView mCalendarSum;
 
         public ViewHolder (View v) {
             super(v);
             mCardView = (CardView) v.findViewById(R.id.cv);
             mTextView = (TextView) v.findViewById(R.id.single_event_info);
+            mCalendarSum = (TextView) v.findViewById(R.id.calendarSummary);
         }
     }
 }
