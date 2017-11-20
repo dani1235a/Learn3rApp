@@ -131,23 +131,24 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     private void setUpDateAndTimeListeners() {
         Log.d(TAG, "mEventDate == null? " + (mEventDate == null));
         mEventDate.setOnTouchListener(new View.OnTouchListener() {
-            @TargetApi(Build.VERSION_CODES.N)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(MotionEvent.ACTION_DOWN == event.getAction()) {
                     Context ctx = getContext();
-                    final DatePickerDialog dialog = new DatePickerDialog(ctx);
+                    DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
 
-                    dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                             mEventDate.setText(month+ 1 + "/" + dayOfMonth + "/" + year);
-                            dialog.dismiss();
                         }
-                    });
-
+                    };
+                    int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                    int month = Calendar.getInstance().get(Calendar.MONTH);
+                    int year = Calendar.getInstance().get(Calendar.YEAR);
+                    DatePickerDialog dialog = new DatePickerDialog(ctx, 0, listener, year, month, day);
                     dialog.show();
+
                 }
                 return false;
             }
