@@ -39,6 +39,7 @@ public class AgendaActivity extends AppCompatActivity
     private boolean mIsTeacher; // differentiates the user type.
     private String mEmail;
     private String mUid;
+    private String mRole;
 
 
     /**
@@ -83,6 +84,7 @@ public class AgendaActivity extends AppCompatActivity
                 mEmail = currUser.getEmail();
                 mUid = currUser.getUid();
                 mIsTeacher = currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER);
+                mRole = currUser.getRole();
             } else {
                 Log.d(TAG, "Bundle was null");
             }
@@ -101,10 +103,10 @@ public class AgendaActivity extends AppCompatActivity
             }
         });
 
-        /*if (!mIsTeacher) {
+        if (!mIsTeacher) {
             Log.d(TAG, "in here");
             fab.setVisibility(View.INVISIBLE);
-        }*/
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -122,6 +124,7 @@ public class AgendaActivity extends AppCompatActivity
                 Bundle args = new Bundle();
                 AgendaFragment af = new AgendaFragment();
                 args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
+                args.putSerializable("role", mRole);
                 af.setArguments(args);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.abc, af)
@@ -204,11 +207,13 @@ public class AgendaActivity extends AppCompatActivity
             Bundle args = new Bundle();
             CalendarFragment cf = new CalendarFragment();
             args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
+            args.putSerializable("role", mRole);
             loadFragment(cf, args);
         } else if (id == R.id.nav_agenda) {
             Bundle args = new Bundle();
             AgendaFragment af = new AgendaFragment();
             args.putSerializable("uuid", mUid); //will need to set this "uuid" string to a constant value.
+            args.putSerializable("role", mRole);
             loadFragment(af, args);
         }
 

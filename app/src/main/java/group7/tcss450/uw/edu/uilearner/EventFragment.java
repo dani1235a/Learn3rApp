@@ -136,7 +136,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(MotionEvent.ACTION_DOWN == event.getAction()) {
-                    Context ctx = getContext();
+                    Context ctx = getActivity();
                     final DatePickerDialog dialog = new DatePickerDialog(ctx);
 
                     dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
