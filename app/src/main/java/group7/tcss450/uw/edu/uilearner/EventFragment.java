@@ -137,7 +137,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 if(MotionEvent.ACTION_DOWN == event.getAction()) {
                     Context ctx = getContext();
                     DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
-
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                             mEventDate.setText(month+ 1 + "/" + dayOfMonth + "/" + year);

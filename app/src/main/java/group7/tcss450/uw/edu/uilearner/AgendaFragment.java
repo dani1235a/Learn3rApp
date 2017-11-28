@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.util.DateUtil;
 
 
@@ -43,6 +44,7 @@ public class AgendaFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private String mUid;
+    private String mRole;
     private ArrayList<String> mValues;
 
     /**
@@ -81,7 +83,7 @@ public class AgendaFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             mUid = (String) args.get("uuid");
-
+            mRole = (String) args.get("role");
             AgendaTask agendaTask = new AgendaTask();
 
             // Gets today's date so the Agenda page Recycler View can populate with
@@ -90,7 +92,7 @@ public class AgendaFragment extends Fragment {
             int year = rightNow.get(Calendar.YEAR);
             int month = rightNow.get(Calendar.MONTH);
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-
+            Log.d(TAG, "" + dayOfMonth + "/" + month + "/" + year);
             agendaTask.execute(year, month, dayOfMonth);
         } else {
             Log.e(TAG, "Arguments were null");
@@ -131,16 +133,29 @@ public class AgendaFragment extends Fragment {
                 Log.d(TAG, dates[1]);
 
                 String uid = mUid;
+                Uri uri;
                 // http://learner-backend.herokuapp.com/teacher/events?start=someTime&end=someTime&uuid=UUID
-                Uri uri = new Uri.Builder()
-                        .scheme("http")
-                        .authority("learner-backend.herokuapp.com")
-                        .appendEncodedPath("teacher") //this will need to have a role check for teacher or student
-                        .appendEncodedPath("events")
-                        .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dates[0])
-                        .appendQueryParameter("end", dates[1])
-                        .build();
+                if (mRole.equals(ChooseRoleFragment.IS_TEACHER)) {
+                    uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("teacher") //this will need to have a role check for teacher or student
+                            .appendEncodedPath("events")
+                            .appendQueryParameter("uuid", uid) //pass uid here
+                            .appendQueryParameter("start", dates[0])
+                            .appendQueryParameter("end", dates[1])
+                            .build();
+                } else {
+                     uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("student")
+                            .appendEncodedPath("events")
+                            .appendQueryParameter("uuid", uid)
+                            .appendQueryParameter("start", dates[0])
+                            .appendQueryParameter("end", dates[1])
+                            .build();
+                }
 
 
                 Log.d(TAG, uri.toString());
