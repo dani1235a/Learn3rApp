@@ -34,7 +34,7 @@ public class AgendaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         AgendaFragment.OnListFragmentInteractionListener{
 
-    public static final String TAG = "CALENDAR";
+    public static final String TAG = "AGENDA";
 
     private boolean mIsTeacher; // differentiates the user type.
     private String mEmail;
@@ -79,12 +79,14 @@ public class AgendaActivity extends AppCompatActivity
         if (i != null) {
             Bundle args = i.getExtras();
             if (args != null) {
+                Log.d(TAG, "here");
                 Bundle temp = (Bundle) args.get(MainActivity.TAG);
                 User currUser = (User) temp.get(MainActivity.TAG);
                 mEmail = currUser.getEmail();
                 mUid = currUser.getUid();
                 mIsTeacher = currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER);
                 mRole = currUser.getRole();
+                Log.d(TAG, mRole);
             } else {
                 Log.d(TAG, "Bundle was null");
             }

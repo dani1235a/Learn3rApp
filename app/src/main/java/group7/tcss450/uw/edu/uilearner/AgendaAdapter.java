@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import group7.tcss450.uw.edu.uilearner.AgendaFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link String} and makes a call to the
@@ -78,6 +79,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Log.d(TAG, "Binding View Holder");
         holder.mItem = mValues.get(position);
+
         try {
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString());
@@ -89,7 +91,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                         .append("\n");
             }
             holder.mContentView.setText(sb.toString());
-
 
         } catch (JSONException e) {
             holder.mIdView.setText("Something went wrong with network request");
@@ -112,6 +113,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         public final TextView mIdView;
         public final TextView mContentView;
         public String mItem;
+
 
         public ViewHolder(View view) {
             super(view);
