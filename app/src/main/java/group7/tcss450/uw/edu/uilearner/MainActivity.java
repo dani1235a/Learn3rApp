@@ -13,42 +13,37 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.ProviderQueryResult;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ForgotPasswordFragment;
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.RegisterFragment;
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.SignInFragment;
+import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.auth.EnterPinFragment;
+import group7.tcss450.uw.edu.uilearner.auth.ForgotPasswordFragment;
+import group7.tcss450.uw.edu.uilearner.auth.RegisterFragment;
+import group7.tcss450.uw.edu.uilearner.auth.SignInFragment;
 
 /**
  * This class is the main activity. It first opens when the app runs. The sign in page
  */
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
-           RegisterFragment.OnRegisterFragmentInteractionListener,
+            RegisterFragment.OnRegisterFragmentInteractionListener,
             ChooseRoleFragment.OnFragmentInteractionListener,
-            ForgotPasswordFragment.OnFragmentInteractionListener {
+            ForgotPasswordFragment.OnFragmentInteractionListener,
+            EnterPinFragment.OnResetListener{
 
     public static final String TAG = "FIREBASE_TAG";
-
-    private FirebaseAuth mAuth;
+    private static final String SUCCESS = "success";
+    private static final String ERROR = "error";
     private Activity thisActivity;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private User user;
-    private Activity activityReference;
 
     /**
      * On create method. Pretty self explanatory.
@@ -58,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.activityReference = this;
-        //Gets the current instance of FirebaseAuth.
-        mAuth = FirebaseAuth.getInstance();
 
         //If the Intent is not null, that means we got here from the sign out button
         //in AgendaActivity, so sign out of the current FirebaseUser account before
@@ -68,21 +60,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         if (getIntent() != null) {
             signOut();
         }
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                //Doesn't do much more than check if a user is already signed in.
-                if (user != null) {
-                    Log.d("FIREBASE", "Signed in user id: " + user.getUid());
-                } else {
-                    Log.d("FIREBASE", "User signed out");
-                }
-            }
-        };
-
-
         if (savedInstanceState == null) {
             if (findViewById(R.id.main_container) != null) {
                 loadFragment(new SignInFragment(), null);
@@ -117,28 +94,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     /**
-    Attempts to check an email using the given email String.
-    If the email is not attached to a user in the user database, it will
-    return true.
-
-    If the email does not match a user in the user database however,
-    it will return false.
- */
-    public boolean checkEmail(final String email) {
-        final boolean[] matchFound = {false};
-        mAuth.fetchProvidersForEmail(email).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
-            @Override
-            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                if(task.isSuccessful()){
-                    // getProviders().size() will return size 1. if email ID is available.
-                    matchFound[0] = (task.getResult().getProviders().size() == 1)? true:false;
-                }
-            }
-        });
-        return matchFound[0];
-    }
-
-    /**
      * At a high level, this method creates a new user in FireBase, then once that user is successfully
      * created and signed in, is then 'posted' to the backend database of students and teacher
      * if the user is a student, the @param addCode is used to link the teacher to the new student via
@@ -147,27 +102,17 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      * addCode is generated for them in the server side code.
      * authors: Myles Haynes, Connor Lundberg
      */
-    public void createAccount(final String email, final String password, final String addCode) {
+    public void createAccount(final String addCode) {
 
-        new AsyncTask<Void, Void, Boolean>() {
+        new AsyncTask<Void, Void, JSONObject>() {
 
             private ProgressDialog dialog;
-
-            /**
-             * This latch is used synchronize the 'doInBackground' thread with the 'onCompleteListener'
-             * Normally, the doInBackground thread would not wait for the onCompleteListener to finish,
-             * but in this case we really want it to. By calling {@code latch.countDown()} in the
-             * onCompleteListener code, we can use {@code latch.await()} in the doInBackground thread
-             * so it awaits the task to finish.
-             */
-            private CountDownLatch latch;
 
             /**
              * Sets the the progress bar during the calls to the back end to create the account.
              */
             @Override
             protected void onPreExecute() {
-                latch = new CountDownLatch(1);
                 dialog = new ProgressDialog(thisActivity);
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setMessage("Registering... Please wait");
@@ -183,112 +128,71 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
              * @return
              */
             @Override
-            protected Boolean doInBackground(Void... voids) {
+            protected @NonNull JSONObject doInBackground(Void... voids) {
 
-                Log.d(TAG, "In here");
-                final AtomicBoolean wasSuccessful = new AtomicBoolean(true);
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(thisActivity, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                                        // If sign in fails, display a message to the user. If sign in succeeds
-                                        // the auth state listener will be notified and logic to handle the
-                                        // signed in user can be handled in the listener.
-                                        if (!task.isSuccessful()) {
-                                            Log.w(TAG, "createUserWithEmailAndPassword:failed", task.getException());
-                                            AlertDialog.Builder alert = new AlertDialog.Builder(activityReference);
-                                            String message = "Failed to register";
-                                            if(task.getException() != null) {
-                                                alert.setMessage(task.getException().getMessage());
-                                            }
-                                            //If we weren't successful in creating the user, let the
-                                            //user know.
-                                            alert.setTitle(message);
-                                            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    loadFragment(new RegisterFragment(), null);
-                                                }
-                                            });
-                                            wasSuccessful.set(false);
-                                            latch.countDown();
-                                            alert.show();
+            Log.d(TAG, "In here");
 
-                                        } else {
-                                            Log.i(TAG, "User creation completed and was successful");
-                                            //If the user has been created and signed in, the Display Fragment
-                                            //will be switched to.
-                                            user.setUid(mAuth.getCurrentUser().getUid());
-                                        }
-                                    }
-                                }
-                        );
                 try {
-                    //Wait for the onCompleteListener to fire before we continue.
-                    latch.await(10, TimeUnit.SECONDS);
-                    if(wasSuccessful.get()) {
-                        try {
-                            // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
-                            // or
-                            // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
-                            Uri uri;
-                            String response;
-                            if (user.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
-                                uri = new Uri.Builder()
-                                        .scheme("http")
-                                        .authority("learner-backend.herokuapp.com")
-                                        .appendEncodedPath("teacher")
-                                        .appendQueryParameter("uuid", user.getUid()) //pass uid here
-                                        .appendQueryParameter("name", user.getEmail())
-                                        .build();
-                            } else {
-                                uri = new Uri.Builder()
-                                        .scheme("http")
-                                        .authority("learner-backend.herokuapp.com")
-                                        .appendEncodedPath("student")
-                                        .appendQueryParameter("add_code", addCode)
-                                        .appendQueryParameter("uuid", user.getUid()) //pass uid here
-                                        .appendQueryParameter("name", user.getEmail())
-                                        .build();
-                            }
+                    // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
+                    // or
+                    // http://learner-backend.herokuapp.com/student?uuid=someUid&name=someName
+                    Uri uri;
 
-                            Log.d(TAG, uri.toString());
-                            HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-                            connection.setRequestMethod("POST");
-                            connection.connect();
-                            Scanner s = new Scanner(connection.getInputStream());
-                            StringBuilder sb = new StringBuilder();
-                            while(s.hasNext()) sb.append(s.next());
-                            response = sb.toString();
-                            return true;
-
-                        } catch (Exception e) {
-                            Log.e(TAG, "error creating", e);
-                            return false;
-                        }
+                    if (user.getRole().equals(ChooseRoleFragment.IS_TEACHER)) {
+                        uri = new Uri.Builder()
+                                .scheme("http")
+                                .authority("learner-backend.herokuapp.com")
+                                .appendEncodedPath("teacher")
+                                .appendQueryParameter("pass", user.getPassword()) //pass uid here
+                                .appendQueryParameter("email", user.getEmail())
+                                .build();
                     } else {
-                        return false;
+                        uri = new Uri.Builder()
+                                .scheme("http")
+                                .authority("learner-backend.herokuapp.com")
+                                .appendEncodedPath("student")
+                                .appendQueryParameter("add_code", addCode)
+                                .appendQueryParameter("uuid", user.getUid()) //pass uid here
+                                .appendQueryParameter("email", user.getEmail())
+                                .appendQueryParameter("pass", user.getPassword())
+                                .build();
                     }
-                } catch (InterruptedException e) {
-                    Log.e(TAG, e.getMessage());
-                    return false;
+
+                    Log.d(TAG, uri.toString());
+                    HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+                    Scanner s = new Scanner(connection.getInputStream());
+                    StringBuilder sb = new StringBuilder();
+                    while (s.hasNext()) sb.append(s.next());
+                    return new JSONObject(sb.toString());
+
+
+                } catch (Exception e) {
+                    Log.e(TAG, "error creating", e);
+                    return new JSONObject();
                 }
             }
+
+
 
             /**
              * Removes the Progress bar and changes the activity to the next activity.
              */
             @Override
-            protected void onPostExecute(Boolean wasSuccessful) {
+            protected void onPostExecute(JSONObject res) {
                 dialog.dismiss();
-                if(wasSuccessful) {
+                if(res.optBoolean(SUCCESS)) {
+                    user.setUid(res.optString("uid"));
+                    user.setRole(res.optString("role"));
+                    if(user.getRole().equals("teacher")) {
+                        user.setAddCode(res.optString("add_code"));
+                    }
                     sendEmailVerification();
                     changeActivity();
                 } else {
-                    if(mAuth.getCurrentUser() != null) {
-                        mAuth.getCurrentUser().delete();
-                    }
+                    String msg = (res.has("error")) ? res.optString("error") : "Something went wrong...";
+                    showOkDialog(msg);
                 }
             }
 
@@ -322,25 +226,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         Author: Connor Lundberg
      */
     private void sendEmailVerification() {
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            new android.app.AlertDialog.Builder(returnActivity())
-                                    .setMessage("Verification email to " + user.getEmail() + " failed to send.")
-                                    .setPositiveButton("OK", null)
-                                    .show();
-                        } else {
-                            new android.app.AlertDialog.Builder(returnActivity())
-                                    .setMessage("A verification email has been sent to " + user.getEmail()
-                                            + "! \n Please verify your email before proceeding.")
-                                    .setPositiveButton("OK", null)
-                                    .show();
-                        }
-                    }
-                });
+        //TODO: Send Email Verification
     }
 
 
@@ -359,7 +245,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      */
     public void signIn (final String email, final String password) {
 
-        new AsyncTask<Void, Void, Boolean>() {
+        user = new User(email, password);
+
+        new AsyncTask<Void, Void, JSONObject>() {
 
             private ProgressDialog dialog;
 
@@ -388,74 +276,66 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
              * @return
              */
             @Override
-            protected Boolean doInBackground(Void... voids) {
-                final AtomicBoolean signedIn = new AtomicBoolean();
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(thisActivity, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.d("FIREBASE", "signInWithEmail:onComplete:" + task.isSuccessful());
-                                latch.countDown();
-                                signedIn.set(task.isSuccessful());
-                            }
-                        });
-                try {
-                    //When onCompleteListener finishes, then we can proceed to do our work.
-                    latch.await(20, TimeUnit.SECONDS);
-                    if(signedIn.get() && mAuth.getCurrentUser().isEmailVerified()) {
-                        try {
-                            String response;
-                            // http://learner-backend.herokuapp.com/role?uuid=someUid
-                            Uri uri = new Uri.Builder()
-                                    .scheme("http")
-                                    .authority("learner-backend.herokuapp.com")
-                                    .appendEncodedPath("role")
-                                    .appendQueryParameter("uuid", user.getUid()) //pass uid here
-                                    .build();
+            protected JSONObject doInBackground(Void... voids) {
 
-                            Log.d(TAG, uri.toString());
-                            HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-                            connection.setRequestMethod("GET");
-                            connection.connect();
-                            Scanner s = new Scanner(connection.getInputStream());
-                            StringBuilder sb = new StringBuilder();
-                            while(s.hasNext()) sb.append(s.next());
-                            //The response is the role
-                            response = sb.toString();
-                            user.setRole(response);
-                            user.setUid(mAuth.getCurrentUser().getUid());
-                        } catch (Exception e) {
-                            Log.e(ASYNC_TAG, "Failed to sign in", e);
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    Log.e(ASYNC_TAG, e.getMessage());
+                try {
+                    String respStr;
+                    // http://learner-backend.herokuapp.com/role?uuid=someUid
+                    Uri uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("login")
+                            .appendQueryParameter("pass", password)
+                            .appendQueryParameter("email", email)
+                            .build();
+
+                    Log.d(TAG, uri.toString());
+                    HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+                    Scanner s = new Scanner(connection.getInputStream());
+                    StringBuilder sb = new StringBuilder();
+                    while (s.hasNext()) sb.append(s.next()).append(" ");
+                    respStr = sb.toString();
+                    return new JSONObject(respStr);
+
+                } catch (Exception e) {
+                    Log.e(ASYNC_TAG, "Failed to sign in", e);
+                    return null;
                 }
-                return signedIn.get();
             }
 
-            /**
-             * Remove the progressbar and sign the user in.
-             * @param correctCredentials
-             */
             @Override
-            protected void onPostExecute(Boolean correctCredentials) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if(user == null) {
-                    showOkDialog(activityReference, "Something went wrong...");
-                    return;
+            protected void onPostExecute(JSONObject response) {
+
+                boolean ok = false;
+                try {
+                    if (response == null) {
+                        showOkDialog("Something went wrong...");
+                    } else if (response.getBoolean("success")) {
+                        Log.d(TAG, response.toString());
+                        if(!response.getBoolean("verified")) {
+                            showOkDialog("You must verify your email before continuing");
+                            ok = false;
+                        } else {
+                            Log.d(TAG, "Successful: + " + response.toString());
+                            String uuid = response.getString("uuid");
+                            String role = response.getString("role");
+                            user.setRole(role);
+                            user.setUid(uuid);
+                            ok = true;
+                        }
+                    } else {
+                        Log.d(TAG, response.toString());
+                        showOkDialog("Incorrect User & Password");
+                    }
+                } catch (JSONException json) {
+                    Log.e(TAG, json.getMessage(), json);
+                    Log.e(TAG, response.toString());
                 }
                 dialog.dismiss();
-                if(correctCredentials && user.isEmailVerified()) {
+                if(ok)
                     changeActivity();
-                } else if(correctCredentials) {
-                    //If we're here, it means that they entered correct credentials, but they're not verified.
-                    showOkDialog(activityReference, "You must verify your email before continuing");
-                } else {
-                    //They entered invalid credentials.
-                    showOkDialog(activityReference, "Invalid email or password");
-                }
-
             }
 
         }.execute();
@@ -468,23 +348,16 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         login screen.
      */
     public void signOut () {
-        mAuth.signOut();
-        if (mAuth.getCurrentUser() != null) {
-            new android.app.AlertDialog.Builder(getApplicationContext())
-                    .setMessage("Failed to sign out!")
-                    .setPositiveButton("OK", null)
-                    .show();
-        }
+        //TODO Implement sign out. Probably going to clear an sqllite database stored on device.
     }
 
     /**
      * Shows a simple AlertDialog.
-     * @param context - the context for the AlertDialog
      * @param message - the message to be displayed.
      */
-    public void showOkDialog(Context context, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(message);
+    public void showOkDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
         builder.setCancelable(false);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -554,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     public void onRoleFragmentInteraction(String role, String addCode) {
         user.setRole(role);
 
-        createAccount(user.getEmail(), user.getPassword(), addCode);
+        createAccount(addCode);
     }
 
     /**
@@ -563,16 +436,15 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      */
     @Override
     public void onForgotPasswordInteraction(String username) {
-        loadFragment(new SignInFragment(), null);
+        Bundle b = new Bundle();
+        b.putSerializable("email", username);
+        loadFragment(new EnterPinFragment(), b);
     }
 
 
-    /**
-     * Simple method that returns this activity.
-     * @return
-     */
-    private Activity returnActivity() {
-        return this;
+    @Override
+    public void onReset(boolean success, String email, String newPass) {
+        if(success)
+            signIn(email, newPass);
     }
-
 }

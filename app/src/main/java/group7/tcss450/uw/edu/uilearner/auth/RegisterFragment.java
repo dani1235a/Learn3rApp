@@ -1,4 +1,4 @@
-package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
+package group7.tcss450.uw.edu.uilearner.auth;
 
 
 import android.app.AlertDialog;
@@ -25,6 +25,8 @@ import group7.tcss450.uw.edu.uilearner.User;
  */
 public class RegisterFragment extends Fragment {
 
+    public static final String PASSWORD_REQUIREMENTS_MSG =
+            "Password must contain least 6 characters,1 capital, & 1 number";
     private OnRegisterFragmentInteractionListener mListener;
     private User user;
 
@@ -99,7 +101,7 @@ public class RegisterFragment extends Fragment {
                     pass2.setError("Passwords must match!");
                     cont = false;
                 } else if(!isValidPassword(pass1.getText().toString()) & cont) {
-                    pass1.setError("Password must contain least 6 characters,1 capital, & 1 number");
+                    pass1.setError(PASSWORD_REQUIREMENTS_MSG);
                     cont = false;
                 }
 

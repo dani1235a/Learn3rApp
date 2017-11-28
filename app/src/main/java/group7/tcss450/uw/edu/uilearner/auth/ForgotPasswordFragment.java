@@ -1,11 +1,11 @@
-package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
+package group7.tcss450.uw.edu.uilearner.auth;
 
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Scanner;
 
 import group7.tcss450.uw.edu.uilearner.R;
 
@@ -30,6 +35,8 @@ public class ForgotPasswordFragment extends Fragment {
 
 
     private OnFragmentInteractionListener mListener;
+
+    private static final String TAG = "FORGOT";
 
     public ForgotPasswordFragment() {
         // Required empty public constructor
@@ -90,26 +97,27 @@ public class ForgotPasswordFragment extends Fragment {
                          */
                         @Override
                         protected Void doInBackground(String... email) {
-                            //This latch allows us to figure out when a job is done.
-                            // 1 in constructor means 1 job to await.
-                            final CountDownLatch latch = new CountDownLatch(1);
-                            FirebaseAuth.getInstance().sendPasswordResetEmail(email[0])
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            //We're complete, countdown the latch.
-                                            latch.countDown();
-                                        }
-                                    });
+
                             try {
-                                //Wait five seconds for job to finish.
-                                Log.d("RESET", "Awaiting latch");
-                                latch.await(5000, TimeUnit.MILLISECONDS);
-                                Log.d("RESET", "Done with latch");
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Uri uri = new Uri.Builder()
+                                        .scheme("http")
+                                        .authority("learner-backend.herokuapp.com")
+                                        .appendEncodedPath("forgot")
+                                        .appendQueryParameter("email", email[0])
+                                        .build();
+
+                                Log.d(TAG, uri.toString());
+                                HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                connection.setRequestMethod("POST");
+                                connection.connect();
+                                Scanner s = new Scanner(connection.getInputStream());
+                                StringBuilder sb = new StringBuilder();
+                                while (s.hasNext()) sb.append(s.next()).append(" ");
+                                return null;
+                            } catch (IOException e) {
+                                Log.e(TAG, "failed", e);
+                                return null;
                             }
-                            return null;
                         }
 
                         /**
@@ -123,7 +131,7 @@ public class ForgotPasswordFragment extends Fragment {
 
                             //Toast.makeText(getContext(), "Sent Email", Toast.LENGTH_SHORT).show();
                             new AlertDialog.Builder(ForgotPasswordFragment.this.getContext())
-                                    .setMessage("Please check your email for a password reset link.")
+                                    .setMessage("Please check your email for the password reset code")
                                     .setPositiveButton("OK", null)
                                     .show();
                             mListener.onForgotPasswordInteraction(email.getText().toString());

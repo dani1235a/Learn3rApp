@@ -21,7 +21,7 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
 
 /**
  * This is the controller for the majority of the app. It gets everything ready for

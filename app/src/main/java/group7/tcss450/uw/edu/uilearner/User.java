@@ -13,6 +13,7 @@ public class User implements Serializable {
     private String password;
     private String role;
     private String uid;
+    private String addCode;
 
     /**
      * Constructor that takes in a String email and a String Password to create a user.
@@ -83,4 +84,11 @@ public class User implements Serializable {
      */
     public String getRole(){ return role; }
 
+    public void setAddCode(String addCode) {
+        this.addCode = addCode;
+    }
+
+    public String getAddCode() {
+        return addCode;
+    }
 }

@@ -1,11 +1,9 @@
 package group7.tcss450.uw.edu.uilearner;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,17 +14,14 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-import group7.tcss450.uw.edu.uilearner.SignIn_Registration.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.util.DateUtil;
 
 
