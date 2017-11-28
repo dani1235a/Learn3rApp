@@ -321,8 +321,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             Log.d(TAG, "Successful: + " + response.toString());
                             String uuid = response.getString("uuid");
                             String role = response.getString("role");
+                            String addCode = response.getString("add_code");
                             user.setRole(role);
                             user.setUid(uuid);
+                            user.setAddCode(addCode);
                             ok = true;
                         }
                     } else {
