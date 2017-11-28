@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="group7.tcss450.uw.edu.uilearner.auth.EnterPinFragment">
+    tools:context="group7.tcss450.uw.edu.uilearner.auth.EnterPinFragment"
+    android:background="@color/colorBackground">
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

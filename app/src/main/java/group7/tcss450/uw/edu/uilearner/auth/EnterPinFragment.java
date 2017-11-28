@@ -120,15 +120,17 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
     public void onClick(View v) {
 
         if(!RegisterFragment.isValidPassword(reset.getText().toString())) {
-            reset.setError("Invalid password");
+            reset.setError(RegisterFragment.PASSWORD_REQUIREMENTS_MSG);
         }
         if(!RegisterFragment.isValidPassword(resetConfirm.getText().toString())) {
-            resetConfirm.setError("Invalid password");
+            resetConfirm.setError(RegisterFragment.PASSWORD_REQUIREMENTS_MSG);
             return;
         }
-        if(reset.getText().toString().equals(reset.getText().toString())) {
+        if(reset.getText().toString().equals(resetConfirm.getText().toString())) {
             newPassword = reset.getText().toString();
             new ResetTask().execute();
+        } else {
+            resetConfirm.setError("Passwords must match");
         }
     }
 
