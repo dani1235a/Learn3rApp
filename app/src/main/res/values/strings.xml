@@ -53,6 +53,7 @@
 
     <string name="agenda_header">Today\'s Tasks</string>
     <string name="empty_agenda">No Tasks Today!</string>
+    <string name="empty_date">No Tasks this day!</string>
 
     <string name="default_email">etest8163@gmail.com</string>
     <string name="default_password">Etest816</string>

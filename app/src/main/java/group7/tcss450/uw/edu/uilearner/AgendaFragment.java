@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -199,11 +200,28 @@ public class AgendaFragment extends Fragment {
                 }
                 mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
 
+                /*
+                    This section will look through the result list given and only
+                    add students with events lists that are not empty.
+                 */
+                ArrayList<String> finalResult = new ArrayList<String>();
+                for (String str : result) {
+                    try {
+                        JSONObject events = new JSONObject(str);
+                        JSONArray arr = events.getJSONArray("events");
+                        if (arr.length() > 0) {
+                            finalResult.add(str);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new AgendaAdapter(result, null); //null will need to be an OnListInteractionListener
-                mRecyclerView.setAdapter(adapter);
+                adapter = new AgendaAdapter(finalResult, null); //null will need to be an OnListInteractionListener
+                mRecyclerView.setAdapter(adapter); //this acts as both a set and execute.
             } else {
                 empty.setVisibility(View.VISIBLE);
             }

@@ -16,6 +16,7 @@ import android.widget.CalendarView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -40,7 +41,7 @@ import group7.tcss450.uw.edu.uilearner.util.DateUtil;
  */
 public class CalendarFragment extends Fragment {
 
-    private static final String TAG = "CALENDAR_FRAG";
+    private static final String TAG = "CALENDAR";
 
 
     private OnCalendarInteractionListener mListener;
@@ -196,14 +197,39 @@ public class CalendarFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<String> result) {
-            mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
+            TextView dateEmpty = (TextView) getActivity().findViewById(R.id.date_empty);
+            if (!result.isEmpty()) {
+                if (dateEmpty.getVisibility() == View.VISIBLE) {
+                    dateEmpty.setVisibility(View.GONE);
+                }
+                mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
 
-            //this will need to have a check if the result is empty. If so, then display an empty message
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(layoutManager);
-            RecyclerView.Adapter adapter;
-            adapter = new CalendarAdapter(result);
-            mRecyclerView.setAdapter(adapter);
+                /*
+                    This section will look through the result list given and only
+                    add students with events lists that are not empty.
+                 */
+                ArrayList<String> finalResult = new ArrayList<String>();
+                for (String str : result) {
+                    try {
+                        JSONObject events = new JSONObject(str);
+                        JSONArray arr = events.getJSONArray("events");
+                        if (arr.length() > 0) {
+                            finalResult.add(str);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //this will need to have a check if the result is empty. If so, then display an empty message
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                mRecyclerView.setLayoutManager(layoutManager);
+                RecyclerView.Adapter adapter;
+                adapter = new CalendarAdapter(finalResult);
+                mRecyclerView.setAdapter(adapter);
+            } else {
+                dateEmpty.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

@@ -80,6 +80,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         Log.d(TAG, "Binding View Holder");
         holder.mItem = mValues.get(position);
         try {
+            Log.d(TAG, "getting " + mValues.get(position));
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString());
             holder.mIdView.setText(events.getString("studentName"));
@@ -99,6 +100,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 //            });
         } catch (JSONException e) {
             holder.mIdView.setText("Something went wrong with network request");
+            Log.d(TAG, e.getMessage());
         }
     }
 
