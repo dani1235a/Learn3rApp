@@ -184,7 +184,9 @@ public class AgendaActivity extends AppCompatActivity
         if (id == R.id.action_sign_out) {
             //there will need to be a check using a popup here
             Intent toMain = new Intent(this, MainActivity.class);
+            toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(toMain);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
