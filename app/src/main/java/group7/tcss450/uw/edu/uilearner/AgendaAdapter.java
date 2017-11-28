@@ -79,7 +79,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Log.d(TAG, "Binding View Holder");
         holder.mItem = mValues.get(position);
-
         try {
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString());
@@ -91,7 +90,13 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                         .append("\n");
             }
             holder.mContentView.setText(sb.toString());
-
+            //TODO Make cards clickable here
+//            holder.mView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                }
+//            });
         } catch (JSONException e) {
             holder.mIdView.setText("Something went wrong with network request");
         }

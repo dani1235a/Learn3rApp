@@ -108,6 +108,7 @@ public class CalendarFragment extends Fragment {
             Calendar rightNow = Calendar.getInstance();
             int year = rightNow.get(Calendar.YEAR);
             int month = rightNow.get(Calendar.MONTH);
+            month++;
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
             Log.d(TAG, "today's date from Calendar: " + dayOfMonth + "/" + month + "/" + year);
 
