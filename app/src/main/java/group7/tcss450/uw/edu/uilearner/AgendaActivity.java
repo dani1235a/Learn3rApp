@@ -2,6 +2,7 @@ package group7.tcss450.uw.edu.uilearner;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +42,8 @@ public class AgendaActivity extends AppCompatActivity
     private String mEmail;
     private String mUid;
     private String mRole;
+    private String mAddCode;
+
 
 
     /**
@@ -59,6 +63,8 @@ public class AgendaActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agenda);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setNavigationIcon(R.drawable.ic_person_black_24dp);
+        toolbar.setTitle(mUid);
         setSupportActionBar(toolbar);
 
         FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -86,6 +92,9 @@ public class AgendaActivity extends AppCompatActivity
                 mUid = currUser.getUid();
                 mIsTeacher = currUser.getRole().equals(ChooseRoleFragment.IS_TEACHER);
                 mRole = currUser.getRole();
+                if(mRole.equals(ChooseRoleFragment.IS_TEACHER)) {
+                    mAddCode = currUser.getAddCode();
+                }
                 Log.d(TAG, mRole);
             } else {
                 Log.d(TAG, "Bundle was null");
@@ -112,14 +121,18 @@ public class AgendaActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
         if (savedInstanceState == null) {
             if (findViewById(R.id.abc) != null) {
@@ -160,6 +173,14 @@ public class AgendaActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        TextView myDrawerEmail = (TextView) findViewById(R.id.email_display);
+        myDrawerEmail.setText(mEmail);
+        TextView myAddCode = (TextView) findViewById(R.id.addCode_display);
+        myDrawerEmail.setTextColor(Color.BLACK);
+        if(mRole.equals(ChooseRoleFragment.IS_TEACHER)) {
+           myAddCode.setText("Add Code: " + mAddCode);
+            myAddCode.setTextColor(Color.BLACK);
+        }
         getMenuInflater().inflate(R.menu.agenda, menu);
         return true;
     }
