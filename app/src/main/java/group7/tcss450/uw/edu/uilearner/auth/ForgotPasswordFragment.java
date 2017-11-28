@@ -1,4 +1,4 @@
-package group7.tcss450.uw.edu.uilearner.SignIn_Registration;
+package group7.tcss450.uw.edu.uilearner.auth;
 
 
 import android.app.AlertDialog;
