@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_event_name"
+            android:id="@+id/digitsContainer"
             android:layout_width="0dp"
 
             android:layout_height="65dp"
@@ -23,7 +23,7 @@
             android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/digits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,6 +37,77 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/resetPassContainer"
+            android:layout_width="0dp"
+
+            android:layout_height="65dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/digitsContainer">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/resetPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/resetPassConfirmContainer"
+            android:layout_width="0dp"
+
+            android:layout_height="65dp"
+            android:layout_marginRight="8dp"
+            android:visibility="invisible"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/resetPassContainer">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/resetPassConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:hint="@string/re_enter_password"
+                android:inputType="textPassword"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:visibility="invisible"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/pinSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/submit"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/resetPassConfirmContainer" />
 
     </android.support.constraint.ConstraintLayout>
 

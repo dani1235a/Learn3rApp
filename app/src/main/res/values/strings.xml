@@ -61,5 +61,6 @@
 
     <string name="date_hint">mm/dd/yyyy</string>
     <string name="time_hint">hh:mm AM/PM</string>
+    <string name="submit">submit</string>
 
 </resources>

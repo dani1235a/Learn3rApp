@@ -25,6 +25,7 @@ import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.auth.EnterPinFragment;
 import group7.tcss450.uw.edu.uilearner.auth.ForgotPasswordFragment;
 import group7.tcss450.uw.edu.uilearner.auth.RegisterFragment;
 import group7.tcss450.uw.edu.uilearner.auth.SignInFragment;
@@ -33,16 +34,16 @@ import group7.tcss450.uw.edu.uilearner.auth.SignInFragment;
  * This class is the main activity. It first opens when the app runs. The sign in page
  */
 public class MainActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener,
-           RegisterFragment.OnRegisterFragmentInteractionListener,
+            RegisterFragment.OnRegisterFragmentInteractionListener,
             ChooseRoleFragment.OnFragmentInteractionListener,
-            ForgotPasswordFragment.OnFragmentInteractionListener {
+            ForgotPasswordFragment.OnFragmentInteractionListener,
+            EnterPinFragment.OnResetListener{
 
     public static final String TAG = "FIREBASE_TAG";
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
     private Activity thisActivity;
     private User user;
-    private Activity activityReference;
 
     /**
      * On create method. Pretty self explanatory.
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.activityReference = this;
 
         //If the Intent is not null, that means we got here from the sign out button
         //in AgendaActivity, so sign out of the current FirebaseUser account before
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                 .authority("learner-backend.herokuapp.com")
                                 .appendEncodedPath("teacher")
                                 .appendQueryParameter("pass", user.getPassword()) //pass uid here
-                                .appendQueryParameter("name", user.getEmail())
+                                .appendQueryParameter("email", user.getEmail())
                                 .build();
                     } else {
                         uri = new Uri.Builder()
@@ -153,7 +153,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                 .appendEncodedPath("student")
                                 .appendQueryParameter("add_code", addCode)
                                 .appendQueryParameter("uuid", user.getUid()) //pass uid here
-                                .appendQueryParameter("name", user.getEmail())
+                                .appendQueryParameter("email", user.getEmail())
+                                .appendQueryParameter("pass", user.getPassword())
                                 .build();
                     }
 
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             @Override
             protected void onPostExecute(JSONObject res) {
                 dialog.dismiss();
-                if(res.optBoolean("success")) {
+                if(res.optBoolean(SUCCESS)) {
                     user.setUid(res.optString("uid"));
                     user.setRole(res.optString("role"));
                     if(user.getRole().equals("teacher")) {
@@ -244,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      */
     public void signIn (final String email, final String password) {
 
+        user = new User(email, password);
+
         new AsyncTask<Void, Void, JSONObject>() {
 
             private ProgressDialog dialog;
@@ -282,8 +285,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             .scheme("http")
                             .authority("learner-backend.herokuapp.com")
                             .appendEncodedPath("login")
-                            .appendQueryParameter("pass", user.getPassword())
-                            .appendQueryParameter("email", user.getEmail())
+                            .appendQueryParameter("pass", password)
+                            .appendQueryParameter("email", email)
                             .build();
 
                     Log.d(TAG, uri.toString());
@@ -292,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     connection.connect();
                     Scanner s = new Scanner(connection.getInputStream());
                     StringBuilder sb = new StringBuilder();
-                    while (s.hasNext()) sb.append(s.next());
+                    while (s.hasNext()) sb.append(s.next()).append(" ");
                     respStr = sb.toString();
                     return new JSONObject(respStr);
 
@@ -433,16 +436,15 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
      */
     @Override
     public void onForgotPasswordInteraction(String username) {
-        loadFragment(new SignInFragment(), null);
+        Bundle b = new Bundle();
+        b.putSerializable("email", username);
+        loadFragment(new EnterPinFragment(), b);
     }
 
 
-    /**
-     * Simple method that returns this activity.
-     * @return
-     */
-    private Activity returnActivity() {
-        return this;
+    @Override
+    public void onReset(boolean success, String email, String newPass) {
+        if(success)
+            signIn(email, newPass);
     }
-
 }
