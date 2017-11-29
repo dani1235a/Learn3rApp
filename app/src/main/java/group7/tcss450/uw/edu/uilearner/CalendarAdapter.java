@@ -11,6 +11,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -82,7 +83,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             for (int i = 0; i < summary.length(); i++) {
                 try {
                     JSONObject curr = summary.getJSONObject(i);
-                    s += ("\n" + curr.getString("summary"));
+                    s += ("\n" + curr.getString("description"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -113,12 +114,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         public CardView mCardView;
         public TextView mTextView;
         public TextView mCalendarSum;
+//        public final TextView mEventTitle;
+//        public final TextView mEventTime;
 
         public ViewHolder (View v) {
             super(v);
             mCardView = (CardView) v.findViewById(R.id.cv);
             mTextView = (TextView) v.findViewById(R.id.single_event_info);
             mCalendarSum = (TextView) v.findViewById(R.id.calendarSummary);
+
         }
     }
 }

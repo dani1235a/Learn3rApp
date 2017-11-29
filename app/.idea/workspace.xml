@@ -20,9 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03a4f839-b7d8-4f67-9065-341e88420fa2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" />
     </list>
     <ignored path="app.iws" />
@@ -113,8 +112,8 @@
       <file leaf-file-name="CalendarFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="216" column="49" selection-start-line="216" selection-start-column="49" selection-end-line="216" selection-end-column="49" />
+            <state relative-caret-position="-237">
+              <caret line="158" column="43" selection-start-line="158" selection-start-column="43" selection-end-line="158" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -2316,8 +2315,8 @@
         <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java" />
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/fragment_calendar.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" />
         <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" />
       </list>
     </option>
   </component>
@@ -3153,8 +3152,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="216" column="49" selection-start-line="216" selection-start-column="49" selection-end-line="216" selection-end-column="49" />
+        <state relative-caret-position="-237">
+          <caret line="158" column="43" selection-start-line="158" selection-start-column="43" selection-end-line="158" selection-end-column="43" />
           <folding />
         </state>
       </provider>
