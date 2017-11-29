@@ -55,6 +55,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
 
     private static final String TAG = "EVENT";
+    public static final String SPACE = "\u26B3";
 
     private String mCurrentChosenStudentUid;
     private String mTeacherUid;
@@ -376,8 +377,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendQueryParameter("uuid", uid) //pass uid here
                         .appendQueryParameter("start", dStart)
                         .appendQueryParameter("end", dEnd)
-                        .appendQueryParameter("summary", params[3])
-                        .appendQueryParameter("event_name", params[0]) //pass event name here once the back end code is changed to match
+                        .appendQueryParameter("summary", params[3].replaceAll(" ", SPACE))
+                        .appendQueryParameter("event_name", params[0].replaceAll(" ", SPACE)) //pass event name here once the back end code is changed to match
                         .build();
 
 
