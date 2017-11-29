@@ -86,9 +86,13 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString());
             holder.mIdView.setText(events.getString("studentName"));
+            holder.mEventTime.setText(events.getString("time"));
+            holder.mEventTitle.setText(events.getString("eventTitle"));
             JSONArray arr = events.getJSONArray("events");
+
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < arr.length(); i++) {
+
                 sb.append(arr.getJSONObject(i).getString("summary"))
                         .append("\n");
             }
@@ -122,14 +126,18 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         public final TextView mIdView;
         public final TextView mContentView;
         public String mItem;
+        public final TextView mEventTitle;
+        public final TextView mEventTime;
 
 
         public ViewHolder(View view) {
             super(view);
             Log.d(TAG, "ViewHolder");
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.summary);
-            mContentView = (TextView) view.findViewById(R.id.student);
+            mIdView = (TextView) view.findViewById(R.id.student);
+            mContentView = (TextView) view.findViewById(R.id.summary);
+            mEventTime = (TextView) view.findViewById(R.id.Time);
+            mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         }
 
         @Override

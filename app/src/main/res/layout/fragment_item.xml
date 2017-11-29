@@ -13,26 +13,59 @@
         app:contentPadding="@dimen/cardview_compat_inset_shadow">
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="367dp"
+            android:layout_height="200dp">
 
             <TextView
                 android:id="@+id/summary"
                 android:layout_width="319dp"
                 android:layout_height="wrap_content"
-
                 android:layout_above="@+id/student"
                 android:layout_alignLeft="@+id/student"
                 android:layout_alignStart="@+id/student"
+                android:hint="Summary text here\nSummary text here"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:textSize="24sp"
-                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/Time"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Time"
+                android:hint="Time"
+                android:layout_alignLeft="@+id/student"
+                android:layout_alignStart="@+id/student"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/eventTitle"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/student"
+                android:layout_alignLeft="@+id/student"
+                android:layout_alignStart="@+id/student"
+                android:id = "@+id/eventTitle"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/student"
+                android:hint="Event Title"
+                />
 
             <TextView
                 android:id="@+id/student"
@@ -43,11 +76,18 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:hint="Email Address"
                 android:textAppearance="?attr/textAppearanceListItem"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/summary" />
+                app:layout_constraintBottom_toTopOf="parent"
+                android:layout_marginBottom="-161dp"
+                app:layout_constraintHorizontal_bias="0.466"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintVertical_bias="0.065" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
