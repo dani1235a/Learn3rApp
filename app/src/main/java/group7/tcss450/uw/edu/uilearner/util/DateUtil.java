@@ -26,10 +26,10 @@ public class DateUtil {
         Log.d("EVENT", "" + month + "/" + day + "/" + year);
         String[] strings = new String[2];
         Calendar cal = Calendar.getInstance();
-        cal.set(year, month-1, day, 0, 0);
+        cal.set(year, month-1, day, 0, 0, 0);
         Date startDate = cal.getTime();
         Log.d("EVENT", startDate.toString());
-        cal.add(Calendar.DAY_OF_MONTH, 1);
+        cal.set(year, month, day, 23, 59, 59);
         Date endDate = cal.getTime();
         Log.d("EVENT", endDate.toString());
         strings[0] = FORMAT.format(startDate);
