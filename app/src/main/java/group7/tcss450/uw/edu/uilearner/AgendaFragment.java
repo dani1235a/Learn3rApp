@@ -204,7 +204,7 @@ public class AgendaFragment extends Fragment {
                     This section will look through the result list given and only
                     add students with events lists that are not empty.
                  */
-                ArrayList<String> finalResult = new ArrayList<String>();
+                /*ArrayList<String> finalResult = new ArrayList<String>();
                 for (String str : result) {
                     try {
                         JSONObject events = new JSONObject(str);
@@ -215,12 +215,12 @@ public class AgendaFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new AgendaAdapter(finalResult, null); //null will need to be an OnListInteractionListener
+                adapter = new AgendaAdapter(result, null); //null will need to be an OnListInteractionListener
                 mRecyclerView.setAdapter(adapter); //this acts as both a set and execute.
             } else {
                 empty.setVisibility(View.VISIBLE);

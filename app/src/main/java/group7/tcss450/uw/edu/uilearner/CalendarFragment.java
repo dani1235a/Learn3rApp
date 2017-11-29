@@ -208,7 +208,7 @@ public class CalendarFragment extends Fragment {
                     This section will look through the result list given and only
                     add students with events lists that are not empty.
                  */
-                ArrayList<String> finalResult = new ArrayList<String>();
+                /*ArrayList<String> finalResult = new ArrayList<String>();
                 for (String str : result) {
                     try {
                         JSONObject events = new JSONObject(str);
@@ -219,13 +219,13 @@ public class CalendarFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
 
                 //this will need to have a check if the result is empty. If so, then display an empty message
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new CalendarAdapter(finalResult);
+                adapter = new CalendarAdapter(result);
                 mRecyclerView.setAdapter(adapter);
             } else {
                 dateEmpty.setVisibility(View.VISIBLE);

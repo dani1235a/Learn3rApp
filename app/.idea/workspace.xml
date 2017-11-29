@@ -20,12 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03a4f839-b7d8-4f67-9065-341e88420fa2" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" afterPath="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_calendar.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_calendar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" />
     </list>
     <ignored path="app.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,8 +58,8 @@
       <file leaf-file-name="EventFragment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/EventFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1411">
-              <caret line="125" column="42" selection-start-line="125" selection-start-column="42" selection-end-line="125" selection-end-column="42" />
+            <state relative-caret-position="443">
+              <caret line="375" column="52" selection-start-line="375" selection-start-column="52" selection-end-line="375" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -70,9 +68,11 @@
       <file leaf-file-name="AgendaActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
+            <state relative-caret-position="3383">
               <caret line="222" column="21" selection-start-line="222" selection-start-column="21" selection-end-line="222" selection-end-column="21" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -93,7 +93,7 @@
       <file leaf-file-name="AgendaAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
+            <state relative-caret-position="1139">
               <caret line="84" column="42" selection-start-line="84" selection-start-column="42" selection-end-line="84" selection-end-column="42" />
               <folding />
             </state>
@@ -103,11 +103,9 @@
       <file leaf-file-name="AgendaFragment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="207" column="43" selection-start-line="207" selection-start-column="43" selection-end-line="207" selection-end-column="43" />
-              <folding>
-                <element signature="e#7838#7846#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="936">
+              <caret line="213" column="25" selection-start-line="213" selection-start-column="25" selection-end-line="213" selection-end-column="25" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -115,11 +113,9 @@
       <file leaf-file-name="CalendarFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="212" column="25" selection-start-line="212" selection-start-column="25" selection-end-line="212" selection-end-column="25" />
-              <folding>
-                <element signature="e#8132#8140#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="341">
+              <caret line="216" column="49" selection-start-line="216" selection-start-column="49" selection-end-line="216" selection-end-column="49" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -127,12 +123,9 @@
       <file leaf-file-name="fragment_calendar.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/res/layout/fragment_calendar.xml">
           <provider editor-type-id="text-editor">
-            <state relative-caret-position="190">
+            <state relative-caret-position="1071">
               <caret line="63" column="8" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
-              <folding>
-                <element signature="e#1652#1666#0" expanded="false" />
-                <element signature="e#2359#2375#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
           <provider selected="true" editor-type-id="android-designer2">
@@ -143,7 +136,7 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3145">
+            <state relative-caret-position="3179">
               <caret line="215" column="41" selection-start-line="215" selection-start-column="41" selection-end-line="215" selection-end-column="41" />
               <folding />
             </state>
@@ -153,7 +146,7 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
+            <state relative-caret-position="714">
               <caret line="42" column="47" selection-start-line="42" selection-start-column="47" selection-end-line="43" selection-end-column="0" />
               <folding />
             </state>
@@ -2321,10 +2314,10 @@
         <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/EventFragment.java" />
         <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/fragment_calendar.xml" />
         <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java" />
       </list>
     </option>
   </component>
@@ -2721,9 +2714,8 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32451254" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286908" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286908" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2741,6 +2733,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32729805" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -3097,17 +3090,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/SignIn_Registration/ChooseRoleFragment.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/EventFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1411">
-          <caret line="125" column="42" selection-start-line="125" selection-start-column="42" selection-end-line="125" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3145">
+        <state relative-caret-position="3179">
           <caret line="215" column="41" selection-start-line="215" selection-start-column="41" selection-end-line="215" selection-end-column="41" />
           <folding />
         </state>
@@ -3115,15 +3100,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
+        <state relative-caret-position="3383">
           <caret line="222" column="21" selection-start-line="222" selection-start-column="21" selection-end-line="222" selection-end-column="21" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
+        <state relative-caret-position="1139">
           <caret line="84" column="42" selection-start-line="84" selection-start-column="42" selection-end-line="84" selection-end-column="42" />
           <folding />
         </state>
@@ -3131,7 +3118,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
+        <state relative-caret-position="714">
           <caret line="42" column="47" selection-start-line="42" selection-start-column="47" selection-end-line="43" selection-end-column="0" />
           <folding />
         </state>
@@ -3139,35 +3126,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/fragment_calendar.xml">
       <provider editor-type-id="text-editor">
-        <state relative-caret-position="190">
+        <state relative-caret-position="1071">
           <caret line="63" column="8" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
-          <folding>
-            <element signature="e#1652#1666#0" expanded="false" />
-            <element signature="e#2359#2375#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
       <provider selected="true" editor-type-id="android-designer2">
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/EventFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="443">
+          <caret line="375" column="52" selection-start-line="375" selection-start-column="52" selection-end-line="375" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/AgendaFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="207" column="43" selection-start-line="207" selection-start-column="43" selection-end-line="207" selection-end-column="43" />
-          <folding>
-            <element signature="e#7838#7846#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="936">
+          <caret line="213" column="25" selection-start-line="213" selection-start-column="25" selection-end-line="213" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/group7/tcss450/uw/edu/uilearner/CalendarFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="212" column="25" selection-start-line="212" selection-start-column="25" selection-end-line="212" selection-end-column="25" />
-          <folding>
-            <element signature="e#8132#8140#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="341">
+          <caret line="216" column="49" selection-start-line="216" selection-start-column="49" selection-end-line="216" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
