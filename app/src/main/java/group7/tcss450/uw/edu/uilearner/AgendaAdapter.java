@@ -17,6 +17,8 @@ import group7.tcss450.uw.edu.uilearner.AgendaFragment.OnListFragmentInteractionL
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static group7.tcss450.uw.edu.uilearner.EventFragment.SPACE;
+
 /**
  * {@link RecyclerView.Adapter} that can display a {@link String} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}. This one specifically makes the cards
@@ -90,7 +92,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 sb.append(arr.getJSONObject(i).getString("summary"))
                         .append("\n");
             }
-            holder.mContentView.setText(sb.toString());
+            holder.mContentView.setText(sb.toString().replaceAll(SPACE, " "));
             //TODO Make cards clickable here
 //            holder.mView.setOnClickListener(new View.OnClickListener() {
 //                @Override
