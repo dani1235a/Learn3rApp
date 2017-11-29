@@ -93,7 +93,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < arr.length(); i++) {
-
                 sb.append(arr.getJSONObject(i).getString("description"))
                         .append("\n");
             }

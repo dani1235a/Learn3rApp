@@ -225,7 +225,7 @@ public class CalendarFragment extends Fragment {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new CalendarAdapter(finalResult);
+                adapter = new AgendaAdapter(finalResult, null);
                 mRecyclerView.setAdapter(adapter);
             } else {
                 dateEmpty.setVisibility(View.VISIBLE);
