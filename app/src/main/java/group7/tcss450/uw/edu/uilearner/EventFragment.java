@@ -95,7 +95,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         mEventDate = (EditText) v.findViewById(R.id.event_date);
         mEventTime = (EditText) v.findViewById(R.id.event_time);
         mEventSummary = (EditText) v.findViewById(R.id.event_summary);
-
         Button confirm = (Button) v.findViewById(R.id.confirm_event);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override

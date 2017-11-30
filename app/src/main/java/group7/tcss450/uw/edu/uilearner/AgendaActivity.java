@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,7 +67,7 @@ public class AgendaActivity extends AppCompatActivity
 //        toolbar.setNavigationIcon(R.drawable.ic_person_black_24dp);
         toolbar.setTitle(mUid);
         setSupportActionBar(toolbar);
-
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOF‌​T_INPUT_ADJUST_NOTHI‌​NG);
         FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
         if(fireUser != null && !fireUser.isEmailVerified()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
