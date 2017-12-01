@@ -26,6 +26,8 @@
 
     <string name="date">Date</string>
     <string name="time">Time</string>
+    <string name="timeStart">Start Time</string>
+    <string name="timeEnd">End Time</string>
     <string name="events">Events</string>
 
     <string name="calendar">Calendar</string>

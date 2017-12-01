@@ -1,30 +1,20 @@
 package group7.tcss450.uw.edu.uilearner;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.support.design.widget.TextInputLayout;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,10 +31,7 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -72,7 +59,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
     private EditText mEventName;
     private EditText mEventDate;
-    private EditText mEventTime;
+    private EditText mEventTimeStart;
+    private EditText mEventTimeEnd;
     private EditText mEventSummary;
     private TextView mAddTask;
     private CheckedTextView mTask1;
@@ -105,7 +93,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
         mEventName = (EditText) v.findViewById(R.id.event_name);
         mEventDate = (EditText) v.findViewById(R.id.event_date);
-        mEventTime = (EditText) v.findViewById(R.id.event_time);
+        mEventTimeStart = (EditText) v.findViewById(R.id.event_timeStart);
+        mEventTimeEnd = (EditText) v.findViewById(R.id.event_timeEnd);
         mEventSummary = (EditText) v.findViewById(R.id.event_summary);
         mAddTask = (TextView) v.findViewById(R.id.textViewAddEvent);
         mTask1 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask1);
@@ -143,11 +132,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 if (isValidForm()) {
                     String name = mEventName.getText().toString();
                     String date = mEventDate.getText().toString();
-                    String time = mEventTime.getText().toString();
+                    String timeStart = mEventTimeStart.getText().toString();
+//                    String timeEnd = mEventTimeEnd.getText().toString();
                     String summary = mEventSummary.getText().toString();
 
                     EventTask eTask = new EventTask();
-                    eTask.execute(name, date, time, summary);
+                    eTask.execute(name, date, timeStart, summary);
                 }
             }
         });
@@ -196,15 +186,15 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         });
 
         mEventDate.setFocusable(false);
-        mEventTime.setFocusable(false);
-        mEventTime.setOnTouchListener(new View.OnTouchListener() {
+        mEventTimeStart.setFocusable(false);
+        mEventTimeStart.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(MotionEvent.ACTION_DOWN == event.getAction()) {
                     TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            mEventTime.setText(hourOfDay + ":" + minute);
+                            mEventTimeStart.setText(hourOfDay + ":" + minute);
                         }
                     };
                     int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
@@ -217,7 +207,25 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         });
 
 
-
+        mEventTimeEnd.setFocusable(false);
+        mEventTimeEnd.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(MotionEvent.ACTION_DOWN == event.getAction()) {
+                    TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            mEventTimeEnd.setText(hourOfDay + ":" + minute);
+                        }
+                    };
+                    int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
+                    int nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                    TimePickerDialog dialog = new TimePickerDialog(getContext(), listener, nowHour, nowMinute, false);
+                    dialog.show();
+                }
+                return false;
+            }
+        });
 
 
     }
@@ -244,8 +252,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             result = false;
         }
 
-        if (mEventTime.getText().toString().equals("")) {
-            mEventTime.setError("Event Time can't be empty!");
+        if (mEventTimeStart.getText().toString().equals("")) {
+            mEventTimeStart.setError("Event Time can't be empty!");
             result = false;
         }
 
