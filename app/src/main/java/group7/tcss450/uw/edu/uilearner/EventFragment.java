@@ -479,7 +479,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             mTaskView.setText(" " + alterText.getText().toString());
-//                            mTaskView.setChecked(true);
                             mTaskView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_box_checked, 0, 0, 0);
                         }
                     })
