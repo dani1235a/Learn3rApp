@@ -4,6 +4,10 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -20,12 +24,15 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -67,6 +74,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     private EditText mEventDate;
     private EditText mEventTime;
     private EditText mEventSummary;
+    private TextView mAddTask;
+    private CheckedTextView mTask1;
+    private CheckedTextView mTask2;
+    private CheckedTextView mTask3;
+    private int numTasks = 0;
 
     public EventFragment() {
         // Required empty public constructor
@@ -95,6 +107,35 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         mEventDate = (EditText) v.findViewById(R.id.event_date);
         mEventTime = (EditText) v.findViewById(R.id.event_time);
         mEventSummary = (EditText) v.findViewById(R.id.event_summary);
+        mAddTask = (TextView) v.findViewById(R.id.textViewAddEvent);
+        mTask1 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask1);
+        mTask2 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask2);
+        mTask3 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask3);
+
+        mAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(numTasks == 2) {
+                    mTask3.setVisibility(View.VISIBLE);
+                    numTasks++;
+//                    mAddTask.setTextColor(Color.GRAY);
+                    mAddTask.setVisibility(View.GONE);
+                }if(numTasks == 1) {
+                    mTask2.setVisibility(View.VISIBLE);
+                    numTasks++;
+                }if(numTasks == 0) {
+                    mTask1.setVisibility(View.VISIBLE);
+                    numTasks++;
+                }
+            }
+        });
+
+        mTask1.setOnClickListener(new OnTaskClickListener(1));
+        mTask2.setOnClickListener(new OnTaskClickListener(2));
+        mTask3.setOnClickListener(new OnTaskClickListener(3));
+
+
+
         Button confirm = (Button) v.findViewById(R.id.confirm_event);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +156,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
         return v;
     }
+
 
     @Override
     public void onDetach() {
@@ -408,6 +450,44 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 Toast.makeText(getActivity(), "Event creation failed!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
+        }
+    }
+
+    private class OnTaskClickListener implements View.OnClickListener {
+        CheckedTextView mTaskView;
+
+        public OnTaskClickListener(int taskNum) {
+            if(taskNum == 1) {
+                mTaskView = mTask1;
+            } else if (taskNum == 2){
+                mTaskView = mTask2;
+            } else {
+                mTaskView = mTask3;
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            final EditText alterText = new EditText(v.getContext());
+
+            alterText.setHint("Add a task for your student!");
+
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("Task")
+                    .setMessage("Add a task to give to your student")
+                    .setView(alterText)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            mTaskView.setText(" " + alterText.getText().toString());
+//                            mTaskView.setChecked(true);
+                            mTaskView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_box_checked, 0, 0, 0);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    })
+                    .show();
         }
     }
 }

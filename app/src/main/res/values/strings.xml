@@ -63,5 +63,8 @@
     <string name="date_hint">mm/dd/yyyy</string>
     <string name="time_hint">hh:mm AM/PM</string>
     <string name="submit">submit</string>
+    <string name="event_task">Checkbox Task</string>
+    <string name="addTask">Add Task</string>
+    <string name="add_a_task">Tap here to edit task!</string>
 
 </resources>
