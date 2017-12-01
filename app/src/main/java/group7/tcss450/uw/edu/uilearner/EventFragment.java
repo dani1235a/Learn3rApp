@@ -141,13 +141,14 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             @Override
             public void onClick(View v) {
                 if (isValidForm()) {
-                    String name = mEventName.getText().toString();
+                    Event event = new Event();
+                    event.setTitle(mEventName.getText().toString());
                     String date = mEventDate.getText().toString();
                     String time = mEventTime.getText().toString();
                     String summary = mEventSummary.getText().toString();
 
                     EventTask eTask = new EventTask();
-                    eTask.execute(name, date, time, summary);
+                    eTask.execute(event);
                 }
             }
         });
@@ -373,7 +374,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      *
      * @author Connor, Myles
      */
-    public class EventTask extends AsyncTask<String, Void, Boolean> {
+    public class EventTask extends AsyncTask<Event, Void, Boolean> {
 
         ProgressDialog dialog;
 
@@ -391,24 +392,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected Boolean doInBackground(Event... events) {
             String response = "";
             boolean wasSuccessful;
             try {
                 String uid = mCurrentChosenStudentUid;
-
-                String[] dates = params[1].split("/");
-                int month = Integer.valueOf(dates[0]);
-                int dayOfMonth = Integer.valueOf(dates[1]);
-                int year = Integer.valueOf(dates[2]);
-
-                dates = DateUtil.getWholeDayStartEnd(year, month, dayOfMonth);
-                Log.d(TAG, dates[0]);
-                Log.d(TAG, dates[1]);
-
-                String dStart = dates[0];
-                String dEnd = dates[1];
-
+                Event event = events[0];
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary&event_name=someName
                 Uri uri = new Uri.Builder()
                         .scheme("http")
@@ -416,10 +405,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendEncodedPath("teacher")
                         .appendEncodedPath("events")
                         .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dStart)
-                        .appendQueryParameter("end", dEnd)
-                        .appendQueryParameter("summary", params[3].replaceAll(" ", SPACE))
-                        .appendQueryParameter("event_name", params[0].replaceAll(" ", SPACE)) //pass event name here once the back end code is changed to match
+                        .appendQueryParameter("start", event.getStart())
+                        .appendQueryParameter("end", event.getEnd())
+                        .appendQueryParameter("summary", event.getSummary().replaceAll(" ", SPACE))
+                        .appendQueryParameter("event_name", event.getTitle().replaceAll(" ", SPACE)) //pass event name here once the back end code is changed to match
                         .build();
 
 
