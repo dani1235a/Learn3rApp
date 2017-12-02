@@ -203,11 +203,12 @@
 
     <CheckedTextView
         android:id="@+id/checkedTextViewTask1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:hint="@string/add_a_task"
-        android:drawableRight="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="0dp"
         android:drawableLeft="@drawable/ic_check_box_not_checked"
+        android:hint="@string/add_a_task"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -215,27 +216,29 @@
 
     <CheckedTextView
         android:id="@+id/checkedTextViewTask2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableLeft="@drawable/ic_check_box_not_checked"
         android:hint="@string/add_a_task"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:drawableRight="@null"
-        android:drawableLeft="@drawable/ic_check_box_not_checked"
         app:layout_constraintTop_toBottomOf="@+id/checkedTextViewTask1" />
 
     <CheckedTextView
         android:id="@+id/checkedTextViewTask3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:checked="false"
+        android:drawableLeft="@drawable/ic_check_box_not_checked"
         android:hint="@string/add_a_task"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:drawableRight="@null"
-        android:drawableLeft="@drawable/ic_check_box_not_checked"
         app:layout_constraintTop_toBottomOf="@+id/checkedTextViewTask2" />
 
 

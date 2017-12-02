@@ -112,7 +112,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 }if(numTasks == 1) {
                     mTask2.setVisibility(View.VISIBLE);
                     numTasks++;
-                }if(numTasks == 0) {
+                }
+                if(numTasks == 0) {
                     mTask1.setVisibility(View.VISIBLE);
                     numTasks++;
                 }
@@ -486,7 +487,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     .setView(alterText)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            mTaskView.setText(" " + alterText.getText().toString());
+                            mTaskView.setText(alterText.getText().toString());
                             mTaskView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_box_checked, 0, 0, 0);
                         }
                     })

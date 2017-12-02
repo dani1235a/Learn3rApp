@@ -68,5 +68,6 @@
     <string name="event_task">Checkbox Task</string>
     <string name="addTask">Add Task</string>
     <string name="add_a_task">Tap here to edit task!</string>
+    <string name="tasksHeading">Tasks:</string>
 
 </resources>
