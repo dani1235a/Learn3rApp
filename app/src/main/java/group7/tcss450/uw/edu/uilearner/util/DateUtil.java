@@ -60,6 +60,29 @@ public class DateUtil {
         return strs;
     }
 
+    /**
+     *
+     * @param year year, 1 indexed
+     * @param month 0 indexed
+     * @param day 1 indexed
+     * @param startHour 1 indexed
+     * @param startMinute 1 indexed
+     * @param endHour 1 indexed
+     * @param endMinute 1 indexed
+     * @return 0 index is current time formatted to date, 1 index is the end of the day.
+     */
+    public static String[] getStartAndEndDate(int year, int month, int day, int startHour, int startMinute, int endHour, int endMinute) {
+        String[] strs = new String[2];
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day, startHour, startMinute);
+        Date start = cal.getTime();
+        cal.set(year, month, day, endHour, endMinute);
+        Date end = cal.getTime();
+        strs[0] = FORMAT.format(start);
+        strs[1] = FORMAT.format(end);
+        return strs;
+    }
+
     public static String getRfcString(int year, int month, int day, int hour, int minute) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day, hour, minute);

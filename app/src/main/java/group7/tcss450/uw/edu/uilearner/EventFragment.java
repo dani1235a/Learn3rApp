@@ -134,11 +134,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     String name = mEventName.getText().toString();
                     String date = mEventDate.getText().toString();
                     String timeStart = mEventTimeStart.getText().toString();
-//                    String timeEnd = mEventTimeEnd.getText().toString();
+                    String timeEnd = mEventTimeEnd.getText().toString();
                     String summary = mEventSummary.getText().toString();
 
                     EventTask eTask = new EventTask();
-                    eTask.execute(name, date, timeStart, summary);
+                    eTask.execute(name, date, timeStart, timeEnd, summary);
                 }
             }
         });
@@ -249,17 +249,22 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         }
 
         if (mEventDate.getText().toString().equals("")) {
-            mEventDate.setError("Event Date can't be empty!");
+            mEventDate.setError("Date can't be empty!");
             result = false;
         }
 
         if (mEventTimeStart.getText().toString().equals("")) {
-            mEventTimeStart.setError("Event Time can't be empty!");
+            mEventTimeStart.setError("Start Time can't be empty!");
+            result = false;
+        }
+
+        if (mEventTimeStart.getText().toString().equals("")) {
+            mEventTimeEnd.setError("End Time can't be empty!");
             result = false;
         }
 
         if (mEventSummary.getText().toString().equals("")) {
-            mEventSummary.setError("Event Summary can't be empty!");
+            mEventSummary.setError("Summary can't be empty!");
             result = false;
         }
 
@@ -321,6 +326,20 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      * @author Connor, Myles
      */
     public class StudentTask extends AsyncTask<Void, Void, HashMap<String, String>> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getContext());
+            dialog.setIndeterminate(true);
+            dialog.setMessage("Getting your student list...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+
         @Override
         protected HashMap<String, String> doInBackground(Void... params) {
             String response = "";
@@ -336,7 +355,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendQueryParameter("uuid", uid) //pass uid here
                         .build();
 
-
+                Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
@@ -371,6 +390,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
             StudentAdapter sAdapter = new StudentAdapter(allStudentsForTeacher, mInstance);
             rv.setAdapter(sAdapter);
+            dialog.dismiss();
         }
     }
 
@@ -396,22 +416,32 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
-
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
             String response = "";
             boolean wasSuccessful;
-            try {
+            try { //params[0] = name, params[1] = date, params[2] = timeStart, params[3] = timeEnd, params[4] = summary
                 String uid = mCurrentChosenStudentUid;
+
+                Log.d(TAG, "Start time: " + params[2]);
+                Log.d(TAG, "End time: " + params[3]);
 
                 String[] dates = params[1].split("/");
                 int month = Integer.valueOf(dates[0]);
                 int dayOfMonth = Integer.valueOf(dates[1]);
                 int year = Integer.valueOf(dates[2]);
 
-                dates = DateUtil.getWholeDayStartEnd(year, month, dayOfMonth);
+                String[] timeStart = params[2].split(":");
+                int startHour = Integer.valueOf(timeStart[0]);
+                int startMinute = Integer.valueOf(timeStart[1]);
+
+                String[] timeEnd = params[3].split(":");
+                int endHour = Integer.valueOf(timeEnd[0]);
+                int endMinute = Integer.valueOf(timeEnd[1]);
+
+                dates = DateUtil.getStartAndEndDate(year, month, dayOfMonth, startHour, startMinute, endHour, endMinute);
                 Log.d(TAG, dates[0]);
                 Log.d(TAG, dates[1]);
 
@@ -427,7 +457,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendQueryParameter("uuid", uid) //pass uid here
                         .appendQueryParameter("start", dStart)
                         .appendQueryParameter("end", dEnd)
-                        .appendQueryParameter("summary", params[3].replaceAll(" ", SPACE))
+                        .appendQueryParameter("description", params[4].replaceAll(" ", SPACE))
                         .appendQueryParameter("event_name", params[0].replaceAll(" ", SPACE)) //pass event name here once the back end code is changed to match
                         .build();
 
