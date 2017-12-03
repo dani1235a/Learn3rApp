@@ -1,5 +1,6 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -147,6 +148,21 @@ public class CalendarFragment extends Fragment {
      * @author Connor
      */
     public class AgendaTask extends AsyncTask<Integer, Integer, ArrayList<String>> {
+
+        ProgressDialog dialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getContext());
+            dialog.setIndeterminate(true);
+            dialog.setMessage("Getting the day's events...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+
         @Override
         protected ArrayList<String> doInBackground(Integer... integers) {
             String response = "";
@@ -199,27 +215,14 @@ public class CalendarFragment extends Fragment {
         protected void onPostExecute(ArrayList<String> result) {
             TextView dateEmpty = (TextView) getActivity().findViewById(R.id.date_empty);
             if (!result.isEmpty()) {
+                String msg = "Result wasn't empty";
                 if (dateEmpty.getVisibility() == View.VISIBLE) {
                     dateEmpty.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    msg += ", setting the empty text to gone and setting the recycler view to visible";
                 }
+                Log.d(TAG, msg);
                 mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
-
-                /*
-                    This section will look through the result list given and only
-                    add students with events lists that are not empty.
-                 */
-                /*ArrayList<String> finalResult = new ArrayList<String>();
-                for (String str : result) {
-                    try {
-                        JSONObject events = new JSONObject(str);
-                        JSONArray arr = events.getJSONArray("events");
-                        if (arr.length() > 0) {
-                            finalResult.add(str);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }*/
 
                 //this will need to have a check if the result is empty. If so, then display an empty message
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -227,8 +230,12 @@ public class CalendarFragment extends Fragment {
                 RecyclerView.Adapter adapter;
                 adapter = new AgendaAdapter(result, null);
                 mRecyclerView.setAdapter(adapter);
+                dialog.dismiss();
             } else {
+                Log.d(TAG, "Result was empty, setting the empty text to visible and setting recycler view to gone");
                 dateEmpty.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+                dialog.dismiss();
             }
         }
     }
