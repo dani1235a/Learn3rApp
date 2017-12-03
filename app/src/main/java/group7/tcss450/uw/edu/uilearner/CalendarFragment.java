@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
 import group7.tcss450.uw.edu.uilearner.util.DateUtil;
 
 
@@ -50,6 +51,7 @@ public class CalendarFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private String mUid;
+    private String mRole;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -78,7 +80,7 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 final TextView tv = (TextView) getActivity().findViewById(R.id.date_display);
-                tv.setText(java.lang.String.format("%02d", dayOfMonth) + "/" + java.lang.String.format("%02d", month) + "/" + year);
+                tv.setText(java.lang.String.format("%02d", month) + "/" +  java.lang.String.format("%02d", dayOfMonth) + "/" + year);
                 getActivity().findViewById(R.id.date_info).setVisibility(View.VISIBLE);
                 AgendaTask aTask = new AgendaTask();
                 aTask.execute(year, month, dayOfMonth);
@@ -102,6 +104,7 @@ public class CalendarFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             mUid = (String) args.get("uuid");
+            mRole = (String) args.get("role");
 
             AgendaTask agendaTask = new AgendaTask();
 
@@ -110,12 +113,11 @@ public class CalendarFragment extends Fragment {
             Calendar rightNow = Calendar.getInstance();
             int year = rightNow.get(Calendar.YEAR);
             int month = rightNow.get(Calendar.MONTH);
-            month++;
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
             Log.d(TAG, "today's date from Calendar: " + dayOfMonth + "/" + month + "/" + year);
 
             final TextView tv = (TextView) getActivity().findViewById(R.id.date_display);
-            tv.setText(java.lang.String.format("%02d", dayOfMonth) + "/" + java.lang.String.format("%02d", month) + "/" + year);
+            tv.setText(java.lang.String.format("%02d", month) + "/" +  java.lang.String.format("%02d", dayOfMonth) + "/" + year);
             getActivity().findViewById(R.id.date_info).setVisibility(View.VISIBLE);
 
             agendaTask.execute(year, month, dayOfMonth);
@@ -168,19 +170,35 @@ public class CalendarFragment extends Fragment {
             String response = "";
             try {
 
-                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1], integers[2]);
+                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                Log.d("CALENDAR", "Sending in CalendarFragment start date: " + dates[0]);
+                Log.d("CALENDAR", "Sending in CalendarFragment end date: " + dates[1]);
 
                 String uid = mUid;
                 // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
-                Uri uri = new Uri.Builder()
-                        .scheme("http")
-                        .authority("learner-backend.herokuapp.com")
-                        .appendEncodedPath("teacher") //this will need to have a check for user role.
-                        .appendEncodedPath("events")
-                        .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dates[0])
-                        .appendQueryParameter("end", dates[1])
-                        .build();
+
+                Uri uri;
+                if (mRole.equals(ChooseRoleFragment.IS_TEACHER)) {
+                    uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("teacher") //this will need to have a check for user role.
+                            .appendEncodedPath("events")
+                            .appendQueryParameter("uuid", uid) //pass uid here
+                            .appendQueryParameter("start", dates[0])
+                            .appendQueryParameter("end", dates[1])
+                            .build();
+                } else {
+                    uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("student")
+                            .appendEncodedPath("events")
+                            .appendQueryParameter("uuid", uid)
+                            .appendQueryParameter("start", dates[0])
+                            .appendQueryParameter("end", dates[1])
+                            .build();
+                }
 
 
                 Log.d(TAG, uri.toString());

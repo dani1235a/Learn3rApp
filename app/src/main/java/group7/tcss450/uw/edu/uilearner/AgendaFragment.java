@@ -143,9 +143,9 @@ public class AgendaFragment extends Fragment {
             try {
 
                 //String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
-                String[] dates = DateUtil.getRestOfDay(integers[0], integers[1] + 1, integers[2], integers[3], integers[4]);
-                Log.d(TAG, dates[0]);
-                Log.d(TAG, dates[1]);
+                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                Log.d("CALENDAR", "Sending in AgendaFragment start date: " + dates[0]);
+                Log.d("CALENDAR", "Sending in AgendaFragment end date: " + dates[1]);
 
                 String uid = mUid;
                 Uri uri;

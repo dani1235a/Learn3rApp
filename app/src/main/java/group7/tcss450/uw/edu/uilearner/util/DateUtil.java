@@ -26,7 +26,7 @@ public class DateUtil {
         Log.d("EVENT", "" + month + "/" + day + "/" + year);
         String[] strings = new String[2];
         Calendar cal = Calendar.getInstance();
-        cal.set(year, month-1, day, 0, 0, 0);
+        cal.set(year, month, day, 0, 0, 0);
         Date startDate = cal.getTime();
         Log.d("EVENT", startDate.toString());
         cal.set(year, month, day, 23, 59, 59);
