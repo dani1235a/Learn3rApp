@@ -1,5 +1,6 @@
 package group7.tcss450.uw.edu.uilearner;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -88,8 +89,10 @@ public class AgendaFragment extends Fragment {
             int year = rightNow.get(Calendar.YEAR);
             int month = rightNow.get(Calendar.MONTH);
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-            Log.d(TAG, "" + dayOfMonth + "/" + month + "/" + year);
-            agendaTask.execute(year, month, dayOfMonth);
+            int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+            int minute = rightNow.get(Calendar.MINUTE);
+            Log.d(TAG, "" + dayOfMonth + "/" + month + "/" + year + " " + hour + ":" + minute);
+            agendaTask.execute(year, month, dayOfMonth, hour, minute);
         } else {
             Log.e(TAG, "Arguments were null");
         }
@@ -119,12 +122,28 @@ public class AgendaFragment extends Fragment {
      * @author Connor
      */
     public class AgendaTask extends AsyncTask<Integer, Integer, ArrayList<String>> {
+
+        ProgressDialog dialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getContext());
+            dialog.setIndeterminate(true);
+            dialog.setMessage("Getting today's events...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+
         @Override
         protected ArrayList<String> doInBackground(Integer... integers) {
             String response = "";
             try {
 
-                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                //String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                String[] dates = DateUtil.getRestOfDay(integers[0], integers[1] + 1, integers[2], integers[3], integers[4]);
                 Log.d(TAG, dates[0]);
                 Log.d(TAG, dates[1]);
 
@@ -200,30 +219,15 @@ public class AgendaFragment extends Fragment {
                 }
                 mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
 
-                /*
-                    This section will look through the result list given and only
-                    add students with events lists that are not empty.
-                 */
-                /*ArrayList<String> finalResult = new ArrayList<String>();
-                for (String str : result) {
-                    try {
-                        JSONObject events = new JSONObject(str);
-                        JSONArray arr = events.getJSONArray("events");
-                        if (arr.length() > 0) {
-                            finalResult.add(str);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }*/
-
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
                 adapter = new AgendaAdapter(result, null); //null will need to be an OnListInteractionListener
                 mRecyclerView.setAdapter(adapter); //this acts as both a set and execute.
+                dialog.dismiss();
             } else {
                 empty.setVisibility(View.VISIBLE);
+                dialog.dismiss();
             }
         }
     }
