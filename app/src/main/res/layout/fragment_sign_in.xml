@@ -15,12 +15,12 @@
         android:layout_marginTop="129dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:text="@string/default_email"
         android:textAllCaps="false"
         android:textColor="@android:color/background_light"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        <!--android:text="@string/default_email"-->
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -31,10 +31,10 @@
         android:layout_marginTop="40dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/default_password"
         android:textColor="@android:color/background_light"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
+        <!--android:text="@string/default_password"-->
 
     <TextView
         android:id="@+id/textView3"
