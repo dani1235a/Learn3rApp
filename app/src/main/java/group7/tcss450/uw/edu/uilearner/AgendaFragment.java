@@ -142,8 +142,7 @@ public class AgendaFragment extends Fragment {
             String response = "";
             try {
 
-                //String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
-                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1], integers[2]);
                 Log.d("CALENDAR", "Sending in AgendaFragment start date: " + dates[0]);
                 Log.d("CALENDAR", "Sending in AgendaFragment end date: " + dates[1]);
 
@@ -181,20 +180,25 @@ public class AgendaFragment extends Fragment {
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                JSONObject json = new JSONObject(response);
-                JSONArray events = (JSONArray) json.get("events");
-
+                Log.d(TAG, response);
+                JSONArray events;
+                try {
+                    events = new JSONObject(response)
+                            .getJSONArray("events");
+                } catch(JSONException e) {
+                    events = new JSONArray(response);
+                }
                 ArrayList<String> dataset = new ArrayList<String>();
                 for (int i = 0; i < events.length(); i++) {
                     String event = events.getString(i);
                     Log.d(TAG, event);
                     dataset.add(event);
                 }
-
                 return dataset;
 
             } catch (Exception e) {
                 ArrayList<String> msg = new ArrayList<String>();
+                Log.e(TAG, e.getMessage(), e);
                 msg.add(e.getMessage());
                 return msg;
             }

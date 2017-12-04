@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import group7.tcss450.uw.edu.uilearner.EventFragment;
 
@@ -17,6 +18,10 @@ import group7.tcss450.uw.edu.uilearner.EventFragment;
 public class DateUtil {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+
+    static {
+        FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
 
     /**
@@ -87,6 +92,37 @@ public class DateUtil {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day, hour, minute);
         return FORMAT.format(cal.getTime());
+    }
+
+    public static String getCardStartEnd(String rfc1, String rfc2) {
+        try {
+            Date start = FORMAT.parse(rfc1);
+            Date end = FORMAT.parse(rfc2);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(start);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            int month = cal.get(Calendar.MONTH);
+            int year = cal.get(Calendar.YEAR);
+            int startHour = cal.get(Calendar.HOUR_OF_DAY);
+            int startMinute = cal.get(Calendar.MINUTE);
+            cal.setTime(end);
+            int endHour = cal.get(Calendar.HOUR_OF_DAY);
+            int endMinute = cal.get(Calendar.MINUTE);
+
+            String endAmPm = (endHour >= 12) ? "PM" : "AM";
+            endHour = (endHour >= 12) ? endHour - 12 : endHour;
+
+            String startAmPm = (startHour >= 12) ? "PM" : "AM";
+            startHour = (startHour >= 12) ? startHour - 12 : startHour;
+
+            return String.format(Locale.US ,"%02d/%02d/%d @ %d:%02d%s - %d:%02d%s"
+                    , month, day, year,
+                    startHour, startMinute, startAmPm
+                    , endHour, endMinute, endAmPm);
+
+        } catch(ParseException e) {
+            return "Failed to parse dates - check dateUtil";
+        }
     }
 
     public static Date getDateFromRfcString(String rfcString) {

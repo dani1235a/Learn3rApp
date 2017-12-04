@@ -170,7 +170,7 @@ public class CalendarFragment extends Fragment {
             String response = "";
             try {
 
-                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1] + 1, integers[2]);
+                String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1], integers[2]);
                 Log.d("CALENDAR", "Sending in CalendarFragment start date: " + dates[0]);
                 Log.d("CALENDAR", "Sending in CalendarFragment end date: " + dates[1]);
 

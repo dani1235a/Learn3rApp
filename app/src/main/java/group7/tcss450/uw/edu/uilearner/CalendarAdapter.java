@@ -83,7 +83,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             for (int i = 0; i < summary.length(); i++) {
                 try {
                     JSONObject curr = summary.getJSONObject(i);
-                    s += ("\n" + curr.getString("description"));
+                    JSONObject desc = new JSONObject(curr.getString("description"));
+                    s += ("\n" + desc.getString("summary"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

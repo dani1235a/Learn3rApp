@@ -31,9 +31,11 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Scanner;
 
 import group7.tcss450.uw.edu.uilearner.util.DateUtil;
@@ -67,6 +69,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     private CheckedTextView mTask2;
     private CheckedTextView mTask3;
     private int numTasks = 0;
+    private int startHour = 0;
+    private int startMinute = 0;
+    private int endHour = 0;
+    private int endMinute = 0;
 
     public EventFragment() {
         // Required empty public constructor
@@ -131,14 +137,28 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
             @Override
             public void onClick(View v) {
                 if (isValidForm()) {
-                    String name = mEventName.getText().toString();
-                    String date = mEventDate.getText().toString();
-                    String timeStart = mEventTimeStart.getText().toString();
-                    String timeEnd = mEventTimeEnd.getText().toString();
-                    String summary = mEventSummary.getText().toString();
+                    Event event = new Event();
+                    event.setName(mEventName.getText().toString());
+
+                    event.setSummary(mEventSummary.getText().toString());
+
+                    String[] dates = mEventDate.getText().toString().split("/");
+                    int month = Integer.valueOf(dates[0]) - 1; //Months are 0 indexed.
+                    int dayOfMonth = Integer.valueOf(dates[1]);
+                    int year = Integer.valueOf(dates[2]);
+
+                    String[] times = DateUtil.getStartAndEndDate(year, month, dayOfMonth,
+                            startHour, startMinute, endHour, endMinute);
+
+                    event.setStart(times[0]);
+                    event.setEnd(times[1]);
+                    Event.Task t1 = new Event.Task(false, mTask1.getText().toString());
+                    Event.Task t2 = new Event.Task(false, mTask2.getText().toString());
+                    Event.Task t3 = new Event.Task(false, mTask3.getText().toString());
+                    event.setTasks(Arrays.asList(t1, t2, t3));
 
                     EventTask eTask = new EventTask();
-                    eTask.execute(name, date, timeStart, timeEnd, summary);
+                    eTask.execute(event);
                 }
             }
         });
@@ -172,7 +192,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                            mEventDate.setText(month+ 1 + "/" + dayOfMonth + "/" + year);
+                            mEventDate.setText(month + 1 + "/" + dayOfMonth + "/" + year);
                         }
                     };
                     int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -195,7 +215,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            mEventTimeStart.setText(hourOfDay + ":" + minute);
+                            startHour = hourOfDay;
+                            startMinute = minute;
+                            int displayHour = (hourOfDay >= 12) ? hourOfDay - 12 : hourOfDay;
+                            String amPm = (hourOfDay >= 12) ? "PM" : "AM";
+                            mEventTimeStart.setText(String.format(Locale.US, "%d:%02d%s", displayHour, minute,amPm));
                         }
                     };
                     int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
@@ -216,7 +240,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            mEventTimeEnd.setText(hourOfDay + ":" + minute);
+                            endHour = hourOfDay;
+                            endMinute = minute;
+                            int displayHour = (hourOfDay >= 12) ? hourOfDay - 12 : hourOfDay;
+                            String amPm = (hourOfDay >= 12) ? "PM" : "AM";
+                            mEventTimeEnd.setText(String.format(Locale.US, "%d:%02d%s", displayHour, minute,amPm));
                         }
                     };
                     int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
@@ -265,6 +293,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
         if (mEventSummary.getText().toString().equals("")) {
             mEventSummary.setError("Summary can't be empty!");
+            result = false;
+        }
+        if(startHour > endHour || (startHour == endHour && startMinute >= endMinute)) {
+            mEventTimeEnd.setError("End must be later than start");
             result = false;
         }
 
@@ -366,7 +398,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
                 JSONObject json = new JSONObject(response);
                 JSONArray students = (JSONArray) json.get("students");
-                HashMap<String, String> allStudentsForTeacher = new HashMap<String, String>();
+                HashMap<String, String> allStudentsForTeacher = new HashMap<>();
 
                 for (int i = 0; i < students.length(); i++) {
                     JSONObject obj = students.getJSONObject(i);
@@ -402,7 +434,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      *
      * @author Connor, Myles
      */
-    public class EventTask extends AsyncTask<String, Void, Boolean> {
+    public class EventTask extends AsyncTask<Event, Void, Boolean> {
 
         ProgressDialog dialog;
 
@@ -419,34 +451,28 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected Boolean doInBackground(Event... events) {
             String response = "";
             boolean wasSuccessful;
             try { //params[0] = name, params[1] = date, params[2] = timeStart, params[3] = timeEnd, params[4] = summary
                 String uid = mCurrentChosenStudentUid;
 
-                Log.d(TAG, "Start time: " + params[2]);
-                Log.d(TAG, "End time: " + params[3]);
+                Event event = events[0];
+                Log.d(TAG, "Start time: " + event.getStart());
+                Log.d(TAG, "End time: " + event.getEnd());
 
-                String[] dates = params[1].split("/");
-                int month = Integer.valueOf(dates[0]);
-                int dayOfMonth = Integer.valueOf(dates[1]);
-                int year = Integer.valueOf(dates[2]);
+                JSONObject description = new JSONObject();
+                JSONArray tasks = new JSONArray();
+                for(Event.Task task: event.getTasks()) {
+                    JSONObject jTask = new JSONObject();
+                    jTask.put("done", task.isDone());
+                    jTask.put("description", task.getDescription());
+                    tasks.put(jTask);
+                }
+                description.put("summary", event.getSummary());
+                description.put("tasks", tasks);
 
-                String[] timeStart = params[2].split(":");
-                int startHour = Integer.valueOf(timeStart[0]);
-                int startMinute = Integer.valueOf(timeStart[1]);
 
-                String[] timeEnd = params[3].split(":");
-                int endHour = Integer.valueOf(timeEnd[0]);
-                int endMinute = Integer.valueOf(timeEnd[1]);
-
-                dates = DateUtil.getStartAndEndDate(year, month, dayOfMonth, startHour, startMinute, endHour, endMinute);
-                Log.d(TAG, dates[0]);
-                Log.d(TAG, dates[1]);
-
-                String dStart = dates[0];
-                String dEnd = dates[1];
 
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary&event_name=someName
                 Uri uri = new Uri.Builder()
@@ -455,10 +481,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendEncodedPath("teacher")
                         .appendEncodedPath("events")
                         .appendQueryParameter("uuid", uid) //pass uid here
-                        .appendQueryParameter("start", dStart)
-                        .appendQueryParameter("end", dEnd)
-                        .appendQueryParameter("description", params[4].replaceAll(" ", SPACE))
-                        .appendQueryParameter("event_name", params[0].replaceAll(" ", SPACE)) //pass event name here once the back end code is changed to match
+                        .appendQueryParameter("start", event.getStart())
+                        .appendQueryParameter("end", event.getEnd())
+                        .appendQueryParameter("description", description.toString().replaceAll(" ", SPACE))
+                        .appendQueryParameter("event_name", event.getName().replaceAll(" ", SPACE)) //pass event name here once the back end code is changed to match
                         .build();
 
 
