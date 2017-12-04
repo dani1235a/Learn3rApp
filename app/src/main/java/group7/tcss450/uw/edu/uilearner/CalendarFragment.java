@@ -41,12 +41,12 @@ import group7.tcss450.uw.edu.uilearner.util.DateUtil;
  *
  * @author Connor
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditButtonInteractionListener {
 
     private static final String TAG = "CALENDAR";
 
 
-    private OnCalendarInteractionListener mListener;
+    private AgendaFragment.OnListFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -126,6 +126,23 @@ public class CalendarFragment extends Fragment {
             Log.e(TAG, "Arguments were null");
         }
         super.onStart();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            mListener = (AgendaFragment.OnListFragmentInteractionListener) context;
+        } catch (Exception e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onEditButtonInteraction(String studentId, String title, String date, String gCalid, String eventId, String startTime, String endTime, String summary, String[] tasks) {
+        mListener.onListFragmentInteraction(studentId, title, date, gCalid, eventId, startTime, endTime, summary, tasks);
     }
 
 
@@ -252,7 +269,7 @@ public class CalendarFragment extends Fragment {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new AgendaAdapter(result, null);
+                adapter = new AgendaAdapter(result, getFragment());
                 mRecyclerView.setAdapter(adapter);
                 dialog.dismiss();
             } else {
@@ -262,5 +279,10 @@ public class CalendarFragment extends Fragment {
                 dialog.dismiss();
             }
         }
+    }
+
+
+    public CalendarFragment getFragment() {
+        return this;
     }
 }
