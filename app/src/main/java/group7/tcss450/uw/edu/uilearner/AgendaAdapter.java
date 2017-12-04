@@ -100,6 +100,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         holder.mItem = mValues.get(position);
         try {
             Log.d(TAG, "getting " + mValues.get(position));
+
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString(2));
 

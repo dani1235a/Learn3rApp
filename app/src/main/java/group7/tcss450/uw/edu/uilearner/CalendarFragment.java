@@ -211,8 +211,13 @@ public class CalendarFragment extends Fragment {
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
                 Log.d(TAG, response);
-                JSONObject json = new JSONObject(response);  //turn result into parseable json object
-                JSONArray events = (JSONArray) json.get("events");
+                JSONArray events;
+                try {
+                    events = new JSONObject(response)
+                            .getJSONArray("events");
+                } catch (Exception e) {
+                    events = new JSONArray(response);
+                }
 
                 Log.d(TAG, events.toString());
 
