@@ -66,7 +66,7 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.agenda_list);
-
+        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
         return view;
     }
 

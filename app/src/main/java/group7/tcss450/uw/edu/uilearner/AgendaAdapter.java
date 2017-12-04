@@ -234,22 +234,23 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
                                 String summary = holder.mContentView.getText().toString();
 
-                                ArrayList<String> tasks = new ArrayList<String>();
+                                String[] tasks = new String[3];
                                 if (taskExists) {
                                     if (!holder.mTask1.getText().toString().equals("")) {
-                                        tasks.add(holder.mTask1.getText().toString());
+                                        tasks[0] = holder.mTask1.getText().toString();
                                     }
 
                                     if (!holder.mTask2.getText().toString().equals("")) {
-                                        tasks.add(holder.mTask2.getText().toString());
+                                        tasks[1] = holder.mTask2.getText().toString();
                                     }
 
                                     if (!holder.mTask3.getText().toString().equals("")) {
-                                        tasks.add(holder.mTask3.getText().toString());
+                                        tasks[2] = holder.mTask3.getText().toString();
                                     }
                                 }
 
-                                mListener.onEditButtonInteraction(id, title, date, startTime, endTime, summary, (String[]) tasks.toArray());
+
+                                mListener.onEditButtonInteraction(id, title, date, startTime, endTime, summary, tasks);
                             }
                         });
                         adb.setCancelable(true);
@@ -274,7 +275,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     private void triggerRefresh(int position) {
         mValues.remove(position);
         notifyItemRemoved(position);
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     private boolean setTask(CheckBox box, JSONObject task) {
