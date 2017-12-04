@@ -178,7 +178,7 @@ public class AgendaFragment extends Fragment {
                 connection.connect();
                 Scanner s = new Scanner(connection.getInputStream());
                 StringBuilder sb = new StringBuilder();
-                while(s.hasNext()) sb.append(s.next());
+                while(s.hasNext()) sb.append(s.next()).append(" ");
                 response = sb.toString();
                 Log.d(TAG, response);
                 JSONArray events;

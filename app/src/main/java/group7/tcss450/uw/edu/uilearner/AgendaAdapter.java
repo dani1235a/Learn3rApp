@@ -112,7 +112,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             JSONObject desc = new JSONObject(events.getString(DESCRIPTION));
             JSONArray tasks = desc.getJSONArray(TASKS);
 
-            String summary = desc.getString("summary").replaceAll(EventFragment.SPACE, " ");
+            String summary = desc.getString("summary").replaceAll(SPACE, " ");
 
 
             //This is to set up the task views
