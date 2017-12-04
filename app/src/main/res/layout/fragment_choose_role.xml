@@ -46,7 +46,7 @@
             app:layout_constraintTop_toBottomOf="@+id/addCode_display" />
 
         <RadioButton
-            android:id="@+id/student"
+            android:id="@+id/eventTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"

@@ -159,7 +159,7 @@ public class ChooseRoleFragment extends Fragment {
                     addCode.setVisibility(View.INVISIBLE);
                     selectedRole = IS_TEACHER;
                     register.setEnabled(true);
-                } else if(checkedId == R.id.student) {
+                } else if(checkedId == R.id.eventTitle) {
                     Log.d(TAG, "student selected");
                     selectedRole = IS_STUDENT;
                     addCode.setVisibility(View.VISIBLE);

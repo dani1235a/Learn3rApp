@@ -1,16 +1,18 @@
 package group7.tcss450.uw.edu.uilearner;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -126,19 +128,21 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             //the server only includes the 'studentName' param when we're requests via /teacher/events,
             //we know if its missing we're a student.
             boolean isStudent = !events.has(STUDENT_NAME);
+            final String gCalId = events.getJSONObject("organizer").getString("email"); //Email of the Google Calendar
+            final String eventId = events.getString("id");
+            holder.mContentView.setText(summary);
             if(isStudent) {
-                String eventId = events.getString("id");
-                holder.mIdView.setText(eventTitle);
+                holder.mEventTitle.setText(eventTitle);
                 //The summary here is pointless since the big text usually for email is now
                 //the title since student's don't care about their emails.
-                holder.mEventTitle.setVisibility(View.GONE);
-                String gCalId = events.getJSONObject("organizer").getString("email"); //Email of the Google Calendar
+                holder.mIdView.setVisibility(View.GONE);
 
                 CheckBoxListener listener = new CheckBoxListener(gCalId, eventId, eventTitle,
                         summary,  holder);
                 holder.mTask1.setOnCheckedChangeListener(listener);
                 holder.mTask2.setOnCheckedChangeListener(listener);
                 holder.mTask3.setOnCheckedChangeListener(listener);
+                holder.deleteButton.setVisibility(View.GONE);
 
             } else {
                 holder.mIdView.setText(events.optString(STUDENT_NAME));
@@ -147,14 +151,76 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 holder.mTask1.setClickable(false);
                 holder.mTask2.setClickable(false);
                 holder.mTask3.setClickable(false);
+                holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
+                        adb.setMessage("Are you sure you want to delete event?");
+                        adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                new AsyncTask<Void, Void, Boolean>() {
+
+                                    @Override
+                                    protected Boolean doInBackground(Void... params) {
+                                        try {
+                                            Uri uri = new Uri.Builder()
+                                                    .scheme("http")
+                                                    .authority("learner-backend.herokuapp.com")
+                                                    .appendEncodedPath("teacher")
+                                                    .appendEncodedPath("events")
+                                                    .appendEncodedPath("delete")
+                                                    .appendQueryParameter("calId", gCalId)
+                                                    .appendQueryParameter("event", eventId)
+                                                    .build();
+                                            HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                            connection.setRequestMethod("POST");
+                                            connection.connect();
+                                            Scanner in = new Scanner(connection.getInputStream());
+                                            StringBuilder sb = new StringBuilder();
+                                            while (in.hasNext()) sb.append(in.next()).append(" ");
+                                            String response = sb.toString();
+                                            Log.d(TAG, response);
+                                            JSONObject obj = new JSONObject(response);
+                                            return obj.getBoolean("success");
+                                        } catch (Exception e) {
+                                            Log.e(TAG, "failed to request: ", e);
+                                            return false;
+                                        }
+                                    }
+
+
+                                    @Override
+                                    protected void onPostExecute(Boolean success) {
+                                        triggerRefresh(holder.getAdapterPosition());
+                                        dialog.dismiss();
+                                    }
+                                }.execute();
+                            }
+                        });
+                        adb.setCancelable(true);
+                        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        adb.show();
+                    }
+                });
             }
 
-            holder.mContentView.setText(summary);
         } catch (JSONException e) {
             holder.mIdView.setText(e.getMessage());
 
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    private void triggerRefresh(int position) {
+        mValues.remove(position);
+        notifyItemRemoved(position);
+        this.notifyDataSetChanged();
     }
 
     private boolean setTask(CheckBox box, JSONObject task) {
@@ -192,6 +258,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         final CheckBox mTask1;
         final CheckBox mTask2;
         final CheckBox mTask3;
+        final ImageButton deleteButton;
 
 
         public ViewHolder(View view) {
@@ -206,6 +273,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             mTask1 = (CheckBox) view.findViewById(R.id.item_task1);
             mTask2 = (CheckBox) view.findViewById(R.id.item_task2);
             mTask3 = (CheckBox) view.findViewById(R.id.item_task3);
+            deleteButton = (ImageButton) view.findViewById(R.id.deleteEvent);
         }
 
         @Override
