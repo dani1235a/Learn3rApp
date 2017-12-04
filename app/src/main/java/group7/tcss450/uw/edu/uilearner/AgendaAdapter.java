@@ -252,7 +252,14 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             }
         }
 
+        private JSONObject getTaskFromBox(CheckBox box) throws JSONException {
+            JSONObject obj = new JSONObject();
+            obj.put("description", box.getText().toString());
+            obj.put("done", box.isChecked());
+            return obj;
+        }
         private class Task extends  AsyncTask<JSONObject, Void, Boolean> {
+
             @Override
             protected Boolean doInBackground(JSONObject... params) {
                 try {
@@ -291,13 +298,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 }
             }
 
-        }
-
-        private JSONObject getTaskFromBox(CheckBox box) throws JSONException {
-            JSONObject obj = new JSONObject();
-            obj.put("description", box.getText().toString());
-            obj.put("done", box.isChecked());
-            return obj;
         }
     }
 }
