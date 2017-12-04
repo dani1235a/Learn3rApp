@@ -56,6 +56,14 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     private String mCurrentChosenStudentUid;
     private String mTeacherUid;
 
+    private String mPassedStudentId;
+    private String mPassedTitle;
+    private String mPassedDate;
+    private String mPassedStartTime;
+    private String mPassedEndTime;
+    private String mPassedSummary;
+    private String[] mPassedTasks;
+
     private RadioButton mCurrentChosenRadioButton;
     private EventFragment mInstance;
 
@@ -323,6 +331,16 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     public void onStart() {
         if (getArguments() != null) {
             mTeacherUid = getArguments().getString("uuid");
+            if (getArguments().getString("id") != null) {
+                mPassedStudentId = getArguments().getString("id");
+                mPassedTitle = getArguments().getString("title");
+                mPassedDate = getArguments().getString("date");
+                mPassedStartTime = getArguments().getString("startTime");
+                mPassedEndTime = getArguments().getString("endTime");
+                mPassedSummary = getArguments().getString("summary");
+                mPassedTasks = (String[]) getArguments().get("tasks");
+            }
+
             StudentTask sTask = new StudentTask();
             sTask.execute();
         }

@@ -262,8 +262,20 @@ public class AgendaActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    @Override
-    public void onListFragmentInteraction(String item) {
-    }
 
+    @Override
+    public void onListFragmentInteraction(String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks) {
+        EventFragment frag = new EventFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("uuid", mUid);
+        args.putSerializable("id", studentId);
+        args.putSerializable("title", title);
+        args.putSerializable("date", date);
+        args.putSerializable("startTime", startTime);
+        args.putSerializable("endTime", endTime);
+        args.putSerializable("summary", summary);
+        args.putSerializable("tasks", tasks);
+
+        loadFragment(frag, args);
+    }
 }

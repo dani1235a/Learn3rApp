@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.auth.SignInFragment;
 import group7.tcss450.uw.edu.uilearner.util.DateUtil;
 
 
@@ -33,12 +35,12 @@ import group7.tcss450.uw.edu.uilearner.util.DateUtil;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class AgendaFragment extends Fragment {
+public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButtonInteractionListener {
 
     private int mColumnCount = 1;
     private static final String TAG = "AGENDA";
 
-    private OnListFragmentInteractionListener mListener;
+    protected OnListFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private String mUid;
     private String mRole;
@@ -81,6 +83,7 @@ public class AgendaFragment extends Fragment {
         if (args != null) {
             mUid = (String) args.get("uuid");
             mRole = (String) args.get("role");
+
             AgendaTask agendaTask = new AgendaTask();
 
             // Gets today's date so the Agenda page Recycler View can populate with
@@ -100,6 +103,24 @@ public class AgendaFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            mListener = (OnListFragmentInteractionListener) context;
+        } catch (Exception e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+
+    @Override
+    public void onEditButtonInteraction(String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks) {
+        mListener.onListFragmentInteraction(studentId, title, date, startTime, endTime, summary, tasks);
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -111,7 +132,7 @@ public class AgendaFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(String item);
+        void onListFragmentInteraction(String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks);
     }
 
 
@@ -226,7 +247,7 @@ public class AgendaFragment extends Fragment {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(layoutManager);
                 RecyclerView.Adapter adapter;
-                adapter = new AgendaAdapter(result, null); //null will need to be an OnListInteractionListener
+                adapter = new AgendaAdapter(result, getFragment());
                 mRecyclerView.setAdapter(adapter); //this acts as both a set and execute.
                 dialog.dismiss();
             } else {
@@ -234,5 +255,10 @@ public class AgendaFragment extends Fragment {
                 dialog.dismiss();
             }
         }
+    }
+
+
+    public AgendaFragment getFragment() {
+        return this;
     }
 }
