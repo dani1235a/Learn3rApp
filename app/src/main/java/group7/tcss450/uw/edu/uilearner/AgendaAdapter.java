@@ -250,7 +250,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                             .appendQueryParameter("calId", calId)
                             .appendQueryParameter("event_name", mEventTitle)
                             .appendQueryParameter("event", mEventId)
-                            .appendQueryParameter("description", params[0].toString())
+                            .appendQueryParameter("description", params[0].toString().replaceAll(" ", SPACE))
                             .build();
 
                     Log.d(TAG, uri.toString());
