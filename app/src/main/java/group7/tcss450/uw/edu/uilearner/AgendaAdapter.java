@@ -220,7 +220,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     private void triggerRefresh(int position) {
         mValues.remove(position);
         notifyItemRemoved(position);
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     private boolean setTask(CheckBox box, JSONObject task) {

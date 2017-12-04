@@ -9,8 +9,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="@dimen/cardview_compat_inset_shadow"
-        app:cardElevation="5dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="2dp"
         app:cardUseCompatPadding="true"
         app:contentPadding="11dp">
 
@@ -135,13 +135,15 @@
             <ImageButton
                 android:id="@+id/deleteEvent"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="38dp"
+                android:layout_height="31dp"
                 android:layout_marginBottom="0dp"
                 android:layout_marginRight="0dp"
                 android:src="@drawable/ic_delete_forever_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                tools:layout_editor_absoluteY="207dp"
+                tools:layout_editor_absoluteX="290dp" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
