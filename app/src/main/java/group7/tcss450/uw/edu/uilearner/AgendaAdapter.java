@@ -98,19 +98,19 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             Log.d(TAG, "getting " + mValues.get(position));
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString(2));
-            holder.mIdView.setText(events.optString(STUDENT_NAME));
+
 
             String start = events.getJSONObject("start").getString("dateTime");
             String end = events.getJSONObject("end").getString("dateTime");
-            String dateAndTime = DateUtil.getCardStartEnd(start, end);
+            String dateAndTime = DateUtil.getCardStartEnd(start, end); //Returns MM/DD/YYYY @ HH:MM AM - HH:MM PM
             holder.mEventTime.setText(dateAndTime);
+
             String eventTitle = events.getString(EVENT_TITLE).replaceAll(SPACE, " ");
-            String eventId = events.getString("id");
-            holder.mEventTitle.setText(eventTitle);
+
             JSONObject desc = new JSONObject(events.getString(DESCRIPTION));
             JSONArray tasks = desc.getJSONArray(TASKS);
+
             String summary = desc.getString("summary").replaceAll(EventFragment.SPACE, " ");
-            String gCalId = events.getJSONObject("organizer").getString("email"); //Email of the Google Calendar
 
 
             //This is to set up the task views
@@ -123,15 +123,27 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             }
 
             boolean isStudent = !events.has(STUDENT_NAME);
-            holder.mTask1.setClickable(isStudent);
-            holder.mTask2.setClickable(isStudent);
-            holder.mTask3.setClickable(isStudent);
             if(isStudent) {
+                String eventId = events.getString("id");
+                holder.mIdView.setText(eventTitle);
+                //The summary here is pointless since the big text usually for email is now
+                //the title since student's don't care about their emails.
+                holder.mEventTitle.setVisibility(View.GONE);
+                String gCalId = events.getJSONObject("organizer").getString("email"); //Email of the Google Calendar
+
                 CheckBoxListener listener = new CheckBoxListener(gCalId, eventId, eventTitle,
                         summary,  holder);
                 holder.mTask1.setOnCheckedChangeListener(listener);
                 holder.mTask2.setOnCheckedChangeListener(listener);
                 holder.mTask3.setOnCheckedChangeListener(listener);
+
+            } else {
+                holder.mIdView.setText(events.optString(STUDENT_NAME));
+                holder.mEventTitle.setText(eventTitle);
+
+                holder.mTask1.setClickable(false);
+                holder.mTask2.setClickable(false);
+                holder.mTask3.setClickable(false);
             }
 
             holder.mContentView.setText(summary);
