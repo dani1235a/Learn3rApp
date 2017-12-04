@@ -254,6 +254,9 @@ public class AgendaActivity extends AppCompatActivity
          the main_container layout in activity_main with the new one given.
       */
     private void loadFragment(Fragment fragment, Bundle args) {
+        if(fragment instanceof AgendaFragment && mIsTeacher) {
+            findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        }
         fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
