@@ -122,6 +122,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 holder.mTaskLabel.setVisibility(View.GONE);
             }
 
+            //This is a pretty hacky way to figure out whether we're a student or not, but since
+            //the server only includes the 'studentName' param when we're requests via /teacher/events,
+            //we know if its missing we're a student.
             boolean isStudent = !events.has(STUDENT_NAME);
             if(isStudent) {
                 String eventId = events.getString("id");
