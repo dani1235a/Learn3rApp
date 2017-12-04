@@ -264,7 +264,7 @@ public class AgendaActivity extends AppCompatActivity
 
 
     @Override
-    public void onListFragmentInteraction(String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks) {
+    public void onListFragmentInteraction(String studentId, String title, String date, String gCalId, String eventId, String startTime, String endTime, String summary, String[] tasks) {
         EventFragment frag = new EventFragment();
         Bundle args = new Bundle();
         args.putSerializable("uuid", mUid);
@@ -275,6 +275,8 @@ public class AgendaActivity extends AppCompatActivity
         args.putSerializable("endTime", endTime);
         args.putSerializable("summary", summary);
         args.putSerializable("tasks", tasks);
+        args.putSerializable("gCalId", gCalId);
+        args.putSerializable("eventId", eventId);
 
         loadFragment(frag, args);
     }

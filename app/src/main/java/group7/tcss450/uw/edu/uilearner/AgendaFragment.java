@@ -116,8 +116,10 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
 
 
     @Override
-    public void onEditButtonInteraction(String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks) {
-        mListener.onListFragmentInteraction(studentId, title, date, startTime, endTime, summary, tasks);
+    public void onEditButtonInteraction(String studentId, String title, String date, String gCalId,
+                                        String eventId, String startTime, String endTime, String summary,
+                                        String[] tasks) {
+        mListener.onListFragmentInteraction(studentId, title, date, gCalId, eventId, startTime, endTime, summary, tasks);
     }
 
 
@@ -132,7 +134,7 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks);
+        void onListFragmentInteraction(String studentId, String title, String date,String gCalId, String eventId, String startTime, String endTime, String summary, String[] tasks);
     }
 
 

@@ -217,7 +217,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
-                        adb.setMessage("Are you sure you want to edit this event?");
+                        adb.setMessage("Are you sure you want to edit this event?" +
+                                " The state of your student's tasks will be cleared");
                         adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(final DialogInterface dialog, int which) {
@@ -249,8 +250,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                                     }
                                 }
 
-
-                                mListener.onEditButtonInteraction(id, title, date, startTime, endTime, summary, tasks);
+                                mListener.onEditButtonInteraction(id, title, date, gCalId, eventId,
+                                        startTime, endTime, summary, tasks);
                             }
                         });
                         adb.setCancelable(true);
@@ -428,6 +429,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
 
     public interface OnEditButtonInteractionListener {
-        public void onEditButtonInteraction (String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks);
+        public void onEditButtonInteraction (String studentId, String title, String date,
+                                             String gCalid,String eventId,String startTime,
+                                             String endTime, String summary, String[] tasks);
     }
 }

@@ -2,10 +2,10 @@ package group7.tcss450.uw.edu.uilearner;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,13 +56,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     private String mCurrentChosenStudentUid;
     private String mTeacherUid;
 
-    private String mPassedStudentId;
-    private String mPassedTitle;
-    private String mPassedDate;
-    private String mPassedStartTime;
-    private String mPassedEndTime;
-    private String mPassedSummary;
-    private String[] mPassedTasks;
+    private String mGcalId;
+    private String mEventId;
 
     private RadioButton mCurrentChosenRadioButton;
     private EventFragment mInstance;
@@ -81,6 +76,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     private int startMinute = 0;
     private int endHour = 0;
     private int endMinute = 0;
+    private boolean isEditSession;
 
     public EventFragment() {
         // Required empty public constructor
@@ -114,6 +110,50 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         mTask1 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask1);
         mTask2 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask2);
         mTask3 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask3);
+
+        Bundle b = getArguments();
+        if(b != null) {
+            isEditSession = true;
+            if(b.getString("date") != null) {
+                mEventDate.setText(b.getString("date").replaceAll(" ", ""));
+                mEventName.setText(b.getString("title"));
+
+                String startTime = b.getString("startTime");
+                int[] starts = parseTime(startTime);
+                startHour = starts[0];
+                startMinute = starts[1];
+
+                String endTime = b.getString("endTime");
+                int[] ends = parseTime(endTime);
+                endHour = ends[0];
+                endMinute = ends[1];
+
+                mEventTimeEnd.setText(b.getString("endTime"));
+
+                mEventTimeStart.setText(startTime);
+                mEventSummary.setText(b.getString("summary"));
+                String[] tasks = b.getStringArray("tasks");
+                mGcalId = b.getString("gCalId");
+                mEventId = b.getString("eventId");
+                if (tasks != null) {
+                    if (tasks.length > 0 && tasks[0] != null && tasks[0].length() > 0) {
+                        mTask1.setText(tasks[0]);
+                        mTask1.setVisibility(View.VISIBLE);
+                        mTask1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_box_checked, 0, 0, 0);
+                    }
+                    if (tasks.length > 1 && tasks[1] != null && tasks[1].length() > 0) {
+                        mTask2.setText(tasks[1]);
+                        mTask2.setVisibility(View.VISIBLE);
+                        mTask2.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_box_checked, 0, 0, 0);
+                    }
+                    if (tasks.length > 2 && tasks[2] != null && tasks[2].length() > 0) {
+                        mTask3.setText(tasks[2]);
+                        mTask3.setVisibility(View.VISIBLE);
+                        mTask3.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_box_checked, 0, 0, 0);
+                    }
+                }
+            }
+        }
 
         mAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +216,21 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         return v;
     }
 
+    private int[] parseTime(String time) {
+        int[] times = new int[2];
+        if(time != null) {
+            int offset = (time.contains("PM")) ? 12 : 0;
+            time = time.replace("PM", "").replace("AM", "").replace(" ", "");
+            String[] strs = time.split(":");
+            times[0] = Integer.parseInt(strs[0]) + offset;
+            times[0] = (times[0] == 24) ? 12 : times[0];
+            times[1] = Integer.parseInt(strs[1]);
+        }
+        return times;
+    }
+
+
+
 
     @Override
     public void onDetach() {
@@ -225,8 +280,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                             startHour = hourOfDay;
                             startMinute = minute;
-                            int displayHour = (hourOfDay >= 12) ? hourOfDay - 12 : hourOfDay;
+
+                            int displayHour = (hourOfDay > 12) ? hourOfDay - 12 : hourOfDay;
                             String amPm = (hourOfDay >= 12) ? "PM" : "AM";
+                            displayHour = (displayHour == 0) ? 12 : displayHour;
                             mEventTimeStart.setText(String.format(Locale.US, "%d:%02d%s", displayHour, minute,amPm));
                         }
                     };
@@ -250,8 +307,9 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                             endHour = hourOfDay;
                             endMinute = minute;
-                            int displayHour = (hourOfDay >= 12) ? hourOfDay - 12 : hourOfDay;
+                            int displayHour = (hourOfDay > 12) ? hourOfDay - 12 : hourOfDay;
                             String amPm = (hourOfDay >= 12) ? "PM" : "AM";
+                            displayHour = (displayHour == 0) ? 12 : displayHour;
                             mEventTimeEnd.setText(String.format(Locale.US, "%d:%02d%s", displayHour, minute,amPm));
                         }
                     };
@@ -331,15 +389,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
     public void onStart() {
         if (getArguments() != null) {
             mTeacherUid = getArguments().getString("uuid");
-            if (getArguments().getString("id") != null) {
-                mPassedStudentId = getArguments().getString("id");
-                mPassedTitle = getArguments().getString("title");
-                mPassedDate = getArguments().getString("date");
-                mPassedStartTime = getArguments().getString("startTime");
-                mPassedEndTime = getArguments().getString("endTime");
-                mPassedSummary = getArguments().getString("summary");
-                mPassedTasks = (String[]) getArguments().get("tasks");
-            }
 
             StudentTask sTask = new StudentTask();
             sTask.execute();
@@ -492,6 +541,25 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
 
 
 
+                if(isEditSession) {
+                    Uri uri = new Uri.Builder()
+                            .scheme("http")
+                            .authority("learner-backend.herokuapp.com")
+                            .appendEncodedPath("teacher")
+                            .appendEncodedPath("events")
+                            .appendEncodedPath("delete")
+                            .appendQueryParameter("calId", mGcalId)
+                            .appendQueryParameter("event", mEventId)
+                            .build();
+                    HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+                    Scanner in = new Scanner(connection.getInputStream());
+                    StringBuilder sb = new StringBuilder();
+                    while(in.hasNext()) sb.append(in.next()).append(" ");
+                    JSONObject json = new JSONObject(sb.toString());
+                    Log.d(TAG, json.toString(2));
+                }
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary&event_name=someName
                 Uri uri = new Uri.Builder()
                         .scheme("http")
@@ -513,6 +581,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
+                Log.d(TAG, response);
                 wasSuccessful = true;
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -526,11 +595,11 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         @Override
         protected void onPostExecute(Boolean wasSuccessful) {
             if (wasSuccessful) {
-                Toast.makeText(getActivity(), "Created a new event successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Created a new event successfully", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 getActivity().getSupportFragmentManager().popBackStack();
             } else {
-                Toast.makeText(getActivity(), "Event creation failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Event creation failed!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         }

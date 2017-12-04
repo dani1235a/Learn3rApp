@@ -101,7 +101,7 @@ public class DateUtil {
             Calendar cal = Calendar.getInstance();
             cal.setTime(start);
             int day = cal.get(Calendar.DAY_OF_MONTH);
-            int month = cal.get(Calendar.MONTH);
+            int month = cal.get(Calendar.MONTH) + 1;
             int year = cal.get(Calendar.YEAR);
             int startHour = cal.get(Calendar.HOUR_OF_DAY);
             int startMinute = cal.get(Calendar.MINUTE);
@@ -110,10 +110,12 @@ public class DateUtil {
             int endMinute = cal.get(Calendar.MINUTE);
 
             String endAmPm = (endHour >= 12) ? "PM" : "AM";
-            endHour = (endHour >= 12) ? endHour - 12 : endHour;
+            endHour = (endHour > 12) ? endHour - 12 : endHour;
+            endHour = (endHour == 0) ? 12 : endHour;
 
             String startAmPm = (startHour >= 12) ? "PM" : "AM";
             startHour = (startHour >= 12) ? startHour - 12 : startHour;
+            startHour = (startHour == 0) ? 12 : startHour;
 
             return String.format(Locale.US ,"%02d/%02d/%d @ %d:%02d%s - %d:%02d%s"
                     , month, day, year,
