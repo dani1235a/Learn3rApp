@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,6 +47,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     public static final String TASKS = "tasks";
     public static final String DESCRIPTION = "description";
 
+    public OnEditButtonInteractionListener mListener;
+
     private final ArrayList<String> mValues;
 
 
@@ -57,8 +60,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
      *
      * @author Connor
      */
-    public AgendaAdapter(ArrayList<String> items, OnListFragmentInteractionListener listener) {
+    public AgendaAdapter(ArrayList<String> items, OnEditButtonInteractionListener listener) {
         mValues = items;
+        mListener = listener;
     }
 
 
@@ -76,9 +80,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_item, parent, false);
-        Log.d(TAG, parent.toString());
 
-        Log.d(TAG, "Creating View Holder");
         return new ViewHolder(view);
     }
 
@@ -124,6 +126,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 holder.mTaskLabel.setVisibility(View.GONE);
             }
 
+            final boolean taskExists = anyTaskExists;
+
             //This is a pretty hacky way to figure out whether we're a student or not, but since
             //the server only includes the 'studentName' param when we're requests via /teacher/events,
             //we know if its missing we're a student.
@@ -143,7 +147,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 holder.mTask2.setOnCheckedChangeListener(listener);
                 holder.mTask3.setOnCheckedChangeListener(listener);
                 holder.deleteButton.setVisibility(View.GONE);
-
+                holder.editButton.setVisibility(View.GONE);
             } else {
                 holder.mIdView.setText(events.optString(STUDENT_NAME));
                 holder.mEventTitle.setText(eventTitle);
@@ -155,7 +159,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
-                        adb.setMessage("Are you sure you want to delete event?");
+                        adb.setMessage("Are you sure you want to delete this event?");
                         adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(final DialogInterface dialog, int which) {
@@ -196,6 +200,56 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                                         dialog.dismiss();
                                     }
                                 }.execute();
+                            }
+                        });
+                        adb.setCancelable(true);
+                        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        adb.show();
+                    }
+                });
+
+                holder.editButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
+                        adb.setMessage("Are you sure you want to edit this event?");
+                        adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                String id = holder.mIdView.getText().toString();
+                                String title = holder.mEventTitle.getText().toString();
+
+                                String tmp = holder.mEventTime.getText().toString();
+                                String[] helper = tmp.split("@");
+                                String date = helper[0];
+
+                                String[] times = helper[1].split("-");
+                                String startTime = times[0];
+                                String endTime = times[1];
+
+                                String summary = holder.mContentView.getText().toString();
+
+                                ArrayList<String> tasks = new ArrayList<String>();
+                                if (taskExists) {
+                                    if (!holder.mTask1.getText().toString().equals("")) {
+                                        tasks.add(holder.mTask1.getText().toString());
+                                    }
+
+                                    if (!holder.mTask2.getText().toString().equals("")) {
+                                        tasks.add(holder.mTask2.getText().toString());
+                                    }
+
+                                    if (!holder.mTask3.getText().toString().equals("")) {
+                                        tasks.add(holder.mTask3.getText().toString());
+                                    }
+                                }
+
+                                mListener.onEditButtonInteraction(id, title, date, startTime, endTime, summary, (String[]) tasks.toArray());
                             }
                         });
                         adb.setCancelable(true);
@@ -259,6 +313,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
         final CheckBox mTask2;
         final CheckBox mTask3;
         final ImageButton deleteButton;
+        final ImageButton editButton;
 
 
         public ViewHolder(View view) {
@@ -274,6 +329,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             mTask2 = (CheckBox) view.findViewById(R.id.item_task2);
             mTask3 = (CheckBox) view.findViewById(R.id.item_task3);
             deleteButton = (ImageButton) view.findViewById(R.id.deleteEvent);
+            editButton = (ImageButton) view.findViewById(R.id.editEvent);
         }
 
         @Override
@@ -367,5 +423,10 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             }
 
         }
+    }
+
+
+    public interface OnEditButtonInteractionListener {
+        public void onEditButtonInteraction (String studentId, String title, String date, String startTime, String endTime, String summary, String[] tasks);
     }
 }
