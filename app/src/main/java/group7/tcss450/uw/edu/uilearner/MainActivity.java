@@ -29,6 +29,7 @@ import group7.tcss450.uw.edu.uilearner.auth.EnterPinFragment;
 import group7.tcss450.uw.edu.uilearner.auth.ForgotPasswordFragment;
 import group7.tcss450.uw.edu.uilearner.auth.RegisterFragment;
 import group7.tcss450.uw.edu.uilearner.auth.SignInFragment;
+import group7.tcss450.uw.edu.uilearner.util.SharedPreferences;
 
 /**
  * This class is the main activity. It first opens when the app runs. The sign in page
@@ -53,19 +54,25 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //If the Intent is not null, that means we got here from the sign out button
-        //in AgendaActivity, so sign out of the current FirebaseUser account before
-        //doing anything else.
-        if (getIntent() != null) {
-            signOut();
-        }
-        if (savedInstanceState == null) {
-            if (findViewById(R.id.main_container) != null) {
-                loadFragment(new SignInFragment(), null);
-            }
-        }
         thisActivity = this;
+        if(SharedPreferences.getUserName(MainActivity.this).length() == 0) {
+
+
+            //If the Intent is not null, that means we got here from the sign out button
+            //in AgendaActivity, so sign out of the current FirebaseUser account before
+            //doing anything else.
+            if (getIntent() != null) {
+                signOut();
+            }
+            if (savedInstanceState == null) {
+                if (findViewById(R.id.main_container) != null) {
+                    loadFragment(new SignInFragment(), null);
+                }
+            }
+        } else {
+            signIn(SharedPreferences.getUserName(thisActivity), SharedPreferences.getUserPass(thisActivity));
+        }
+
     }
 
 
@@ -188,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     if(user.getRole().equals("teacher")) {
                         user.setAddCode(res.optString("add_code"));
                     }
-                    sendEmailVerification();
                     changeActivity();
                 } else {
                     String msg = (res.has("error")) ? res.optString("error") : "Something went wrong...";
@@ -216,17 +222,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         agendaIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(agendaIntent);
         finish();
-    }
-
-
-    /**
-        Sends a verification email to the one specified by the User on account creation.
-        If the email fails to send, then a Toast will appear, alerting the user of it.
-
-        Author: Connor Lundberg
-     */
-    private void sendEmailVerification() {
-        //TODO: Send Email Verification
     }
 
 
@@ -326,6 +321,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             user.setUid(uuid);
                             user.setAddCode(addCode);
                             ok = true;
+                            // Add username/pass to shared preferences
+                            SharedPreferences.setUserName(MainActivity.this, user.getEmail());
+                            SharedPreferences.setUserPassword(MainActivity.this, user.getPassword());
                         }
                     } else {
                         Log.d(TAG, response.toString());

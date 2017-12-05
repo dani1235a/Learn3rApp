@@ -18,13 +18,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import group7.tcss450.uw.edu.uilearner.auth.ChooseRoleFragment;
+import group7.tcss450.uw.edu.uilearner.util.SharedPreferences;
 
 /**
  * This is the controller for the majority of the app. It gets everything ready for
@@ -204,6 +204,7 @@ public class AgendaActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sign_out) {
+            SharedPreferences.clearData(AgendaActivity.this);
             //there will need to be a check using a popup here
             Intent toMain = new Intent(this, MainActivity.class);
             toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
