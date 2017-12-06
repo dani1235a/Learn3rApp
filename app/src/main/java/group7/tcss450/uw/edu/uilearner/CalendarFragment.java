@@ -76,7 +76,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
 
         CalendarView calendarView = (CalendarView) v.findViewById(R.id.calendarView);
         calendarView.setShowWeekNumber(false);
-        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
