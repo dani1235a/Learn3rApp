@@ -147,8 +147,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 holder.mTask1.setOnCheckedChangeListener(listener);
                 holder.mTask2.setOnCheckedChangeListener(listener);
                 holder.mTask3.setOnCheckedChangeListener(listener);
-                holder.deleteButton.setVisibility(View.GONE);
-                holder.editButton.setVisibility(View.GONE);
+                holder.deleteButton.setVisibility(View.INVISIBLE);
+                holder.editButton.setVisibility(View.INVISIBLE);
             } else {
                 holder.mIdView.setText(events.optString(STUDENT_NAME));
                 holder.mEventTitle.setText(eventTitle);
