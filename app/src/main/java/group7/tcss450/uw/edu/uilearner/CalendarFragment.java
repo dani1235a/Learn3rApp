@@ -224,7 +224,7 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                 connection.connect();
                 Scanner s = new Scanner(connection.getInputStream());  //get the result from the query
                 StringBuilder sb = new StringBuilder();
-                while(s.hasNext()) sb.append(s.next());
+                while(s.hasNext()) sb.append(s.next()).append(" ");
                 response = sb.toString();
                 Log.d(TAG, response);
                 JSONArray events;
@@ -245,9 +245,7 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                 return dataset;
 
             } catch (Exception e) {
-                ArrayList<String> msg = new ArrayList<String>();
-                msg.add(e.getMessage());
-                return msg;
+                return new ArrayList<>();
             }
         }
 
