@@ -20,17 +20,15 @@
 
             <TextView
                 android:id="@+id/summary"
-                android:layout_width="319dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/eventTitle"
                 android:layout_alignLeft="@+id/eventTitle"
                 android:layout_alignStart="@+id/eventTitle"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Time" />
 
             <TextView
@@ -69,21 +67,18 @@
 
             <TextView
                 android:id="@+id/eventTitle"
-                android:layout_width="320dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="0dp"
                 android:hint="Email Address"
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <CheckBox
@@ -153,7 +148,9 @@
                 app:layout_constraintRight_toLeftOf="@+id/deleteEvent"
                 android:layout_marginRight="8dp"
                 app:layout_constraintTop_toTopOf="@+id/eventTitle"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toRightOf="@+id/eventTitle"
+                android:layout_marginLeft="48dp" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>
