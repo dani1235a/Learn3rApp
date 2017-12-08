@@ -29,9 +29,11 @@ import java.util.Scanner;
 import group7.tcss450.uw.edu.uilearner.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
+ * Handles the reset password pin fragment. Once the user puts in 6 digits
+ * then the reset password fields will appear. Only after they hit submit
+ * will it check if the pin is correct.
+ *
+ * @author Myles, Daniel
  */
 public class EnterPinFragment extends Fragment implements TextWatcher, View.OnClickListener {
 
@@ -51,7 +53,10 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
         // Required empty public constructor
     }
 
-
+    /**
+        Gets the email from the last fragment.
+        @author Daniel, Myles
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +69,10 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
         }
     }
 
+    /**
+        Set everything up for the fragment. Here we get all the references.
+        @author Daniel, Myles
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,7 +94,12 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
         return v;
     }
 
-
+    /**
+     * Gets the listener from the activity.
+     *
+     * @param context
+     * @author Myles
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -104,7 +118,14 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
     @Override
     public void afterTextChanged(Editable s) {}
 
-
+    /**
+     * Once the textfield is a size of 6 then the password fields become visible.
+     * @param s
+     * @param start
+     * @param before
+     * @param count
+     * @author Daniel, Myles
+     */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         Log.d(TAG, Integer.toString(count));
@@ -116,6 +137,13 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
         }
     }
 
+
+    /**
+     * Once the confirm button is clicked, this will check if everything is valid,
+     * then perform the async task to see if the pin is correct.
+     * @param v
+     * @author Myles
+     */
     @Override
     public void onClick(View v) {
 
@@ -136,6 +164,7 @@ public class EnterPinFragment extends Fragment implements TextWatcher, View.OnCl
 
     /**
      * Resets password for account.
+     * @author Myles
      */
     private class ResetTask extends AsyncTask<String, Void, JSONObject> {
 
