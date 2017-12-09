@@ -47,9 +47,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
 
         mListener = listener;
         mHead = 0;
-        Log.d(TAG, "Finishing StudentAdapter constructor with hashmap. ArrayLists are\n" +
-                    "  uuids: " + mStudentUids.toString() + "\n" +
-                    "  names: " + mStudentNames.toString());
     }
 
 
@@ -71,7 +68,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "Creating View Holder");
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.student_view, parent, false);
         // set the view's size, margins, paddings, and layout params
@@ -93,7 +89,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Log.d(TAG, "Binding View Holder");
         holder.mRadioButton.setText(mStudentNames.get(position));
 
         // get the uuid that this radio button will be passing to EventFragment
@@ -108,13 +103,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
                 }
             }
         });
-        Log.d(TAG, "Setting student name: " + mStudentNames.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "Names size: " + mStudentNames.size());
         return mStudentNames.size();
     }
 

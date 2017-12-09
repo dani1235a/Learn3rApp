@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Daniel on 11/3/2017.
  * class designed to hold user objects.
+ * @author Daniel, Connor
  */
 
 public class User implements Serializable {

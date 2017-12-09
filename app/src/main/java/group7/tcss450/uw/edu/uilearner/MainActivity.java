@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         thisActivity = this;
         if(SharedPreferences.getUserName(MainActivity.this).length() == 0) {
 
-
             //If the Intent is not null, that means we got here from the sign out button
             //in AgendaActivity, so sign out of the current FirebaseUser account before
             //doing anything else.
@@ -137,8 +136,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
             @Override
             protected @NonNull JSONObject doInBackground(Void... voids) {
 
-            Log.d(TAG, "In here");
-
                 try {
                     // http://learner-backend.herokuapp.com/teacher?uuid=someUid&name=someName
                     // or
@@ -165,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                                 .build();
                     }
 
-                    Log.d(TAG, uri.toString());
                     HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                     connection.setRequestMethod("POST");
                     connection.connect();
@@ -173,14 +169,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     StringBuilder sb = new StringBuilder();
                     while (s.hasNext()) sb.append(s.next());
                     return new JSONObject(sb.toString());
-
-
                 } catch (Exception e) {
                     Log.e(TAG, "error creating", e);
                     return new JSONObject();
                 }
             }
-
 
 
             /**
@@ -284,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             .appendQueryParameter("email", email)
                             .build();
 
-                    Log.d(TAG, uri.toString());
                     HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                     connection.setRequestMethod("GET");
                     connection.connect();
@@ -308,12 +300,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     if (response == null) {
                         showOkDialog("Something went wrong...");
                     } else if (response.getBoolean("success")) {
-                        Log.d(TAG, response.toString());
                         if(!response.getBoolean("verified")) {
                             showOkDialog("You must verify your email before continuing");
                             ok = false;
                         } else {
-                            Log.d(TAG, "Successful: + " + response.toString());
                             String uuid = response.getString("uuid");
                             String role = response.getString("role");
                             String addCode = response.optString("add_code");
@@ -326,7 +316,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                             SharedPreferences.setUserPassword(MainActivity.this, user.getPassword());
                         }
                     } else {
-                        Log.d(TAG, response.toString());
                         showOkDialog("Incorrect User & Password");
                     }
                 } catch (JSONException json) {

@@ -86,7 +86,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
 
     /**
-     * This binds the values to their respective holder.
+     * This binds the values to their respective holder. It also creates the onclick listener
+     * for the buttons, though they are only shown if the user's role is Teacher.
      *
      * @param holder
      * @param position
@@ -96,11 +97,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Log.d(TAG, "Binding View Holder");
         holder.mItem = mValues.get(position);
         try {
-            Log.d(TAG, "getting " + mValues.get(position));
-
             JSONObject events = new JSONObject(mValues.get(position));
             Log.d(TAG, events.toString(2));
 
@@ -116,7 +114,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
             JSONArray tasks = desc.getJSONArray(TASKS);
 
             String summary = desc.getString("summary").replaceAll(SPACE, " ");
-
 
             //This is to set up the task views
             boolean anyTaskExists = setTask(holder.mTask1, tasks.optJSONObject(0));
@@ -194,7 +191,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                                         }
                                     }
 
-
                                     @Override
                                     protected void onPostExecute(Boolean success) {
                                         triggerRefresh(holder.getAdapterPosition());
@@ -214,6 +210,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                     }
                 });
 
+                //makes a call to the backend to clear the event before heading to the
+                //EventFragment
                 holder.editButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -269,19 +267,29 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
         } catch (JSONException e) {
             holder.mIdView.setText(e.getMessage());
-
             Log.e(TAG, e.getMessage(), e);
         }
     }
 
+    /**
+     * Removes the Values once the delete button is clicked.
+     * @param position
+     * @author Myles
+     */
     private void triggerRefresh(int position) {
         mValues.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }
 
+    /**
+     * Sets the task if there are any.
+     * @param box
+     * @param task
+     * @return
+     * @author Myles
+     */
     private boolean setTask(CheckBox box, JSONObject task) {
-        Log.d("TASK", "Setting task: " + task);
         if(task == null || task.optString(DESCRIPTION).length() == 0) {
             box.setVisibility(View.GONE);
             return false;
@@ -294,15 +302,14 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "Values size: " + mValues.size());
         return mValues.size();
     }
-
 
 
     /**
      * Our implementation of the RecyclerView.ViewHolder. It holds the values and View objects
      * that are going to be displayed in the RecyclerView.
+     * @author Connors
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
@@ -321,7 +328,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
 
         public ViewHolder(View view) {
             super(view);
-            Log.d(TAG, "ViewHolder");
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.student);
             mContentView = (TextView) view.findViewById(R.id.summary);
@@ -342,6 +348,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
     }
 
 
+    /**
+     * Handles the Listener and action once the check box is clicked.
+     *
+     * @author Myles
+     */
     public class CheckBoxListener implements CompoundButton.OnCheckedChangeListener {
 
         private final String mEventId;
@@ -372,7 +383,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                 tasksArr.put(getTaskFromBox(holder.mTask3));
                 desc.put("tasks", tasksArr);
                 desc.put("summary", mEventSummary);
-                Log.d(TAG, "executing checked changed: " + desc.toString());
                 new Task().execute(desc);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage(), e);
@@ -410,7 +420,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.ViewHolder
                     StringBuilder sb = new StringBuilder();
                     while(in.hasNext()) sb.append(in.next()).append(" ");
                     String response = sb.toString();
-                    Log.d(TAG, response);
                     JSONObject obj = new JSONObject(response);
                     return obj.getBoolean("success");
                 } catch (IOException | JSONException e) {

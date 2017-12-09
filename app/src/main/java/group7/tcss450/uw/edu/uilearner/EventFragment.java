@@ -111,6 +111,8 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         mTask2 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask2);
         mTask3 = (CheckedTextView) v.findViewById(R.id.checkedTextViewTask3);
 
+        //If the arguments are not null, then we know that this is an edited event
+        //so populate the fields with the arguments given.
         Bundle b = getArguments();
         if(b != null) {
             isEditSession = true;
@@ -161,7 +163,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 if(numTasks == 2) {
                     mTask3.setVisibility(View.VISIBLE);
                     numTasks++;
-//                    mAddTask.setTextColor(Color.GRAY);
                     mAddTask.setVisibility(View.GONE);
                 }if(numTasks == 1) {
                     mTask2.setVisibility(View.VISIBLE);
@@ -179,7 +180,7 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         mTask3.setOnClickListener(new OnTaskClickListener(3));
 
 
-
+        //gets the event and starts the AsyncTask
         Button confirm = (Button) v.findViewById(R.id.confirm_event);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +217,12 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         return v;
     }
 
+    /**
+     * Parse the time out of the TextFields and return them.
+     * @param time
+     * @return
+     * @author Myles
+     */
     private int[] parseTime(String time) {
         int[] times = new int[2];
         if(time != null) {
@@ -229,9 +236,10 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
         return times;
     }
 
-
-
-
+    /**
+     * Sets the EventFragment fab back to Visible.
+     * @author Connor
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -245,7 +253,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
      * @author Myles
      */
     private void setUpDateAndTimeListeners() {
-        Log.d(TAG, "mEventDate == null? " + (mEventDate == null));
         mEventDate.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -454,7 +461,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                         .appendQueryParameter("uuid", uid) //pass uid here
                         .build();
 
-                Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
@@ -525,8 +531,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 String uid = mCurrentChosenStudentUid;
 
                 Event event = events[0];
-                Log.d(TAG, "Start time: " + event.getStart());
-                Log.d(TAG, "End time: " + event.getEnd());
 
                 JSONObject description = new JSONObject();
                 JSONArray tasks = new JSONArray();
@@ -558,7 +562,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                     StringBuilder sb = new StringBuilder();
                     while(in.hasNext()) sb.append(in.next()).append(" ");
                     JSONObject json = new JSONObject(sb.toString());
-                    Log.d(TAG, json.toString(2));
                 }
                 // http://learner-backend.herokuapp.com/teacher/events?uuid=someUid&start=someDate&end=someDate&summary=someSummary&event_name=someName
                 Uri uri = new Uri.Builder()
@@ -581,7 +584,6 @@ public class EventFragment extends Fragment implements StudentAdapter.OnStudentN
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next());
                 response = sb.toString();
-                Log.d(TAG, response);
                 wasSuccessful = true;
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());

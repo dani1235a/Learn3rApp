@@ -34,6 +34,9 @@ import group7.tcss450.uw.edu.uilearner.util.DateUtil;
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
+ *
+ * Calls and displays the Daily Agenda cards for the User.
+ * @author Connor, Myles
  */
 public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButtonInteractionListener {
 
@@ -93,7 +96,6 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
             int hour = rightNow.get(Calendar.HOUR_OF_DAY);
             int minute = rightNow.get(Calendar.MINUTE);
-            Log.d(TAG, "" + dayOfMonth + "/" + month + "/" + year + " " + hour + ":" + minute);
             agendaTask.execute(year, month, dayOfMonth, hour, minute);
         } else {
             Log.e(TAG, "Arguments were null");
@@ -114,6 +116,20 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
     }
 
 
+    /**
+     * This is called when the edit button is clicked on any of the cards. It sends it back to
+     * the AgendaActivity and that will move to the EventFragment.
+     * @param studentId
+     * @param title
+     * @param date
+     * @param gCalId
+     * @param eventId
+     * @param startTime
+     * @param endTime
+     * @param summary
+     * @param tasks
+     * @author Connor
+     */
     @Override
     public void onEditButtonInteraction(String studentId, String title, String date, String gCalId,
                                         String eventId, String startTime, String endTime, String summary,
@@ -165,8 +181,6 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
             try {
 
                 String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1], integers[2]);
-                Log.d("CALENDAR", "Sending in AgendaFragment start date: " + dates[0]);
-                Log.d("CALENDAR", "Sending in AgendaFragment end date: " + dates[1]);
 
                 String uid = mUid;
                 Uri uri;
@@ -194,7 +208,6 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
                 }
 
 
-                Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
@@ -202,7 +215,6 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next()).append(" ");
                 response = sb.toString();
-                Log.d(TAG, response);
                 JSONArray events;
                 try {
                     events = new JSONObject(response)
@@ -213,7 +225,6 @@ public class AgendaFragment extends Fragment implements AgendaAdapter.OnEditButt
                 ArrayList<String> dataset = new ArrayList<String>();
                 for (int i = 0; i < events.length(); i++) {
                     String event = events.getString(i);
-                    Log.d(TAG, event);
                     dataset.add(event);
                 }
                 return dataset;

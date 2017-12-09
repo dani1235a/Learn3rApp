@@ -115,8 +115,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         public CardView mCardView;
         public TextView mTextView;
         public TextView mCalendarSum;
-//        public final TextView mEventTitle;
-//        public final TextView mEventTime;
 
         public ViewHolder (View v) {
             super(v);

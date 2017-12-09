@@ -4,7 +4,9 @@ import java.util.List;
 
 /**
  * Created by Myles on 12/1/2017.
- * This class represents a task
+ * This class represents a task. It holds all of the info for an event.
+ *
+ * @author Myles
  */
 
 public class Event {

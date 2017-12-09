@@ -114,7 +114,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
             int year = rightNow.get(Calendar.YEAR);
             int month = rightNow.get(Calendar.MONTH);
             int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-            Log.d(TAG, "today's date from Calendar: " + dayOfMonth + "/" + month + "/" + year);
 
             final TextView tv = (TextView) getActivity().findViewById(R.id.date_display);
             tv.setText(java.lang.String.format("%02d", month) + "/" +  java.lang.String.format("%02d", dayOfMonth) + "/" + year);
@@ -186,10 +185,7 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
         protected ArrayList<String> doInBackground(Integer... integers) {
             String response = "";
             try {
-
                 String[] dates = DateUtil.getWholeDayStartEnd(integers[0], integers[1], integers[2]);
-                Log.d("CALENDAR", "Sending in CalendarFragment start date: " + dates[0]);
-                Log.d("CALENDAR", "Sending in CalendarFragment end date: " + dates[1]);
 
                 String uid = mUid;
                 // http://learner-backend.herokuapp.com/student/events?start=someTime&end=someTime&uuid=UUID
@@ -218,7 +214,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                 }
 
 
-                Log.d(TAG, uri.toString());
                 HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
@@ -226,7 +221,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                 StringBuilder sb = new StringBuilder();
                 while(s.hasNext()) sb.append(s.next()).append(" ");
                 response = sb.toString();
-                Log.d(TAG, response);
                 JSONArray events;
                 try {
                     events = new JSONObject(response)
@@ -235,7 +229,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                     events = new JSONArray(response);
                 }
 
-                Log.d(TAG, events.toString());
 
                 ArrayList<String> dataset = new ArrayList<String>();  //add json events array into the dataset
                 for (int i = 0; i < events.length(); i++) {
@@ -259,7 +252,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                     mRecyclerView.setVisibility(View.VISIBLE);
                     msg += ", setting the empty text to gone and setting the recycler view to visible";
                 }
-                Log.d(TAG, msg);
                 mRecyclerView.setHasFixedSize(true); //change this to false if size doesn't look correct
 
                 //this will need to have a check if the result is empty. If so, then display an empty message
@@ -270,7 +262,6 @@ public class CalendarFragment extends Fragment implements AgendaAdapter.OnEditBu
                 mRecyclerView.setAdapter(adapter);
                 dialog.dismiss();
             } else {
-                Log.d(TAG, "Result was empty, setting the empty text to visible and setting recycler view to gone");
                 dateEmpty.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
                 dialog.dismiss();
