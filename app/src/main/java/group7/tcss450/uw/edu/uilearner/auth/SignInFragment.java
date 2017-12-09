@@ -1,6 +1,7 @@
 package group7.tcss450.uw.edu.uilearner.auth;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -51,11 +52,15 @@ public class SignInFragment extends Fragment {
                 EditText pass = (EditText) getActivity().findViewById(R.id.editTextPassword);
                 EditText email = (EditText) getActivity().findViewById(R.id.editTextEmail);
 
-                if (RegisterFragment.isValidEmail(email.getText().toString())
-                        && RegisterFragment.isValidPassword(pass.getText().toString())) {
-
+                if (RegisterFragment.isValidEmail(email.getText().toString())) {
                     user = new User(email.getText().toString(), pass.getText().toString());
                     mListener.SignInFragmentInteraction(user);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Please enter a valid email address");
+                    builder.setPositiveButton("OK", null);
+                    builder.show();
+
                 }
             }
         });
