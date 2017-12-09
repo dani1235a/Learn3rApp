@@ -64,10 +64,8 @@ public class AgendaActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agenda);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setNavigationIcon(R.drawable.ic_person_black_24dp);
         toolbar.setTitle(mUid);
         setSupportActionBar(toolbar);
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOF‌​T_INPUT_ADJUST_NOTHI‌​NG);
         FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
         if(fireUser != null && !fireUser.isEmailVerified()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -81,12 +79,11 @@ public class AgendaActivity extends AppCompatActivity
             builder.show();
         }
 
-
+        //Gets the arguments from MainActivity
         Intent i = getIntent();
         if (i != null) {
             Bundle args = i.getExtras();
             if (args != null) {
-                Log.d(TAG, "here");
                 Bundle temp = (Bundle) args.get(MainActivity.TAG);
                 User currUser = (User) temp.get(MainActivity.TAG);
                 mEmail = currUser.getEmail();
@@ -96,7 +93,6 @@ public class AgendaActivity extends AppCompatActivity
                 if(mRole.equals(ChooseRoleFragment.IS_TEACHER)) {
                     mAddCode = currUser.getAddCode();
                 }
-                Log.d(TAG, mRole);
             } else {
                 Log.d(TAG, "Bundle was null");
             }
@@ -116,7 +112,6 @@ public class AgendaActivity extends AppCompatActivity
         });
 
         if (!mIsTeacher) {
-            Log.d(TAG, "in here");
             fab.setVisibility(View.INVISIBLE);
         }
 
@@ -132,7 +127,6 @@ public class AgendaActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
 
         if (savedInstanceState == null) {
@@ -170,6 +164,7 @@ public class AgendaActivity extends AppCompatActivity
      *
      * @param menu
      * @return
+     * @author Daniel
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,7 +200,6 @@ public class AgendaActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sign_out) {
             SharedPreferences.clearData(AgendaActivity.this);
-            //there will need to be a check using a popup here
             Intent toMain = new Intent(this, MainActivity.class);
             toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(toMain);
@@ -253,6 +247,7 @@ public class AgendaActivity extends AppCompatActivity
     /**
          A reusable method that simply replaces the current fragment attached to
          the main_container layout in activity_main with the new one given.
+        @author Connor
       */
     private void loadFragment(Fragment fragment, Bundle args) {
         if(fragment instanceof AgendaFragment && mIsTeacher) {
@@ -267,6 +262,20 @@ public class AgendaActivity extends AppCompatActivity
     }
 
 
+    /**
+     * We call this when we click on a card in the AgendaFragment or CalendarFragment as a Teacher
+     * so we can edit the event.
+     * @param studentId
+     * @param title
+     * @param date
+     * @param gCalId
+     * @param eventId
+     * @param startTime
+     * @param endTime
+     * @param summary
+     * @param tasks
+     * @author Connor
+     */
     @Override
     public void onListFragmentInteraction(String studentId, String title, String date, String gCalId, String eventId, String startTime, String endTime, String summary, String[] tasks) {
         EventFragment frag = new EventFragment();

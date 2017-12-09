@@ -36,11 +36,14 @@ public class RegisterFragment extends Fragment {
 
 
     /**
-     * Redid this method to load the register Fragment correctly.
+     * Redid this method to load the register Fragment correctly. It sets up all of
+     * the instance fields and sets the onclick listener for the different fields.
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return
+     *
+     * @author Daniel, Myles
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +87,7 @@ public class RegisterFragment extends Fragment {
             }
         });
 
-
+        //Once the button is clicked it will check if everything is filled out and valid.
         final Button registerButton = (Button) v.findViewById(R.id.buttonRegister);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +163,7 @@ public class RegisterFragment extends Fragment {
      * Checks the email to make sure its a valid email.
      * @param s - the email
      * @return - true if valid email.
+     * @author Daniel
      */
     public static boolean isValidEmail(String s) {
         Log.d(AgendaActivity.TAG, "s in isValidEmail is null: " + (s == null));
@@ -172,6 +176,7 @@ public class RegisterFragment extends Fragment {
      * Method that checks the password.
      * @param s - input string (password)
      * @return - true if password is valid.
+     * @author Daniel
      */
     public static boolean isValidPassword(String s) {
         Log.d(AgendaActivity.TAG, "s in isValidPassword is null: " + (s == null));

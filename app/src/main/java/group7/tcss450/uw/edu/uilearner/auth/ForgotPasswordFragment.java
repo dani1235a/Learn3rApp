@@ -61,7 +61,7 @@ public class ForgotPasswordFragment extends Fragment {
 
 
         /**
-         * AsyncTask that calls on Firebase to send an email for a password reset to a particular user.
+         * AsyncTask that calls on our backend to send an email for a password reset to a particular user.
          */
         resetPass.setOnClickListener(new View.OnClickListener() {
             @Override
